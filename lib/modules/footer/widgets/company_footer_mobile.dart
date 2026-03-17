@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tgm/core/constants/app_colors.dart';
+import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/modules/header/controllers/header_controller.dart';
+
+class CompanyFooterMobile extends StatelessWidget {
+  const CompanyFooterMobile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final HeaderController headerController = Get.put(HeaderController());
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Company",
+          style: AppTextStyles.h3.copyWith(fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 20),
+        InkWell(
+          onTap: () {
+            context.go('/company/?section=vision');
+
+            headerController.changeIndex(4);
+          },
+          child: Text(
+            "About",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2,
+              fontSize: 14,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        InkWell(
+          onTap: () {
+            context.go('/contact-us');
+
+            headerController.changeIndex(6);
+          },
+          child: Text(
+            "Partner With Us",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2,
+              fontSize: 14,
+            ),
+          ),
+        ),
+       const SizedBox(height: 10),
+        InkWell(
+          onTap: () {
+            context.go('/company/?section=career');
+
+            headerController.changeIndex(4);
+          },
+          child: Text(
+            "Careers",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2,
+              fontSize: 14,
+            ),
+          ),
+        ),
+       const SizedBox(height: 10),
+        InkWell(
+          onTap: () {
+            context.go('/company/?section=people');
+
+            headerController.changeIndex(4);
+          },
+          child: Text(
+            "People",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2,
+              fontSize: 14,
+            ),
+          ),
+        ),
+const SizedBox(height: 10),
+        InkWell(
+          onTap: () {
+            context.go('/company/?section=feedback');
+
+            headerController.changeIndex(4);
+          },
+          child: Text(
+            "Feedback",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2, fontSize: 14),
+          ),
+        ),
+      ],
+    );
+  }
+}

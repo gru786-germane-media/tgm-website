@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tgm/core/constants/app_colors.dart';
+import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/constants/image_urls.dart';
+import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/modules/monetization/widgets/monetization_cards_mobile.dart';
+import 'package:tgm/modules/monetization/widgets/ripple_effect_animation_mobile.dart';
+
+class MobileWebMonetization extends StatelessWidget {
+  const MobileWebMonetization({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.kBackgroundColor,
+       appBar: AppBar(
+        backgroundColor: AppColors.kBackgroundColor2,
+        leading: InkWell(
+          onTap: () {
+            context.go('/monetization');
+          },
+          child: Transform.flip(
+            flipX: true,
+            child: SvgPicture.asset(
+              IconUrls.kRightArrowIcon,
+              height: 20,
+              width: 20,
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+        ),
+      ),
+      body: Stack(
+        children: [
+          RippleBackgroundAnimationMobile(),
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "Web Monetization",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.h1.copyWith(fontSize: 28),
+                ),
+
+                Text(
+                  "Built on Context & Intent Intelligence",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.h1.copyWith(
+                    fontSize: 28,
+                    color: AppColors.kTextColor1,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Text(
+                  "We use context and intent intelligence to match high-intent users with premium ads — optimizing every impression for relevance, viewability, and higher RPMs.",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14,
+                    color: AppColors.kTextColor1,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                AppCachedImage(
+                  imageUrl: ImageUrls.kWebMonetization,
+                  height: 310,
+                  width: 340,
+                  fit: BoxFit.scaleDown,
+                ),
+
+                const SizedBox(height: 20),
+
+                MonetizationCardsMobile(
+                  title: "Header Bidding Setup",
+                  subTitle: "with deep performance analytics",
+                ),
+
+                const SizedBox(height: 20),
+
+                MonetizationCardsMobile(
+                  title: "Automated Price Floors",
+                  subTitle: "and A/B layout optimization",
+                ),
+
+                const SizedBox(height: 20),
+
+                MonetizationCardsMobile(
+                  title: "Contextual & Semantic Ad Matching",
+                  subTitle: "for maximum relevance",
+                ),
+
+                const SizedBox(height: 20),
+
+                MonetizationCardsMobile(
+                  title: "The Outcome",
+                  subTitle:
+                      "Smarter monetization, premium demand access, and stronger returns from every impression.",
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
