@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 
 class MonetizationFooterMobile extends StatelessWidget {
@@ -20,6 +20,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=home');
+            trackPage('/monetization/?section=home');
 
             headerController.changeIndex(1);
           },
@@ -37,6 +38,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=adFormats');
+            trackPage('/monetization/?section=adFormats');
 
             headerController.changeIndex(1);
           },
@@ -58,6 +60,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=integrationMethods');
+            trackPage('/monetization/?section=integrationMethods');
 
             headerController.changeIndex(1);
           },
@@ -72,6 +75,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=faq');
+            trackPage('/monetization/?section=faq');
 
             headerController.changeIndex(1);
           },
@@ -86,6 +90,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=geos');
+            trackPage('/monetization/?section=geos');
 
             headerController.changeIndex(1);
           },
@@ -100,6 +105,7 @@ class MonetizationFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/monetization/?section=caseStudies');
+            trackPage('/monetization/?section=caseStudies');
 
             headerController.changeIndex(1);
           },

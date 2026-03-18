@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 
 class PrivacyPolicyMobile extends StatelessWidget {
   const PrivacyPolicyMobile({super.key});
@@ -83,6 +84,7 @@ If you have any questions about this Privacy Policy, the practices of this site,
         leading: InkWell(
           onTap: () {
             context.go('/');
+            trackPage('home');
           },
           child: Transform.flip(
             flipX: true,

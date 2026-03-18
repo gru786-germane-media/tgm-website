@@ -6,8 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
-import 'package:tgm/modules/mediaHub/widgets/blog_cards.dart';
 import 'package:tgm/modules/mediaHub/widgets/blog_cards_mobile.dart';
 
 class MobileBlogs extends StatelessWidget {
@@ -24,6 +24,7 @@ class MobileBlogs extends StatelessWidget {
         leading: InkWell(
           onTap: () {
             context.go('/media-hub');
+            trackPage('/media-hub');
           },
           child: Transform.flip(
             flipX: true,

@@ -9,6 +9,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
 import 'package:tgm/modules/mediaHub/models/blog_post_model.dart';
@@ -176,6 +177,7 @@ class BlogCardsMobile extends StatelessWidget {
                       );
 
                       context.go('/blogs/${currentBlog.blogId}');
+                      trackPage('/blogs/${currentBlog.blogId}');
                     },
                     child: Container(
                       height: 44,

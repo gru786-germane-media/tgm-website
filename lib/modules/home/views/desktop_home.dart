@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/custom_triangle_clipper.dart';
 import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/footer/views/desktop_footer.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
@@ -1089,7 +1089,7 @@ class HomeSection extends StatelessWidget {
                   scale: scale,
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeOut,
-                  child: AppCachedImage( imageUrl: "https://websitetgm.s3.eu-north-1.amazonaws.com/Home/$i.png", fit: BoxFit.contain),
+                  child: AppCachedImage( imageUrl: "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png", fit: BoxFit.contain),
                 );
               },
             ).toList(),
@@ -1145,6 +1145,7 @@ class HomeSection extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/contact-us');
+            trackPage('/contact-us');
             final HeaderController headerController = Get.put(
               HeaderController(),
             );

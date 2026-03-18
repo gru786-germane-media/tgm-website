@@ -13,13 +13,12 @@ import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/mobile_app_bar.dart';
-import 'package:tgm/core/utils/people_card_clipper.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/utils/utility_methods.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/company/controllers/career_controller.dart';
 import 'package:tgm/modules/company/controllers/company_controller.dart';
 import 'package:tgm/modules/company/controllers/people_controller.dart';
-import 'package:tgm/modules/company/views/desktop_company.dart';
 import 'package:tgm/modules/company/widgets/bottom_loop_text_mobile.dart';
 import 'package:tgm/modules/company/widgets/circular_carousel_company_mobile.dart';
 import 'package:tgm/modules/contactUs/views/mobile_contact_us.dart';
@@ -83,7 +82,7 @@ class _MobileCompanyState extends State<MobileCompany> {
         break;
     }
 
-    final context = targetKey?.currentContext;
+    final context = targetKey.currentContext;
 
     if (context != null) {
       Scrollable.ensureVisible(
@@ -576,6 +575,7 @@ class ComanyCareer extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     context.go('/contact-us');
+                    trackPage("/contact-us");
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -725,6 +725,7 @@ class ComanyCareer extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         context.go('/careers');
+                        trackPage("/careers");
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(

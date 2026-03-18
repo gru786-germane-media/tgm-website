@@ -168,7 +168,7 @@ class MobileContactUs extends StatelessWidget {
                       hintText: "Select Your Service",
 
                       selectedValue:
-                          contactUsController.selectedServiceId?.value,
+                          contactUsController.selectedServiceId.value,
                       items: contactUsController.servicesDropdownList
                           .map(
                             (service) => DropdownMenuItem<String>(

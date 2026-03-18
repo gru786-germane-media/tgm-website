@@ -7,6 +7,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 
@@ -36,6 +37,7 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
             InkWell(
               onTap: (){
                  context.go('/?section=home');
+                 trackPage('/?section=home');
                 headerController.changeIndex(0);
               },
               child: AppCachedImage(
@@ -58,18 +60,24 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
                         headerController.changeIndex(index);
                         if (index == 0) {
                           context.go('/');
+                          trackPage('/home');
                         } else if (index == 1) {
                           context.go('/monetization');
+                          trackPage('/monetization');
                         } else if (index == 2) {
                           context.go('/solutions');
+                          trackPage('/solutions');
                         } else if (index == 3) {
                           context.go('/media-hub');
+                          trackPage('/media-hub');
                         } else if (index == 4) {
                           context.go('/company');
+                          trackPage('/company');
                         } else if (index == 5) {
                           launchURL("https://playswift.tv");
                         } else if (index == 6) {
                           context.go('/contact-us');
+                          trackPage('/contact-us');
                         }
                       },
                       child: AnimatedContainer(

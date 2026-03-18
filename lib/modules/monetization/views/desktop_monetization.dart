@@ -9,8 +9,10 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/footer/views/desktop_footer.dart';
 import 'package:tgm/modules/header/views/desktop_header.dart';
+import 'package:tgm/modules/monetization/controllers/case_study_controller.dart';
 import 'package:tgm/modules/monetization/controllers/monetization_controller.dart';
 import 'package:tgm/modules/monetization/widgets/card_stack_animation_ads.dart';
 import 'package:tgm/modules/monetization/widgets/case_studies_cards.dart';
@@ -129,9 +131,9 @@ class _DesktopMonetizationState extends State<DesktopMonetization> {
 
               SizedBox(height: 50.w),
 
-              // CaseStudiesSection(key: _caseStudiesKey),
+              CaseStudiesSection(key: _caseStudiesKey),
 
-              // SizedBox(height: 50.w),
+              SizedBox(height: 50.w),
 
               FAQSection(key: _faqKey),
               SizedBox(height: 50.w),
@@ -281,8 +283,8 @@ class CaseStudiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MonetizationController monetizationController = Get.put(
-      MonetizationController(),
+    final CaseStudyController caseStudyController = Get.put(
+      CaseStudyController(),
     );
     return Column(
       children: [
@@ -303,38 +305,36 @@ class CaseStudiesSection extends StatelessWidget {
         SizedBox(height: 50.w),
 
         Obx(
-          () => monetizationController.isLoadingCaseStudies.value
+          () => caseStudyController.isLoading.value
               ? Center(child: CircularProgressIndicator.adaptive())
-              : SizedBox(
-                  height: 1400.w,
-                  child: GridView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: monetizationController.caseStudiesList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 40.w,
-                      // mainAxisSpacing: 20.w,
-                    ),
-                    shrinkWrap: true,
+              : GridView.builder(
+                  physics: NeverScrollableScrollPhysics(),
 
-                    itemBuilder: (context, index) {
-                      final currentCaseStudy =
-                          monetizationController.caseStudiesList[index];
-                      return CaseStudiesCards(
-                        imageUrl: currentCaseStudy.imageUrl,
-                        companyName: currentCaseStudy.companyName,
-                        companyImageUrl: currentCaseStudy.companyImageUrl,
-                        expectedTimeToRead:
-                            "${currentCaseStudy.readTimeMinutes} Min",
-                        datePublished: currentCaseStudy.publishedDate
-                            .toString()
-                            .split(" ")[0],
-                        title: currentCaseStudy.title,
-                        subTitle: currentCaseStudy.shortDescription,
-                        linkToThePost: currentCaseStudy.contentUrl,
-                      );
-                    },
+                  itemCount: caseStudyController.caseStudyList.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 40.w,
+                    // mainAxisSpacing: 20.w,
                   ),
+                  shrinkWrap: true,
+
+                  itemBuilder: (context, index) {
+                    final currentCaseStudy =
+                        caseStudyController.caseStudyList[index];
+                    return CaseStudiesCards(
+                      imageUrl: currentCaseStudy.imageUrl,
+                      caseStudyId: currentCaseStudy.caseStudyId,
+                      companyName: currentCaseStudy.companyName,
+                      companyImageUrl: currentCaseStudy.companyImageUrl,
+                      expectedTimeToRead:
+                          "${currentCaseStudy.readTimeMinutes} Min",
+                      datePublished: currentCaseStudy.publishedDate
+                          .toString()
+                          .split(" ")[0],
+                      title: currentCaseStudy.title,
+                      subTitle: currentCaseStudy.shortDescription,
+                    );
+                  },
                 ),
         ),
 
@@ -628,6 +628,7 @@ class MonetizationSection extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         context.go(redirectionUrls[index]);
+                        trackPage(redirectionUrls[index]);
                       },
                       child: Container(
                         width: 338.w,

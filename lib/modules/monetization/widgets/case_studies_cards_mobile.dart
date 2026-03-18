@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/modules/monetization/controllers/case_study_controller.dart';
 
 class CaseStudiesCardsMobile extends StatelessWidget {
   const CaseStudiesCardsMobile({
@@ -15,7 +20,7 @@ class CaseStudiesCardsMobile extends StatelessWidget {
     required this.datePublished,
     required this.title,
     required this.subTitle,
-    required this.linkToThePost,
+    required this.caseStudyId,
     required this.companyImageUrl,
   });
   final String imageUrl,
@@ -24,8 +29,9 @@ class CaseStudiesCardsMobile extends StatelessWidget {
       datePublished,
       title,
       subTitle,
-      linkToThePost,
       companyImageUrl;
+
+  final int caseStudyId;
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +175,12 @@ class CaseStudiesCardsMobile extends StatelessWidget {
           children: [
             InkWell(
               onTap: () {
-                launchURL(linkToThePost);
+                final CaseStudyController caseStudyController = Get.put(
+                  CaseStudyController(),
+                );
+                caseStudyController.fetchCaseStudyDetail(caseStudyId);
+                context.go('/casestudy/$caseStudyId');
+                trackPage('/casestudy/$caseStudyId');
               },
               child: Container(
                 height: 30,

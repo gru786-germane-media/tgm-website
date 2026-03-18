@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/instance_manager.dart';
 import 'package:go_router/go_router.dart';
@@ -8,6 +7,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/footer/controllers/footer_controller.dart';
 import 'package:tgm/modules/footer/widgets/company_footer.dart';
@@ -111,6 +111,7 @@ class DesktopFooter extends StatelessWidget {
                     InkWell(
                       onTap: (){
                         context.go("/privacy-policy");
+                        trackPage("/privacy-policy");
                       },
                       child: Text(
                         "Privacy Policy",

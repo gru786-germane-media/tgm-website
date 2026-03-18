@@ -5,6 +5,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 
 class MediaHubFooter extends StatelessWidget {
@@ -23,6 +24,7 @@ class MediaHubFooter extends StatelessWidget {
             headerController.changeIndex(3);
 
             context.go('/media-hub');
+            trackPage('/media-hub');
           },
           child: Text(
             "Media Hub",
@@ -33,6 +35,7 @@ class MediaHubFooter extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/newsroom');
+            trackPage('/newsroom');
           },
           child: Text(
             "News Room",
@@ -43,6 +46,7 @@ class MediaHubFooter extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/blogs');
+            trackPage('/blogs');
           },
           child: Text(
             "Blogs",
@@ -53,6 +57,7 @@ class MediaHubFooter extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/gallery');
+            trackPage('/gallery');
           },
 
           child: Text(

@@ -15,13 +15,13 @@ import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/custom_triangle_clipper.dart';
 import 'package:tgm/core/utils/launch_url.dart';
 import 'package:tgm/core/utils/mobile_app_bar.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
 import 'package:tgm/modules/home/controllers/home_controller.dart';
 import 'package:tgm/modules/home/data/testimonial_data.dart';
-import 'package:tgm/modules/home/views/desktop_home.dart';
 import 'package:tgm/modules/home/widgets/tgm_key_offerings_card_mobile.dart';
 import 'package:tgm/modules/home/widgets/tgm_working_card_mobile.dart';
 import 'package:tgm/modules/monetization/widgets/ripple_effect_animation_mobile.dart';
@@ -1031,7 +1031,7 @@ class HomeSection extends StatelessWidget {
                 curve: Curves.easeOut,
                 child: AppCachedImage(
                   imageUrl:
-                      "https://websitetgm.s3.eu-north-1.amazonaws.com/Home/$i.png",
+                      "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png",
                   fit: BoxFit.contain,
                 ),
               );
@@ -1088,6 +1088,7 @@ class HomeSection extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/contact-us');
+            trackPage('/contact-us');
             final HeaderController headerController = Get.put(
               HeaderController(),
             );

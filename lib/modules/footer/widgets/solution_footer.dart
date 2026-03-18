@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 
 class SolutionsFooter extends StatelessWidget {
@@ -21,6 +22,7 @@ class SolutionsFooter extends StatelessWidget {
           onTap: () {
             headerController.changeIndex(2);
             context.go("/solutions");
+            trackPage("/solutions");
           },
           child: Text(
             "Solutions",
@@ -32,6 +34,7 @@ class SolutionsFooter extends StatelessWidget {
           onTap: () {
             headerController.changeIndex(1);
             context.go("/monetization");
+            trackPage("/monetization");
           },
           child: Text(
             "Monetization",

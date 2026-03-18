@@ -315,7 +315,7 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/casestudy/:casestudyId',
       builder: (context, state) {
-        final blogId = int.parse(state.pathParameters['casestudyId']!);
+        final caseStudyId = int.parse(state.pathParameters['casestudyId']!);
 
         return DeferredWidget(
           libraryLoader: () => Future.wait([
@@ -324,9 +324,12 @@ final GoRouter appRouter = GoRouter(
             particularCaseStudyMobile.loadLibrary(),
           ]),
           createWidget: () => ResponsiveBuilder(
-            desktop: particularCaseStudyDesktop.ParticularCaseStudyDesktop(blogId: blogId),
-            tablet: desktopParticularBlog.DesktopParticularBlog(blogId: blogId),
-            mobile: particularCaseStudyMobile.ParticularCaseStudyMobile(blogId: blogId),
+            desktop: particularCaseStudyDesktop.ParticularCaseStudyDesktop(caseStudyId: caseStudyId,
+            ),
+            tablet: particularCaseStudyDesktop.ParticularCaseStudyDesktop(caseStudyId: caseStudyId,
+            ),
+            mobile: particularCaseStudyMobile.ParticularCaseStudyMobile(caseStudyId: caseStudyId,
+            ),
           ),
         );
       },

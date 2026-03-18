@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
 
 class CompanyFooterMobile extends StatelessWidget {
@@ -27,6 +27,7 @@ class CompanyFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/company/?section=vision');
+            trackPage("/company/?section=vision");
 
             headerController.changeIndex(4);
           },
@@ -41,6 +42,7 @@ class CompanyFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/contact-us');
+            trackPage('/contact-us');
 
             headerController.changeIndex(6);
           },
@@ -55,6 +57,7 @@ class CompanyFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/company/?section=career');
+            trackPage('/company/?section=career');
 
             headerController.changeIndex(4);
           },
@@ -69,6 +72,7 @@ class CompanyFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/company/?section=people');
+            trackPage('/company/?section=people');
 
             headerController.changeIndex(4);
           },
@@ -83,6 +87,7 @@ const SizedBox(height: 10),
         InkWell(
           onTap: () {
             context.go('/company/?section=feedback');
+            trackPage('/company/?section=feedback');
 
             headerController.changeIndex(4);
           },

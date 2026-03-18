@@ -10,6 +10,7 @@ import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/company/controllers/career_controller.dart';
 import 'package:tgm/modules/company/model/career_info_model.dart';
 
@@ -26,6 +27,7 @@ class MobileCareer extends StatelessWidget {
         leading: InkWell(
           onTap: () {
             context.go('/company');
+            trackPage("/company");
           },
           child: Transform.flip(
             flipX: true,

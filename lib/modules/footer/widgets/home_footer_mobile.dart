@@ -4,6 +4,7 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'dart:developer';
 
 import 'package:tgm/modules/header/controllers/header_controller.dart';
@@ -20,6 +21,7 @@ class HomeFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/?section=home');
+            trackPage('/?section=home');
             headerController.changeIndex(0);
           },
           child: Text(
@@ -43,6 +45,7 @@ class HomeFooterMobile extends StatelessWidget {
           onTap: () {
             log("pressed what we do in footer");
             context.go('/?section=whatTgmDoes');
+            trackPage('/?section=whatTgmDoes');
             headerController.changeIndex(0);
           },
           child: Text(
@@ -57,6 +60,7 @@ class HomeFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/?section=keyOfferings');
+            trackPage('/?section=keyOfferings');
             headerController.changeIndex(0);
           },
           child: Text(
@@ -71,6 +75,7 @@ class HomeFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/?section=swiftTvHighlights');
+            trackPage('/?section=swiftTvHighlights');
             headerController.changeIndex(0);
           },
           child: Text(
@@ -86,6 +91,7 @@ class HomeFooterMobile extends StatelessWidget {
           onTap: () {
             log("pressed what we do in footer");
             context.go('/?section=partners');
+            trackPage('/?section=partners');
             headerController.changeIndex(0);
           },
           child: Text(
@@ -100,6 +106,7 @@ class HomeFooterMobile extends StatelessWidget {
         InkWell(
           onTap: () {
             context.go('/?section=metrics');
+            trackPage('/?section=metrics');
             headerController.changeIndex(0);
           },
           child: Text(

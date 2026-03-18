@@ -8,6 +8,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/mediaHub/controllers/gallery_controller.dart';
 import 'package:tgm/modules/mediaHub/models/gallery_model.dart';
@@ -180,6 +181,7 @@ class GalleryCardsMobile extends StatelessWidget {
                       );
 
                       context.go('/gallery/${currentGallery.galleryId}');
+                      trackPage('/gallery/${currentGallery.galleryId}');
                     },
                     child: Container(
                       height: 44,

@@ -30,6 +30,7 @@ dependencies:
   
 
 
+  # flutter_web_plugins: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

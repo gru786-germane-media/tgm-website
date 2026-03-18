@@ -6,11 +6,11 @@ import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/state_manager.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
-import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/mediaHub/controllers/newsroom_controller.dart';
 import 'package:tgm/modules/mediaHub/models/news_post_model.dart';
@@ -28,6 +28,7 @@ class MobileNewsroom extends StatelessWidget {
         leading: InkWell(
           onTap: () {
             context.go('/media-hub');
+            trackPage('/media-hub');
           },
           child: Transform.flip(
             flipX: true,

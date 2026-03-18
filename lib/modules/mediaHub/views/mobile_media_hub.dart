@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
-import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/utils/mobile_app_bar.dart';
-import 'package:tgm/modules/footer/views/desktop_footer.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
-import 'package:tgm/modules/header/views/desktop_header.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
-import 'package:tgm/modules/mediaHub/widgets/media_hub_cards.dart';
 import 'package:tgm/modules/mediaHub/widgets/media_hub_cards_mobile.dart';
 
 class MobileMediaHub extends StatelessWidget {
@@ -54,6 +50,7 @@ class MobileMediaHub extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     context.go('/newsroom');
+                    trackPage('/newsroom');
                   },
                   child: MediaHubCardsMobile(
                     title: "News Room",
@@ -64,6 +61,7 @@ class MobileMediaHub extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     context.go('/blogs');
+                    trackPage('/blogs');
                   },
                   child: MediaHubCardsMobile(
                     title: "Blogs",
@@ -75,6 +73,7 @@ class MobileMediaHub extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     context.go('/gallery');
+                    trackPage('/gallery');
                   },
                   child: MediaHubCardsMobile(
                     title: "Gallery",

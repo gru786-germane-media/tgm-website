@@ -10,10 +10,11 @@ import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/mobile_app_bar.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
+import 'package:tgm/modules/monetization/controllers/case_study_controller.dart';
 import 'package:tgm/modules/monetization/controllers/monetization_controller.dart';
-import 'package:tgm/modules/monetization/views/desktop_monetization.dart';
 import 'package:tgm/modules/monetization/widgets/card_stack_animation_ads_mobile.dart';
 import 'package:tgm/modules/monetization/widgets/case_studies_cards_mobile.dart';
 import 'package:tgm/modules/monetization/widgets/faq_ques_ans_card_mobile.dart';
@@ -133,9 +134,9 @@ class _MobileMonetizationState extends State<MobileMonetization> {
 
               const SizedBox(height: 30),
 
-              // CaseStudiesSection(key: _caseStudiesKey),
+              CaseStudiesSection(key: _caseStudiesKey),
 
-              // const SizedBox(height: 30),
+              const SizedBox(height: 30),
 
               FAQSection(key: _faqKey),
               const SizedBox(height: 30),
@@ -273,8 +274,8 @@ class CaseStudiesSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final MonetizationController monetizationController = Get.put(
-      MonetizationController(),
+    final CaseStudyController caseStudyController = Get.put(
+      CaseStudyController(),
     );
     return Column(
       children: [
@@ -295,19 +296,20 @@ class CaseStudiesSection extends StatelessWidget {
         const SizedBox(height: 24),
 
         Obx(
-          () => monetizationController.isLoadingCaseStudies.value
+          () => caseStudyController.isLoading.value
               ? Center(child: CircularProgressIndicator.adaptive())
               : ListView.builder(
                   physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.vertical,
-                  itemCount: monetizationController.caseStudiesList.length,
+                  itemCount: caseStudyController.caseStudyList.length,
 
                   shrinkWrap: true,
 
                   itemBuilder: (context, index) {
                     final currentCaseStudy =
-                        monetizationController.caseStudiesList[index];
+                        caseStudyController.caseStudyList[index];
                     return CaseStudiesCardsMobile(
+                      caseStudyId: currentCaseStudy.caseStudyId,
                       imageUrl: currentCaseStudy.imageUrl,
                       companyName: currentCaseStudy.companyName,
                       companyImageUrl: currentCaseStudy.companyImageUrl,
@@ -318,7 +320,7 @@ class CaseStudiesSection extends StatelessWidget {
                           .split(" ")[0],
                       title: currentCaseStudy.title,
                       subTitle: currentCaseStudy.shortDescription,
-                      linkToThePost: currentCaseStudy.contentUrl,
+                     
                     );
                   },
                 ),
@@ -621,6 +623,7 @@ class MonetizationSection extends StatelessWidget {
               return InkWell(
                 onTap: () {
                   context.go(redirectionUrls[index]);
+                  trackPage(redirectionUrls[index]);
                 },
                 child: Container(
                   width: 225,

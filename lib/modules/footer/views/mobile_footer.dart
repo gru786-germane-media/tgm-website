@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/footer/controllers/footer_controller.dart';
 import 'package:tgm/modules/footer/widgets/company_footer_mobile.dart';
@@ -228,6 +229,7 @@ class MobileFooter extends StatelessWidget {
                 child: InkWell(
                   onTap: (){
                      context.go("/privacy-policy");
+                     trackPage("/privacy-policy");
                   },
                   child: Text(
                     "Privacy Policy",

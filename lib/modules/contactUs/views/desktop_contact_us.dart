@@ -191,7 +191,7 @@ class DesktopContactUs extends StatelessWidget {
                             hintText: "Select Your Service",
 
                             selectedValue:
-                                contactUsController.selectedServiceId?.value,
+                                contactUsController.selectedServiceId.value,
                             items: contactUsController.servicesDropdownList
                                 .map(
                                   (service) => DropdownMenuItem<String>(
@@ -201,7 +201,7 @@ class DesktopContactUs extends StatelessWidget {
                                 )
                                 .toList(),
                             onChanged: (value) {
-                              contactUsController.selectedServiceId?.value =
+                              contactUsController.selectedServiceId.value =
                                   value ?? "";
                             },
                           );

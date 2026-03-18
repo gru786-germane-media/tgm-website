@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,48 +11,56 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
-import 'package:tgm/core/utils/show_custom_popup.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
-import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
-import 'package:tgm/modules/mediaHub/widgets/blog_cards_mobile.dart';
+import 'package:tgm/modules/monetization/controllers/case_study_controller.dart';
+import 'package:tgm/modules/monetization/widgets/case_studies_cards_mobile.dart';
 
 class ParticularCaseStudyMobile extends StatefulWidget {
-  final int blogId;
+  final int caseStudyId;
 
-  const ParticularCaseStudyMobile({super.key, required this.blogId});
+  const ParticularCaseStudyMobile({super.key, required this.caseStudyId});
 
   @override
-  State<ParticularCaseStudyMobile> createState() => _ParticularCaseStudyMobileState();
+  State<ParticularCaseStudyMobile> createState() =>
+      _ParticularCaseStudyMobileState();
 }
 
 class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
   @override
   void initState() {
     super.initState();
-    final BlogsController blogsController = Get.put(BlogsController());
-    blogsController.fetchBlogById(widget.blogId);
+    final CaseStudyController caseStudyController = Get.put(
+      CaseStudyController(),
+    );
+    caseStudyController.fetchCaseStudyDetail(widget.caseStudyId);
   }
 
   @override
   void didUpdateWidget(covariant ParticularCaseStudyMobile oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.blogId != widget.blogId) {
-      final BlogsController blogsController = Get.put(BlogsController());
-      blogsController.fetchBlogById(widget.blogId);
+    if (oldWidget.caseStudyId != widget.caseStudyId) {
+      final CaseStudyController caseStudyController = Get.put(
+        CaseStudyController(),
+      );
+      caseStudyController.fetchCaseStudyDetail(widget.caseStudyId);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final BlogsController blogsController = Get.put(BlogsController());
+    final CaseStudyController caseStudyController = Get.put(
+      CaseStudyController(),
+    );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
       appBar: AppBar(
         backgroundColor: AppColors.kBackgroundColor2,
         leading: InkWell(
           onTap: () {
-            context.go('/blogs');
+            context.go('/monetization/?section=caseStudies');
+            trackPage('/monetization/?section=caseStudies');
           },
           child: Transform.flip(
             flipX: true,
@@ -67,7 +74,7 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
         ),
       ),
       body: Obx(
-        () => blogsController.isLoadingBlogDetail.value
+        () => caseStudyController.isLoadingDetail.value
             ? Center(child: CircularProgressIndicator.adaptive())
             : SingleChildScrollView(
                 child: Column(
@@ -78,7 +85,10 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                       children: [
                         AppCachedImage(
                           imageUrl:
-                              blogsController.selectedBlog.value?.imageUrl ??
+                              caseStudyController
+                                  .selectedCaseStudy
+                                  .value
+                                  ?.imageUrl ??
                               "",
                           height: 221,
                           width: double.maxFinite,
@@ -104,7 +114,10 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                           ),
                           child: Center(
                             child: SelectableText(
-                              blogsController.selectedBlog.value?.title ??
+                              caseStudyController
+                                      .selectedCaseStudy
+                                      .value
+                                      ?.title ??
                                   "N/A",
                               style: AppTextStyles.h1.copyWith(fontSize: 28),
                             ),
@@ -121,114 +134,113 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
 
                     const SizedBox(height: 16),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: SizedBox(
-                        height: 60,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                if (blogsController.likedBlogsIds.contains(
-                                  widget.blogId,
-                                )) {
-                                  blogsController.updateBlogCounter(
-                                    blogId: widget.blogId,
-                                    field: 'likes',
-                                    isDecrement: true,
-                                  );
-                                  blogsController.removeFromLikedBlogs(
-                                    widget.blogId,
-                                  );
-                                } else {
-                                  blogsController.updateBlogCounter(
-                                    blogId: widget.blogId,
-                                    field: 'likes',
-                                    isDecrement: false,
-                                  );
-                                  blogsController.addToLikedBlogs(
-                                    widget.blogId,
-                                  );
-                                }
-                              },
-                              child: Obx(
-                                () => LikeButton(
-                                  isLiked: blogsController.likedBlogsIds
-                                      .contains(widget.blogId),
-                                  likeCount:
-                                      blogsController.likeCount.value > 1000
-                                      ? "${(blogsController.likeCount.value / 1000).floor()}k"
-                                      : blogsController
-                                            .selectedBlog
-                                            .value!
-                                            .likesCount
-                                            .toString(),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 14),
-                            ViewButton(
-                              viewCount:
-                                  blogsController
-                                          .selectedBlog
-                                          .value
-                                          ?.viewsCount ==
-                                      null
-                                  ? '0'
-                                  : blogsController
-                                            .selectedBlog
-                                            .value!
-                                            .viewsCount >
-                                        1000
-                                  ? "${(blogsController.selectedBlog.value!.viewsCount / 1000).floor()}k"
-                                  : blogsController
-                                        .selectedBlog
-                                        .value!
-                                        .viewsCount
-                                        .toString(),
-                            ),
-                            SizedBox(width: 14),
-                            InkWell(
-                              onTap: () async {
-                                blogsController.updateBlogCounter(
-                                  blogId: widget.blogId,
-                                  field: 'share',
-                                );
-                                blogsController.shareCount.value++;
-                                showCustomPopup(
-                                  context,
-                                  "Url copied to clipboard!",
-                                  true,
-                                );
-                                await Clipboard.setData(
-                                  ClipboardData(
-                                    text:
-                                        "https://thegermanemedia.com/blogs/${widget.blogId}",
-                                  ),
-                                );
-                              },
-                              child: ShareButton(
-                                shareCount:
-                                    blogsController.shareCount.value > 1000
-                                    ? "${(blogsController.shareCount.value / 1000).floor()}k"
-                                    : blogsController.shareCount.value
-                                          .toString(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(horizontal: 20),
+                    //   child: SizedBox(
+                    //     height: 60,
+                    //     child: Row(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         InkWell(
+                    //           onTap: () {
+                    //             if (caseStudyController.likedBlogsIds.contains(
+                    //               widget.caseStudyId,
+                    //             )) {
+                    //               caseStudyController.updateBlogCounter(
+                    //                 caseStudyId: widget.caseStudyId,
+                    //                 field: 'likes',
+                    //                 isDecrement: true,
+                    //               );
+                    //               caseStudyController.removeFromLikedBlogs(
+                    //                 widget.caseStudyId,
+                    //               );
+                    //             } else {
+                    //               caseStudyController.updateBlogCounter(
+                    //                 caseStudyId: widget.caseStudyId,
+                    //                 field: 'likes',
+                    //                 isDecrement: false,
+                    //               );
+                    //               caseStudyController.addToLikedBlogs(
+                    //                 widget.caseStudyId,
+                    //               );
+                    //             }
+                    //           },
+                    //           child: Obx(
+                    //             () => LikeButton(
+                    //               isLiked: caseStudyController.likedBlogsIds
+                    //                   .contains(widget.caseStudyId),
+                    //               likeCount:
+                    //                   caseStudyController.likeCount.value > 1000
+                    //                   ? "${(caseStudyController.likeCount.value / 1000).floor()}k"
+                    //                   : caseStudyController
+                    //                         .selectedCaseStudy
+                    //                         .value!
+                    //                         .likesCount
+                    //                         .toString(),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         SizedBox(width: 14),
+                    //         ViewButton(
+                    //           viewCount:
+                    //               caseStudyController
+                    //                       .selectedCaseStudy
+                    //                       .value
+                    //                       ?.viewsCount ==
+                    //                   null
+                    //               ? '0'
+                    //               : caseStudyController
+                    //                         .selectedCaseStudy
+                    //                         .value!
+                    //                         .viewsCount >
+                    //                     1000
+                    //               ? "${(caseStudyController.selectedCaseStudy.value!.viewsCount / 1000).floor()}k"
+                    //               : caseStudyController
+                    //                     .selectedCaseStudy
+                    //                     .value!
+                    //                     .viewsCount
+                    //                     .toString(),
+                    //         ),
+                    //         SizedBox(width: 14),
+                    //         InkWell(
+                    //           onTap: () async {
+                    //             caseStudyController.updateBlogCounter(
+                    //               caseStudyId: widget.caseStudyId,
+                    //               field: 'share',
+                    //             );
+                    //             caseStudyController.shareCount.value++;
+                    //             showCustomPopup(
+                    //               context,
+                    //               "Url copied to clipboard!",
+                    //               true,
+                    //             );
+                    //             await Clipboard.setData(
+                    //               ClipboardData(
+                    //                 text:
+                    //                     "https://thegermanemedia.com/blogs/${widget.caseStudyId}",
+                    //               ),
+                    //             );
+                    //           },
+                    //           child: ShareButton(
+                    //             shareCount:
+                    //                 caseStudyController.shareCount.value > 1000
+                    //                 ? "${(caseStudyController.shareCount.value / 1000).floor()}k"
+                    //                 : caseStudyController.shareCount.value
+                    //                       .toString(),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
 
-                    Container(
-                      height: 1,
-                      width: double.maxFinite,
-                      color: AppColors.kBorderColor,
-                    ),
+                    // Container(
+                    //   height: 1,
+                    //   width: double.maxFinite,
+                    //   color: AppColors.kBorderColor,
+                    // ),
 
-                    SizedBox(height: 16),
-
+                    // SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Row(
@@ -264,7 +276,10 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                         children: [
                           Expanded(
                             child: SelectableText(
-                              blogsController.selectedBlog.value?.publishedDate
+                              caseStudyController
+                                      .selectedCaseStudy
+                                      .value
+                                      ?.publishedDate
                                       .toString()
                                       .split(" ")[0] ??
                                   "No date available",
@@ -274,7 +289,7 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                           SizedBox(width: 20),
                           Expanded(
                             child: SelectableText(
-                              "Blog",
+                              "Case Study",
                               style: AppTextStyles.h2.copyWith(fontSize: 16),
                             ),
                           ),
@@ -319,18 +334,18 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                         children: [
                           Expanded(
                             child: SelectableText(
-                              "${blogsController.selectedBlog.value?.readTimeMinutes} Min",
+                              "${caseStudyController.selectedCaseStudy.value?.readTimeMinutes} Min",
                               style: AppTextStyles.h2.copyWith(fontSize: 16),
                             ),
                           ),
                           SizedBox(width: 20),
-                          Expanded(
-                            child: SelectableText(
-                              blogsController.selectedBlog.value?.authorName ??
-                                  "The Germane Media",
-                              style: AppTextStyles.h2.copyWith(fontSize: 16),
-                            ),
-                          ),
+                          // Expanded(
+                          //   child: SelectableText(
+                          //     caseStudyController.selectedCaseStudy.value?.authorName ??
+                          //         "The Germane Media",
+                          //     style: AppTextStyles.h2.copyWith(fontSize: 16),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -360,11 +375,14 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                       child: ListView.builder(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
-                        itemCount:
-                            blogsController.selectedBlog.value?.sections.length,
+                        itemCount: caseStudyController
+                            .selectedCaseStudy
+                            .value
+                            ?.sections
+                            .length,
                         itemBuilder: (context, index) {
-                          final currentSection = blogsController
-                              .selectedBlog
+                          final currentSection = caseStudyController
+                              .selectedCaseStudy
                               .value
                               ?.sections[index];
                           return Padding(
@@ -405,8 +423,8 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12),
                               child: SelectableText(
-                                blogsController
-                                        .selectedBlog
+                                caseStudyController
+                                        .selectedCaseStudy
                                         .value
                                         ?.shortDescription ??
                                     "NA",
@@ -433,27 +451,29 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
 
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount:
-                                      blogsController.selectedBlogExpanded.value
-                                      ? blogsController
-                                            .selectedBlog
+                                      caseStudyController
+                                          .selectedCaseStudyExpanded
+                                          .value
+                                      ? caseStudyController
+                                            .selectedCaseStudy
                                             .value
                                             ?.sections
                                             .length
-                                      : blogsController
-                                                .selectedBlog
+                                      : caseStudyController
+                                                .selectedCaseStudy
                                                 .value!
                                                 .sections
                                                 .length >
                                             2
                                       ? 2
-                                      : blogsController
-                                            .selectedBlog
+                                      : caseStudyController
+                                            .selectedCaseStudy
                                             .value
                                             ?.sections
                                             .length,
                                   itemBuilder: (context, index) {
-                                    final currentSection = blogsController
-                                        .selectedBlog
+                                    final currentSection = caseStudyController
+                                        .selectedCaseStudy
                                         .value
                                         ?.sections[index];
                                     log("current section is $currentSection");
@@ -473,8 +493,9 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                         ),
                         Obx(
                           () => Visibility(
-                            visible:
-                                !blogsController.selectedBlogExpanded.value,
+                            visible: !caseStudyController
+                                .selectedCaseStudyExpanded
+                                .value,
                             child: Container(
                               height: 49,
                               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -491,7 +512,7 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                               ),
                               child: InkWell(
                                 onTap: () {
-                                  blogsController.expandBlog();
+                                  caseStudyController.expandCaseStudy();
                                 },
                                 child: Center(
                                   child: Container(
@@ -516,7 +537,7 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          "Read Full Blog",
+                                          "Read Full Case Study",
                                           style: AppTextStyles.h3.copyWith(
                                             fontSize: 14,
                                             color: AppColors.kTextColor7,
@@ -555,32 +576,51 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SelectableText(
-                            "Similar Blogs",
+                            "Similar Casestudies",
                             style: AppTextStyles.h2.copyWith(fontSize: 18),
                           ),
                           SizedBox(height: 100.w),
 
                           Obx(
-                            () => blogsController.isLoadingBlogs.value
+                            () => caseStudyController.isLoading.value
                                 ? Center(
                                     child: CircularProgressIndicator.adaptive(),
                                   )
                                 : ListView.builder(
-                                    itemCount: blogsController.blogsList.length,
+                                    itemCount: caseStudyController
+                                        .caseStudyList
+                                        .length,
                                     scrollDirection: Axis.vertical,
                                     physics: NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
 
                                     itemBuilder: (context, index) {
-                                      if (blogsController
-                                              .blogsList[index]
-                                              .blogId ==
-                                          widget.blogId) {
+                                      final currentCaseStudy =
+                                          caseStudyController
+                                              .caseStudyList[index];
+                                      if (caseStudyController
+                                              .caseStudyList[index]
+                                              .caseStudyId ==
+                                          widget.caseStudyId) {
                                         return SizedBox.shrink();
                                       } else {
-                                        return BlogCardsMobile(
-                                          currentBlog:
-                                              blogsController.blogsList[index],
+                                        return CaseStudiesCardsMobile(
+                                          imageUrl: currentCaseStudy.imageUrl,
+                                          companyName:
+                                              currentCaseStudy.companyName,
+                                          expectedTimeToRead: currentCaseStudy
+                                              .readTimeMinutes
+                                              .toString(),
+                                          datePublished: currentCaseStudy
+                                              .publishedDate
+                                              .toString(),
+                                          title: currentCaseStudy.title,
+                                          subTitle:
+                                              currentCaseStudy.shortDescription,
+                                          caseStudyId:
+                                              currentCaseStudy.caseStudyId,
+                                          companyImageUrl:
+                                              currentCaseStudy.companyImageUrl,
                                         );
                                       }
                                     },

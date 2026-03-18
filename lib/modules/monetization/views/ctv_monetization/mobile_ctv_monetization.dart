@@ -5,6 +5,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/constants/image_urls.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/monetization/widgets/monetization_cards_mobile.dart';
@@ -22,6 +23,7 @@ class MobileCtvMonetization extends StatelessWidget {
         leading: InkWell(
           onTap: () {
             context.go('/monetization');
+            trackPage('/monetization');
           },
           child: Transform.flip(
             flipX: true,

@@ -14,7 +14,7 @@ import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/constants/image_urls.dart';
-import 'package:tgm/core/utils/people_card_clipper.dart';
+import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/utils/utility_methods.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/company/controllers/career_controller.dart';
@@ -83,7 +83,7 @@ class _DesktopCompanyState extends State<DesktopCompany> {
         break;
     }
 
-    final context = targetKey?.currentContext;
+    final context = targetKey.currentContext;
 
     if (context != null) {
       Scrollable.ensureVisible(
@@ -592,6 +592,7 @@ class ComanyCareer extends StatelessWidget {
                           InkWell(
                             onTap: () {
                               context.go('/contact-us');
+                              trackPage("/contact-us");
                             },
                             child: Container(
                               height: 63.w,
@@ -749,6 +750,7 @@ class ComanyCareer extends StatelessWidget {
                               InkWell(
                                 onTap: () {
                                   context.go('/careers');
+                                  trackPage("/careers");
                                 },
                                 child: Container(
                                   height: 63.w,
