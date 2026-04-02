@@ -98,6 +98,7 @@ class DesktopFooter extends StatelessWidget {
               Expanded(
                 flex: 6,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SelectableText(
                       "All Rights Reserved.",
@@ -107,9 +108,23 @@ class DesktopFooter extends StatelessWidget {
                       ),
                     ),
 
-                    SizedBox(width: 200.w),
+                    SizedBox(width: 40.w),
+
+                    SizedBox(
+                      width: 300.w,
+                      child: SelectableText(
+                        "Address: 1007 N Orange Street, 495 Wilmington New Castle, Delaware Delaware, 19801 USA",
+                        maxLines: 3,
+                        style: AppTextStyles.h3.copyWith(
+                          color: AppColors.kTextColor1,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(width: 40.w),
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         context.go("/privacy-policy");
                         trackPage("/privacy-policy");
                       },

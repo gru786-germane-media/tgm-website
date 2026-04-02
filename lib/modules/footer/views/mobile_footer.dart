@@ -220,6 +220,18 @@ class MobileFooter extends StatelessWidget {
             ),
           ),
 
+          const SizedBox(height: 18),
+
+
+          SelectableText(
+            "Address: 1007 N Orange Street, 495 Wilmington New Castle, Delaware Delaware, 19801 USA",
+            maxLines: 3,
+            style: AppTextStyles.h3.copyWith(
+              color: AppColors.kTextColor1,
+              fontWeight: FontWeight.w300,
+            ),
+          ),
+
           const SizedBox(height: 16),
 
           Row(
