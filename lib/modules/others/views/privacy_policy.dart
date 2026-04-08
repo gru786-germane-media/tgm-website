@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
@@ -10,6 +12,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     "1. Information We Collect",
     "2. How We Use Your Information",
     "3. How We Share Your Information",
+    "Advertising & Cookie Choices",
     "4. Storage and Processing",
     "5. How We Protect Your Information",
     "6. Compromise of Personal Information",
@@ -18,6 +21,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     "9. Notification Procedures",
     "10. Links to Other Web Sites",
     "11. Changes to Our Privacy Policy",
+    "Advertising and Third-Party Partners",
   ];
   final List<String> details = const [
     '''Our Service: We may collect personally identifiable information about you through our Service when you register for an account, such as your full name, phone number and email address. If you choose to purchase a product from us, we or our third-party payment processors will collect your payment information also. We also collect data through our partners (customers) who use our Service (including by embedding our code on their websites) to analyse usage of their websites. When you use our Service or if you visit such websites, your browser may send us certain information about you as described below. We do not send any promotional emails; however, we may send you service related emails related to your account. If you no longer wish to receive these emails, you may opt out of them by cancelling your account.
@@ -26,7 +30,7 @@ Cookies and Tracking Technologies: Technologies such as: cookies, beacons, tags 
 
 We use cookies to remember users’ settings, authentication, preferences and analytics. Users can control the use of cookies at the individual browser level. If you reject cookies, you may still use our site, but your ability to use some features, ads or areas of our site may be limited.
 Log File Information: Log file information is automatically reported by your browser each time you access a web page on our Service. When you access the Service, our servers automatically record certain information that your web browser sends whenever you visit any website. These server logs may include information such as your web request, Internet Protocol (“IP”) address, browser type, referring / exit pages and URLs, number of clicks, domain names, landing pages, pages viewed, and other such information. We do not link this automatically-collected data to personally identifiable information.
-Flash LSOs: We use Local Storage Objects (LSOs) such as HTML5 to store content information and preferences. Third parties with whom we partner to provide certain features on our site or to display advertising based upon your Web browsing activity use LSOs such as HTML 5 and Flash to collect and store information.
+We use standard cookies and device identifiers. 
 Information Related to Data Collected for our Clients: Grmane Media LLC collects information under the direction of its Clients, and has no direct relationship with the individuals whose personal data it processes. If you are a customer of one of our Clients and would no longer like to be contacted by one of our Clients that use our service, please contact the Client that you interact with directly. We may transfer personal information to companies that help us provide our service. Transfers to subsequent third parties are covered by the service agreements with our Clients.
 
 Access and Retention of Data Controlled by our Clients: An individual who seeks access, or who seeks to correct, amend, or delete inaccurate data should direct his query to the Grmane Media’s Client (the data controller). If requested to remove data we will respond within 30 days.
@@ -43,10 +47,19 @@ Non-Personally Identifiable Information: We may share non-personally identifiabl
 Instances where we are required to share your information: Grmane will disclose your information where required to do so by law or subpoena or if we reasonably believe that such action is necessary to (a) comply with the law and the reasonable requests of law enforcement; (b) to enforce our Terms of Service or to protect the security or integrity of our Service; and/or (c) to exercise or protect the rights, property, or personal safety of Grmane, our Users or others.
 
 What happens in the event of a change of control: We may buy or sell/divest/transfer the company (including any shares in the company), or any combination of its products, services, assets and/or businesses. Your information such as customer names and email addresses, and other User information related to the Service may be among the items sold or otherwise transferred in these types of transactions. We may also sell, assign or otherwise transfer such information in the course of corporate divestitures, mergers, acquisitions, bankruptcies, dissolutions, reorganizations, liquidations, similar transactions or proceedings involving all or a portion of the company, you will be notified via email and/or a prominent notice on our Web site of any change in ownership or uses of your personal information, as well as any choices you may have regarding your personal information.
-Behavioral Targeting / Re-Targeting: We partner with a third party to either display advertising on our Web site or to manage our advertising on other sites. Our third party partner may use technologies such as cookies to gather information about your activities on this site and other sites in order to provide you advertising based upon your browsing activities and interests. If you wish to not have this information used for the purpose of serving you interest-based ads, you may opt-out by clicking below. Please note this does not opt you out of being served ads. You will continue to receive generic ads.
+Behavioral Targeting / Re-Targeting: We partner with a third party to either display advertising on our Web site or to manage our advertising on other sites. Our third party partner may use technologies such as cookies to gather information about your activities on this site and other sites in order to provide you advertising based upon your browsing activities and interests. If you wish to not have this information used for the purpose of serving you interest-based ads, you may use the links below to opt out. Please note this does not opt you out of being served ads. You will continue to receive generic ads.
 The Grmane Media Privacy Policy does not apply to, and we cannot control the activities of, third-party ad servers and ad networks. Please contact or consult the respective privacy policies of such ad servers or ad networks for more information.
 
 Testimonials: We display personal testimonials of satisfied customers on our site in addition to other endorsements. With your consent we may post your testimonial along with your name. If you wish to update or delete your testimonial, you can contact us at Info@thegermanemedia.com
+''',
+    '''Users can control how their data is used for advertising:
+  - Google Ads Settings: https://adssettings.google.com
+  - Digital Advertising Alliance Opt-Out: https://optout.aboutads.info
+  - Network Advertising Initiative Opt-Out: https://optout.networkadvertising.org
+Users can also:
+  - Adjust ad tracking via device settings (Android / iOS / CTV devices)
+  - Disable cookies via browser settings
+
 ''',
     '''
 Your information collected through the Service may be stored and processed in the United States or any other country in which Grmane Media or its subsidiaries, affiliates or service providers maintain facilities. Grmane Media may transfer information that we collect about you, including personal information, to affiliated entities, or to other third parties across borders and from your country or jurisdiction to other countries or jurisdictions around the world. If you are located in the European Union, please note that we do not transfer or process information, including personal information, to a country and jurisdiction that does not have the same data protection laws as your jurisdiction.''',
@@ -71,6 +84,9 @@ Grmane Media uses remarketing to advertise across the internet. Along with the G
 The terms and conditions along with privacy policies with all references, constitutes the sole and entire agreement of the parties to this agreement with respect to the subject matter contained herein, and supersedes all prior terms and conditions which were agreed by the Customer.
 
 If you have any questions about this Privacy Policy, the practices of this site, or your dealings with this website, please contact us at Info@thegermanemedia.com''',
+    '''We work with third-party advertising partners, including demand-side platforms, ad exchanges, and measurement providers, to deliver and measure advertising.
+These partners may collect information such as device identifiers, IP address, and usage data to provide relevant advertising and measure performance.
+''',
   ];
 
   @override
@@ -84,8 +100,13 @@ If you have any questions about this Privacy Policy, the practices of this site,
 
           children: [
             SelectableText("Privacy Policy", style: AppTextStyles.h0),
-            SelectableText(
-              '''This privacy policy applies to www.thegermanemedia.com, owned and operated by Germane Media LLC knows that you care how information about you is used and shared. This Privacy Policy explains what information of yours will be collected by Germane Media when you access our services (including through the websites of our partners), how the information will be used, and how you can control the collection, correction and/or deletion of information. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy does not apply to information we collect by other means (including offline) or from other sources. Capitalized terms that are not defined in this Privacy Policy have the meaning given them in our Terms of Service. The use of information collected through our website shall be limited to the purposes under this Privacy Policy and our Terms of Service to customers.''',
+            SelectableLinkify(
+              onOpen: (link) async {
+                if (!await launchUrl(Uri.parse(link.url))) {
+                  throw Exception('Could not launch ${link.url}');
+                }
+              },
+              text :'''This privacy policy applies to https://www.thegermanemedia.com, owned and operated by Grmane Media LLC knows that you care how information about you is used and shared. This Privacy Policy explains what information of yours will be collected by Grmane Media when you access our services (including through the websites of our partners), how the information will be used, and how you can control the collection, correction and/or deletion of information. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy does not apply to information we collect by other means (including offline) or from other sources. Capitalized terms that are not defined in this Privacy Policy have the meaning given them in our Terms of Service. The use of information collected through our website shall be limited to the purposes under this Privacy Policy and our Terms of Service to customers.''',
               style: AppTextStyles.h3,
             ),
             SizedBox(height: 40.w),
@@ -94,12 +115,18 @@ If you have any questions about this Privacy Policy, the practices of this site,
 
               children: List.generate(title.length, (index) {
                 return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
 
                   children: [
                     SelectableText(title[index], style: AppTextStyles.h1),
                     SizedBox(height: 20.w),
-                    SelectableText(details[index], style: AppTextStyles.h3),
+                    SelectableLinkify(
+                      onOpen: (link) async {
+                        if (!await launchUrl(Uri.parse(link.url))) {
+                          throw Exception('Could not launch ${link.url}');
+                        }
+                      },
+                      text: details[index], style: AppTextStyles.h3),
                     SizedBox(height: 50.w),
                   ],
                 );
