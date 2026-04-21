@@ -28,6 +28,8 @@ dependencies:
   flutter_native_splash: ^2.4.7
   flutter_widget_from_html: ^0.17.1
   flutter_linkify: ^6.0.0
+  meta_seo: ^3.0.9
+
   
 
 

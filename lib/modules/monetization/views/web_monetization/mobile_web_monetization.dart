@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
@@ -10,11 +11,14 @@ import 'package:tgm/core/widgets/app_cached_image.dart';
 import 'package:tgm/modules/monetization/widgets/monetization_cards_mobile.dart';
 import 'package:tgm/modules/monetization/widgets/ripple_effect_animation_mobile.dart';
 
+
+
 class MobileWebMonetization extends StatelessWidget {
   const MobileWebMonetization({super.key});
 
   @override
   Widget build(BuildContext context) {
+    
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor,
        appBar: AppBar(

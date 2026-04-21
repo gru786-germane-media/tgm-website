@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/utils/app_router.dart';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
@@ -22,6 +24,10 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SemanticsBinding.instance
       .ensureSemantics(); // Helps expose text to the browser
+
+       if (kIsWeb) {
+    MetaSEO().config();
+  }
   runApp(const MyApp());
 }
 

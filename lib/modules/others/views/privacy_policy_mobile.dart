@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:html' as html;
 
 class PrivacyPolicyMobile extends StatelessWidget {
   const PrivacyPolicyMobile({super.key});
@@ -93,6 +95,23 @@ These partners may collect information such as device identifiers, IP address, a
 
   @override
   Widget build(BuildContext context) {
+    final meta = MetaSEO();
+
+    html.document.title = "Privacy Policy Page | The Germane Media";
+
+    meta.description(
+      description:
+          "Read the Privacy Policy Page of The Germane Media to understand how we collect, use, and protect your data while ensuring transparency and security.",
+    );
+
+    meta.keywords(keywords: "Privacy Policy Page");
+
+    meta.ogTitle(ogTitle: "Privacy Policy Page | The Germane Media");
+
+    meta.ogDescription(
+      ogDescription:
+          "Understand how The Germane Media collects and protects your data.",
+    );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor,
       appBar: AppBar(

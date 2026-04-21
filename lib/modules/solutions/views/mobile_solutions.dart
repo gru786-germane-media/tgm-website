@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meta_seo/meta_seo.dart';
 
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
@@ -7,6 +8,7 @@ import 'package:tgm/core/utils/mobile_app_bar.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
 import 'package:tgm/modules/solutions/widgets/circular_carousel_mobile.dart';
+import 'dart:html' as html;
 
 import 'package:tgm/modules/solutions/widgets/solutions_text_card_mobile.dart';
 
@@ -15,6 +17,26 @@ class MobileSolutions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final meta = MetaSEO();
+
+    html.document.title =
+        "OTT Advertising Solutions in USA | The Germane Media";
+
+    meta.description(
+      description:
+          "Drive results with OTT advertising solutions by The Germane Media. Reach targeted audiences, improve engagement, and maximize ad performance across streaming platforms.",
+    );
+
+    meta.keywords(keywords: "OTT advertising solutions");
+
+    meta.ogTitle(
+      ogTitle: "OTT Advertising Solutions in USA | The Germane Media",
+    );
+
+    meta.ogDescription(
+      ogDescription:
+          "Drive results with OTT advertising solutions by The Germane Media.",
+    );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
       drawer: MobileHeader(),

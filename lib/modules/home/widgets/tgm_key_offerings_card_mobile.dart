@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TgmKeyOfferingsCardMobile extends StatelessWidget {
   const TgmKeyOfferingsCardMobile({
@@ -11,8 +13,10 @@ class TgmKeyOfferingsCardMobile extends StatelessWidget {
     required this.iconUrl,
     required this.title,
     required this.subTitle,
+    this.hasLinks = false,
   });
   final String iconUrl, title, subTitle;
+  final bool hasLinks;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,21 @@ class TgmKeyOfferingsCardMobile extends StatelessWidget {
 
           Padding(
             padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
-            child: SelectableText(
+            child: 
+            hasLinks ? SelectableLinkify(text: subTitle,
+                    textAlign: TextAlign.center,
+                    onOpen: (link) async {
+                      if (!await launchUrl(Uri.parse(link.url))) {
+                        throw Exception('Could not launch ${link.url}');
+                      }
+                    },
+
+                    maxLines: 4,
+                    style: AppTextStyles.body.copyWith(
+                      fontSize: 14,
+                      color: AppColors.kTextColor3,
+                    ), ):
+            SelectableText(
               subTitle,
               textAlign: TextAlign.center,
 

@@ -1,11 +1,12 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TgmKeyOfferingsCard extends StatelessWidget {
   const TgmKeyOfferingsCard({
@@ -13,8 +14,10 @@ class TgmKeyOfferingsCard extends StatelessWidget {
     required this.iconUrl,
     required this.title,
     required this.subTitle,
+    this.hasLinks = false,
   });
   final String iconUrl, title, subTitle;
+  final bool hasLinks;
 
   @override
   Widget build(BuildContext context) {
@@ -73,16 +76,30 @@ class TgmKeyOfferingsCard extends StatelessWidget {
           20.verticalSpace,
           SizedBox(
             width: 460.w,
-            child: SelectableText(
-              subTitle,
-              textAlign: TextAlign.center,
+            child: hasLinks
+                ? SelectableLinkify(
+                   onOpen: (link) async {
+                      if (!await launchUrl(Uri.parse(link.url))) {
+                        throw Exception('Could not launch ${link.url}');
+                      }
+                    },
+                    text: subTitle,
+                    maxLines: 4,
+                    style: AppTextStyles.body.copyWith(
+                      fontSize: 20.spMin,
+                      color: AppColors.kTextColor3,
+                    ),
+                  )
+                : SelectableText(
+                    subTitle,
+                    textAlign: TextAlign.center,
 
-              maxLines: 4,
-              style: AppTextStyles.body.copyWith(
-                fontSize: 20.spMin,
-                color: AppColors.kTextColor3,
-              ),
-            ),
+                    maxLines: 4,
+                    style: AppTextStyles.body.copyWith(
+                      fontSize: 20.spMin,
+                      color: AppColors.kTextColor3,
+                    ),
+                  ),
           ),
         ],
       ),

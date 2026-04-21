@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/state_manager.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
 import 'package:tgm/modules/mediaHub/widgets/blog_cards.dart';
+import 'dart:html' as html;
 
 class DesktopBlogs extends StatelessWidget {
   const DesktopBlogs({super.key});
@@ -14,6 +16,23 @@ class DesktopBlogs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BlogsController blogsController = Get.put(BlogsController());
+    final meta = MetaSEO();
+
+    html.document.title = "Blog Pages | The Germane Media";
+
+    meta.description(
+      description:
+          "Explore Blog Pages by The Germane Media for expert insights on advertising, OTT, CTV, and monetization strategies to grow your digital business.",
+    );
+
+    meta.keywords(keywords: "Blog Pages");
+
+    meta.ogTitle(ogTitle: "Blog Pages | The Germane Media");
+
+    meta.ogDescription(
+      ogDescription:
+          "Explore blogs on advertising, OTT, and monetization strategies.",
+    );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
       body: Padding(

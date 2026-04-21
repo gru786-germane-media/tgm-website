@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
@@ -8,12 +9,30 @@ import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/footer/views/desktop_footer.dart';
 import 'package:tgm/modules/header/views/desktop_header.dart';
 import 'package:tgm/modules/mediaHub/widgets/media_hub_cards.dart';
+import 'dart:html' as html;
 
 class DesktopMediaHub extends StatelessWidget {
   const DesktopMediaHub({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final meta = MetaSEO();
+
+    html.document.title = "Media Hub | The Germane Media";
+
+    meta.description(
+      description:
+          "Explore the Media Hub by The Germane Media for insights, updates, and resources on OTT, CTV, and digital advertising.",
+    );
+
+    meta.keywords(keywords: "Media Hub");
+
+    meta.ogTitle(ogTitle: "Media Hub | The Germane Media");
+
+    meta.ogDescription(
+      ogDescription:
+          "Explore the Media Hub by The Germane Media for insights and updates.",
+    );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
       appBar: DesktopHeader(),

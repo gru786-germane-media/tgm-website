@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/models/page_sections.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,8 @@ import 'package:tgm/modules/monetization/widgets/faq_ques_ans_card.dart';
 import 'package:tgm/modules/monetization/widgets/geos_animation.dart';
 import 'package:tgm/modules/monetization/widgets/integration_method_cards.dart';
 import 'package:tgm/modules/monetization/widgets/ladder_animation.dart';
+import 'dart:html' as html;
+
 
 class DesktopMonetization extends StatefulWidget {
   const DesktopMonetization({super.key, required this.section});
@@ -103,6 +106,27 @@ class _DesktopMonetizationState extends State<DesktopMonetization> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToWidget(widget.section);
     });
+
+    final meta = MetaSEO();
+
+    html.document.title =
+        "OTT Monetization Solutions in USA | The Germane Media";
+
+    meta.description(
+      description:
+          "Unlock revenue with OTT monetization solutions by The Germane Media. Optimize ad strategy, boost earnings, and scale your streaming business effectively.",
+    );
+
+    meta.keywords(keywords: "OTT monetization solutions");
+
+    meta.ogTitle(
+      ogTitle: "OTT Monetization Solutions in USA | The Germane Media",
+    );
+
+    meta.ogDescription(
+      ogDescription:
+          "Unlock revenue with OTT monetization solutions by The Germane Media...",
+    );
   }
 
   @override

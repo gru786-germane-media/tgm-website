@@ -1,6 +1,7 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/models/page_sections.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,9 @@ import 'package:tgm/modules/home/data/testimonial_data.dart';
 import 'package:tgm/modules/home/widgets/tgm_key_offerings_card.dart';
 import 'package:tgm/modules/home/widgets/tgm_working_card.dart';
 import 'package:tgm/modules/monetization/widgets/ripple_effect_animation.dart';
+import 'dart:html' as html;
+
+import 'package:url_launcher/url_launcher.dart';
 
 class DesktopHome extends StatefulWidget {
   const DesktopHome({super.key, this.section});
@@ -110,6 +114,26 @@ class _DesktopHomeState extends State<DesktopHome> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToWidget(widget.section);
     });
+    final meta = MetaSEO();
+
+    html.document.title =
+        "Programmatic Advertising Platform in USA | The Germane Media";
+
+    meta.description(
+      description:
+          "Boost ROI with a powerful Programmatic advertising platform in USA by The Germane Media. Reach targeted audiences, optimize campaigns, and maximize ad performance.",
+    );
+
+    meta.keywords(keywords: "Programmatic Advertising Platform");
+
+    meta.ogTitle(
+      ogTitle: "Programmatic Advertising Platform in USA | The Germane Media",
+    );
+
+    meta.ogDescription(
+      ogDescription:
+          "Boost ROI with a powerful Programmatic advertising platform in USA by The Germane Media.",
+    );
   }
 
   @override
@@ -201,7 +225,7 @@ class MetricsSection extends StatelessWidget {
     "assets/icons/ctvAdRequestLogo.svg",
     "assets/icons/inAppAdRequestLogo.svg",
     "assets/icons/webAdRequestsLogo.svg",
-     "assets/icons/averageYeild.svg",
+    "assets/icons/averageYeild.svg",
     "assets/icons/adQuality.svg",
     "assets/icons/arpdau.svg",
   ];
@@ -809,7 +833,7 @@ class KeyOfferingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        SizedBox(height: 950.w, child: RippleBackgroundAnimation()),
+        SizedBox(height: 1150.w, child: RippleBackgroundAnimation()),
         SizedBox(
           width: double.maxFinite,
           child: Column(
@@ -846,11 +870,107 @@ class KeyOfferingsSection extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 6,
-                      child: TgmKeyOfferingsCard(
-                        title: "CTV Monetization",
-                        iconUrl: "assets/icons/starsIcon.svg",
-                        subTitle:
-                            "Unlock premium ad opportunities across Connected TV ecosystems with precision targeting and optimized yield.",
+                      child: Container(
+                        // height: 292.w,
+                        width: 550.w,
+                        padding: EdgeInsets.all(AppSpacing.sm),
+                        decoration: BoxDecoration(
+                          color: Color.fromARGB(73, 77, 77, 77),
+                          borderRadius: BorderRadius.circular(23.r),
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 100.w,
+                              width: 100.w,
+                              padding: EdgeInsets.all(AppSpacing.sm),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.kCardColor2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xff4d4d4d),
+                                      Color(0xff1a1a1a),
+                                    ],
+                                  ),
+                                  image: DecorationImage(
+                                    image: AssetImage(
+                                      ImageUrls.kBackgroundTextureSmall,
+                                    ),
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.transparent,
+                                  ),
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      "assets/icons/starsIcon.svg",
+                                      height: 92.w,
+                                      width: 92.w,
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            30.verticalSpace,
+                            SelectableText(
+                              "CTV Monetization",
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.h2.copyWith(
+                                fontSize: 24.spMin,
+                              ),
+                            ),
+                            20.verticalSpace,
+                            SizedBox(
+                              width: 460.w,
+                              child: SelectableText.rich(
+                                TextSpan(
+                                  style: AppTextStyles.body.copyWith(
+                                    fontSize: 20.spMin,
+                                    color: AppColors.kTextColor3,
+                                  ),
+                                  children: [
+                                    const TextSpan(
+                                      text:
+                                          "Unlock premium ad opportunities across Connected TV ecosystems with precision targeting using our ",
+                                    ),
+                                    TextSpan(
+                                      text: "CTV advertising platform",
+                                      style: AppTextStyles.body.copyWith(
+                                        fontSize: 20.spMin,
+                                        color: AppColors.kTextColor3,
+                                        decoration: TextDecoration
+                                            .underline, // optional (for UX)
+                                        decorationColor: AppColors.kTextColor3,
+                                      ),
+                                      recognizer: TapGestureRecognizer()
+                                        ..onTap = () async {
+                                          final url = Uri.parse(
+                                            "https://thegermanemedia.com/monetization",
+                                          );
+                                          if (!await launchUrl(url)) {
+                                            throw Exception(
+                                              'Could not launch $url',
+                                            );
+                                          }
+                                        },
+                                    ),
+                                  ],
+                                ),
+                                maxLines: 4,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(flex: 4, child: SizedBox()),
@@ -914,7 +1034,7 @@ class WhatTgmDoesSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl.w),
           child: SelectableText(
-            "What TGM Does",
+            "How We Drive Results",
             style: AppTextStyles.h1.copyWith(fontSize: 48),
             textAlign: TextAlign.center,
           ),
@@ -924,11 +1044,32 @@ class WhatTgmDoesSection extends StatelessWidget {
 
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl.w),
-          child: SelectableText(
-            "We empower publishers and brands to unlock real revenue through programmatic intelligence.",
-            style: AppTextStyles.h2.copyWith(
-              fontWeight: FontWeight.w400,
-              color: AppColors.kTextColor2,
+          child: SelectableText.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: "As a leading ",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+                TextSpan(
+                  text: "Programmatic Advertising Platform in USA",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w700, // bold
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      ", we empower publishers and brands to unlock real revenue through programmatic intelligence.",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+              ],
             ),
             textAlign: TextAlign.center,
           ),
@@ -943,7 +1084,7 @@ class WhatTgmDoesSection extends StatelessWidget {
                 title: "Ad-Tech Innovation",
 
                 subTitle:
-                    "We develop intelligent ad-tech solutions that unlock new monetisation opportunities for brands.",
+                    "Over Here, We develop intelligent ad tech solutions that unlock new monetisation opportunities for brands.",
 
                 btnText: "Learn More",
                 iconUrl: "assets/icons/lightIcon.svg",
@@ -1032,9 +1173,12 @@ class HomeSection extends StatelessWidget {
 
           TextSpan(
             children: [
-              TextSpan(text: "Powering the Future", style: AppTextStyles.h0),
               TextSpan(
-                text: " of Ad Growth",
+                text: "Programmatic Advertising Platform",
+                style: AppTextStyles.h0,
+              ),
+              TextSpan(
+                text: " in USA",
 
                 style: AppTextStyles.h0.copyWith(color: AppColors.kTextColor1),
               ),
@@ -1044,7 +1188,8 @@ class HomeSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 240.w),
           child: SelectableText(
-            "Germane Media builds high-impact advertising pipelines — connecting brands to real audiences through data, CTV, and automated media buying.",
+            // "Germane Media builds high-impact advertising pipelines — connecting brands to real audiences through data, CTV, and automated media buying.",
+            "Powering the future of ad growth, Germane Media builds high-impact advertising pipelines connecting brands to real audiences through data, CTV, and automated media buying.",
             style: AppTextStyles.h2.copyWith(
               color: AppColors.kTextColor2,
               fontWeight: FontWeight.w400,
@@ -1067,32 +1212,34 @@ class HomeSection extends StatelessWidget {
                 homeController.changeIndex(index);
               },
             ),
-            items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asMap().entries.map(
-              (entry) {
-                int index = entry.key;
-                int i = entry.value;
+            items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asMap().entries.map((entry) {
+              int index = entry.key;
+              int i = entry.value;
 
-                // distance from center item
-                int distance = (index - homeController.index).abs();
+              // distance from center item
+              int distance = (index - homeController.index).abs();
 
-                // scale logic
-                double scale;
-                if (distance == 0) {
-                  scale = 0.7; // center - smallest
-                } else if (distance == 1) {
-                  scale = 0.85; // second left & right
-                } else {
-                  scale = 1.1; // far left & far right - biggest
-                }
+              // scale logic
+              double scale;
+              if (distance == 0) {
+                scale = 0.7; // center - smallest
+              } else if (distance == 1) {
+                scale = 0.85; // second left & right
+              } else {
+                scale = 1.1; // far left & far right - biggest
+              }
 
-                return AnimatedScale(
-                  scale: scale,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                  child: AppCachedImage( imageUrl: "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png", fit: BoxFit.contain),
-                );
-              },
-            ).toList(),
+              return AnimatedScale(
+                scale: scale,
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+                child: AppCachedImage(
+                  imageUrl:
+                      "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png",
+                  fit: BoxFit.contain,
+                ),
+              );
+            }).toList(),
           ),
         ),
 
@@ -1100,7 +1247,7 @@ class HomeSection extends StatelessWidget {
         SizedBox(height: 100.w),
 
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 240.w),
+          padding: EdgeInsets.symmetric(horizontal: 180.w),
           child: SelectableText(
             "Ready to Transform Your Digital Presence?",
             style: AppTextStyles.h1.copyWith(
@@ -1115,12 +1262,36 @@ class HomeSection extends StatelessWidget {
 
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 240.w),
-          child: SelectableText(
-            "Harness the Power of Data-Led Decisioning — Every Impression Backed by Intelligence.",
-            style: AppTextStyles.h2.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 28,
-              color: AppColors.kTextColor2,
+          child: SelectableText.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text:
+                      "Harness the power of data-led decisioning through advanced ",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 28,
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+                TextSpan(
+                  text: "ad tech solutions",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w700, // bold
+                    fontSize: 28,
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                      " to drive smarter advertising strategies, where every impression is carefully analyzed, optimized, and backed by real-time intelligence to deliver meaningful results.",
+                  style: AppTextStyles.h2.copyWith(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 28,
+                    color: AppColors.kTextColor2,
+                  ),
+                ),
+              ],
             ),
             textAlign: TextAlign.center,
           ),

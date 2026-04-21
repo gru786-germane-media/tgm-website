@@ -1,6 +1,6 @@
 # tgm
 
-A new Flutter project.
+The Germane Media.
 
 ## Getting Started
 

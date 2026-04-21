@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
@@ -12,6 +13,7 @@ import 'package:tgm/modules/contactUs/controllers/contact_us_controller.dart';
 import 'package:tgm/modules/contactUs/widgets/contact_us_rows_mobile.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
+import 'dart:html' as html;
 
 class MobileContactUs extends StatelessWidget {
   const MobileContactUs({super.key});
@@ -20,6 +22,23 @@ class MobileContactUs extends StatelessWidget {
   Widget build(BuildContext context) {
     final ContactUsController contactUsController = Get.put(
       ContactUsController(),
+    );
+    final meta = MetaSEO();
+
+    html.document.title = "Contact Us | The Germane Media";
+
+    meta.description(
+      description:
+          "Contact us at The Germane Media to explore advertising and monetization solutions. Connect with our experts to grow your business and maximize results.",
+    );
+
+    meta.keywords(keywords: "Contact Us");
+
+    meta.ogTitle(ogTitle: "Contact Us | The Germane Media");
+
+    meta.ogDescription(
+      ogDescription:
+          "Connect with The Germane Media experts to grow your business.",
     );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,

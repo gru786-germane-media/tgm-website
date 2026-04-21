@@ -3,12 +3,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/state_manager.dart';
 import 'package:go_router/go_router.dart';
+import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
 import 'package:tgm/modules/mediaHub/widgets/blog_cards_mobile.dart';
+import 'dart:html' as html;
 
 class MobileBlogs extends StatelessWidget {
   const MobileBlogs({super.key});
@@ -16,6 +18,23 @@ class MobileBlogs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final BlogsController blogsController = Get.put(BlogsController());
+    final meta = MetaSEO();
+
+    html.document.title = "Blog Pages | The Germane Media";
+
+    meta.description(
+      description:
+          "Explore Blog Pages by The Germane Media for expert insights on advertising, OTT, CTV, and monetization strategies to grow your digital business.",
+    );
+
+    meta.keywords(keywords: "Blog Pages");
+
+    meta.ogTitle(ogTitle: "Blog Pages | The Germane Media");
+
+    meta.ogDescription(
+      ogDescription:
+          "Explore blogs on advertising, OTT, and monetization strategies.",
+    );
 
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
