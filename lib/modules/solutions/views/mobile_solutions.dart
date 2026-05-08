@@ -35,7 +35,7 @@ class MobileSolutions extends StatelessWidget {
 
     meta.ogDescription(
       ogDescription:
-          "Drive results with OTT advertising solutions by The Germane Media.",
+          "Drive results with OTT advertising solutions by The Germane Media. Reach targeted audiences, improve engagement, and maximize ad performance across streaming platforms.",
     );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,

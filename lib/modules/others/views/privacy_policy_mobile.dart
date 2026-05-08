@@ -110,7 +110,7 @@ These partners may collect information such as device identifiers, IP address, a
 
     meta.ogDescription(
       ogDescription:
-          "Understand how The Germane Media collects and protects your data.",
+          "Read the Privacy Policy Page of The Germane Media to understand how we collect, use, and protect your data while ensuring transparency and security.",
     );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor,

@@ -38,7 +38,7 @@ class DesktopContactUs extends StatelessWidget {
 
     meta.ogDescription(
       ogDescription:
-          "Connect with The Germane Media experts to grow your business.",
+          "Contact us at The Germane Media to explore advertising and monetization solutions. Connect with our experts to grow your business and maximize results.",
     );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,

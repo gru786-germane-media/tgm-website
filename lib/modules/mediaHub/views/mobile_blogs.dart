@@ -33,7 +33,7 @@ class MobileBlogs extends StatelessWidget {
 
     meta.ogDescription(
       ogDescription:
-          "Explore blogs on advertising, OTT, and monetization strategies.",
+          "Explore Blog Pages by The Germane Media for expert insights on advertising, OTT, CTV, and monetization strategies to grow your digital business.",
     );
 
     return Scaffold(

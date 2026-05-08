@@ -125,7 +125,7 @@ class _MobileMonetizationState extends State<MobileMonetization> {
 
     meta.ogDescription(
       ogDescription:
-          "Unlock revenue with OTT monetization solutions by The Germane Media...",
+          "Unlock revenue with OTT monetization solutions by The Germane Media. Optimize ad strategy, boost earnings, and scale your streaming business effectively.",
     );
   }
 
