@@ -27,8 +27,9 @@ import 'package:tgm/modules/footer/views/desktop_footer.dart';
 import 'package:tgm/modules/header/views/desktop_header.dart';
 
 class DesktopCompany extends StatefulWidget {
-  const DesktopCompany({super.key, required this.section});
+  const DesktopCompany({super.key, required this.section, this.empQuery});
   final CompanyPageSection? section;
+  final String? empQuery;
 
   @override
   State<DesktopCompany> createState() => _DesktopCompanyState();
@@ -115,7 +116,7 @@ class _DesktopCompanyState extends State<DesktopCompany> {
                 ComanyCareer(key: _careerKey),
                 SizedBox(height: 50.w),
 
-                CompanyPeople(key: _peopleKey),
+                CompanyPeople(key: _peopleKey, empQuery: widget.empQuery),
 
                 SizedBox(height: 50.w),
 
@@ -173,7 +174,8 @@ class CompanySection extends StatelessWidget {
 }
 
 class CompanyPeople extends StatelessWidget {
-  const CompanyPeople({super.key});
+  const CompanyPeople({super.key, this.empQuery});
+  final String? empQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -197,15 +199,24 @@ Together, we’re more than a company — we’re a community of innovators shap
         SizedBox(height: 50.w),
 
         Obx(
-          () => peopleController.isLoadingPeople.value
-              ? Center(child: CircularProgressIndicator.adaptive())
-              : SizedBox(
+          () {
+            if (peopleController.isLoadingPeople.value) {
+              return Center(child: CircularProgressIndicator.adaptive());
+            }
+
+            final displayList = reorderForDeepLink(
+              items: peopleController.peopleList,
+              query: empQuery,
+              nameOf: (p) => p.name ?? "",
+            );
+
+            return SizedBox(
                   height: 600.w,
                   child: ListView.builder(
-                    itemCount: peopleController.peopleList.length,
+                    itemCount: displayList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      final people = peopleController.peopleList[index];
+                      final people = displayList[index];
                       // List<String> name = people.name!.split(" ");
                       return Container(
                         margin: EdgeInsets.symmetric(horizontal: 20.w),
@@ -288,7 +299,8 @@ Together, we’re more than a company — we’re a community of innovators shap
                       );
                     },
                   ),
-                ),
+                );
+          },
         ),
       ],
     );

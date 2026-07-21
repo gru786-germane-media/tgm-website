@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/route_manager.dart';
 import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/utils/app_router.dart';
+import 'package:tgm/core/utils/app_scroll_behavior.dart';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -68,7 +69,7 @@ class _MyAppState extends State<MyApp> {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
           title: 'TGM',
-         
+          scrollBehavior: AppScrollBehavior(),
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff0f0f0f)),
             highlightColor: Colors.transparent,

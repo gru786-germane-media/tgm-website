@@ -190,6 +190,7 @@ final GoRouter appRouter = GoRouter(
       path: '/company',
       builder: (context, state) {
         final sectionName = state.uri.queryParameters['section'];
+        final empQuery = state.uri.queryParameters['emp'];
 
         CompanyPageSection? section;
 
@@ -206,9 +207,18 @@ final GoRouter appRouter = GoRouter(
             mobileCompany.loadLibrary(),
           ]),
           createWidget: () => ResponsiveBuilder(
-            desktop: desktopCompany.DesktopCompany(section: section),
-            tablet: desktopCompany.DesktopCompany(section: section),
-            mobile: mobileCompany.MobileCompany(section: section),
+            desktop: desktopCompany.DesktopCompany(
+              section: section,
+              empQuery: empQuery,
+            ),
+            tablet: desktopCompany.DesktopCompany(
+              section: section,
+              empQuery: empQuery,
+            ),
+            mobile: mobileCompany.MobileCompany(
+              section: section,
+              empQuery: empQuery,
+            ),
           ),
         );
       },

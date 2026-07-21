@@ -26,8 +26,9 @@ import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
 
 class MobileCompany extends StatefulWidget {
-  const MobileCompany({super.key, required this.section});
+  const MobileCompany({super.key, required this.section, this.empQuery});
   final CompanyPageSection? section;
+  final String? empQuery;
 
   @override
   State<MobileCompany> createState() => _MobileCompanyState();
@@ -115,7 +116,7 @@ class _MobileCompanyState extends State<MobileCompany> {
                 ComanyCareer(key: _careerKey),
                 const SizedBox(height: 30),
 
-                CompanyPeople(key: _peopleKey),
+                CompanyPeople(key: _peopleKey, empQuery: widget.empQuery),
 
                 const SizedBox(height: 30),
 
@@ -173,7 +174,8 @@ class CompanySection extends StatelessWidget {
 }
 
 class CompanyPeople extends StatelessWidget {
-  const CompanyPeople({super.key});
+  const CompanyPeople({super.key, this.empQuery});
+  final String? empQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -200,15 +202,24 @@ Together, we’re more than a company — we’re a community of innovators shap
         const SizedBox(height: 30),
 
         Obx(
-          () => peopleController.isLoadingPeople.value
-              ? Center(child: CircularProgressIndicator.adaptive())
-              : SizedBox(
+          () {
+            if (peopleController.isLoadingPeople.value) {
+              return Center(child: CircularProgressIndicator.adaptive());
+            }
+
+            final displayList = reorderForDeepLink(
+              items: peopleController.peopleList,
+              query: empQuery,
+              nameOf: (p) => p.name ?? "",
+            );
+
+            return SizedBox(
                   height: 225,
                   child: ListView.builder(
-                    itemCount: peopleController.peopleList.length,
+                    itemCount: displayList.length,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      final people = peopleController.peopleList[index];
+                      final people = displayList[index];
                       // ClipPath
                       //clipper: PeopleCardClipper(flip: index % 2 == 0),
                       return Container(
@@ -278,7 +289,8 @@ Together, we’re more than a company — we’re a community of innovators shap
                       );
                     },
                   ),
-                ),
+                );
+          },
         ),
       ],
     );
