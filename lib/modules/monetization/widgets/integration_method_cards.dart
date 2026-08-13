@@ -60,6 +60,7 @@ class IntegrationMethodCards extends StatelessWidget {
                   height: 44.w,
                   width: 44.w,
                   fit: BoxFit.scaleDown,
+                  semanticsLabel: "$title icon",
                 ),
               ),
             ),

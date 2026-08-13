@@ -31,6 +31,7 @@ class MobileInAppMonetization extends StatelessWidget {
               height: 20,
               width: 20,
               fit: BoxFit.scaleDown,
+              semanticsLabel: "Back to Monetization",
             ),
           ),
         ),
@@ -78,6 +79,7 @@ class MobileInAppMonetization extends StatelessWidget {
                   height: 310,
                   width: 340,
                   fit: BoxFit.scaleDown,
+                  semanticLabel: "In-app monetization illustration",
                 ),
 
                 const SizedBox(height: 20),

@@ -69,6 +69,7 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
               height: 20,
               width: 20,
               fit: BoxFit.scaleDown,
+              semanticsLabel: "Back to Case Studies",
             ),
           ),
         ),
@@ -92,6 +93,12 @@ class _ParticularCaseStudyMobileState extends State<ParticularCaseStudyMobile> {
                               "",
                           height: 221,
                           width: double.maxFinite,
+                          semanticLabel:
+                              caseStudyController
+                                  .selectedCaseStudy
+                                  .value
+                                  ?.title ??
+                              "Case study banner",
                         ),
                         Container(
                           width: double.maxFinite,

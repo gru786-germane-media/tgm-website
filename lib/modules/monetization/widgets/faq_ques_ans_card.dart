@@ -54,6 +54,9 @@ class _FaqQuesAnsCardState extends State<FaqQuesAnsCard> {
                   height: 35.w,
                   width: 35.w,
                   fit: BoxFit.scaleDown,
+                  semanticsLabel: isCardExpanded
+                      ? "Collapse answer"
+                      : "Expand answer",
                 ),
               ),
             ),

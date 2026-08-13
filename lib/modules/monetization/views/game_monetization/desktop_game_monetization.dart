@@ -79,6 +79,7 @@ class DesktopGameMonetization extends StatelessWidget {
                       height: 500,
                       width: 550,
                       fit: BoxFit.scaleDown,
+                      semanticLabel: "Game monetization illustration",
                     ),
                     Expanded(
                       child: Column(

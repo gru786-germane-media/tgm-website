@@ -60,6 +60,7 @@ class IntegrationMethodCardsMobile extends StatelessWidget {
                   height: 26.78,
                   width: 26.78,
                   fit: BoxFit.scaleDown,
+                  semanticsLabel: "$title icon",
                 ),
               ),
             ),

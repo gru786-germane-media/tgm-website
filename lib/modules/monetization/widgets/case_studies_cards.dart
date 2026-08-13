@@ -57,6 +57,7 @@ class CaseStudiesCards extends StatelessWidget {
                   imageUrl: imageUrl,
                   height: 337.w,
                   fit: BoxFit.fitHeight,
+                  semanticLabel: title,
                 ),
               ),
             ),

@@ -119,22 +119,22 @@ class _MobileHomeState extends State<MobileHome> {
     final meta = MetaSEO();
 
     html.document.title =
-        "Programmatic Advertising Platform in USA | The Germane Media";
+        "Programmatic Advertising & CTV Solutions | The Germane Media";
 
     meta.description(
       description:
-          "Boost ROI with a powerful Programmatic advertising platform in USA by The Germane Media. Reach targeted audiences, optimize campaigns, and maximize ad performance.",
+          "Drive better ROI with Programmatic, CTV and FAST advertising solutions. Reach targeted audiences with The Germane Media. Contact us today.",
     );
 
     meta.keywords(keywords: "Programmatic Advertising Platform");
 
     meta.ogTitle(
-      ogTitle: "Programmatic Advertising Platform in USA | The Germane Media",
+      ogTitle: "Programmatic Advertising & CTV Solutions | The Germane Media",
     );
 
     meta.ogDescription(
       ogDescription:
-          "Boost ROI with a powerful Programmatic advertising platform in USA by The Germane Media.",
+          "Drive better ROI with Programmatic, CTV and FAST advertising solutions. Reach targeted audiences with The Germane Media. Contact us today.",
     );
   }
 
@@ -386,6 +386,8 @@ class MetricsSection extends StatelessWidget {
                                                 height: 30.64,
                                                 width: 30.64,
                                                 fit: BoxFit.scaleDown,
+                                                semanticsLabel:
+                                                    "${scroll1SubTitle[index]} icon",
                                               ),
                                             ],
                                           ),
@@ -546,6 +548,8 @@ class MetricsSection extends StatelessWidget {
                                                 height: 30.64,
                                                 width: 30.64,
                                                 fit: BoxFit.scaleDown,
+                                                semanticLabel:
+                                                    "${scroll2SubTitle[index]} market icon",
                                               ),
                                             ],
                                           ),
@@ -613,6 +617,15 @@ class PartnersSection extends StatelessWidget {
     "assets/images/partners/xandrLogo.png",
   ];
 
+  final List<String> partnerNames = const [
+    "AWS",
+    "Google",
+    "HUMAN",
+    "NVIDIA",
+    "Prebid",
+    "Xandr",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -659,7 +672,12 @@ class PartnersSection extends StatelessWidget {
                         vertical: 10,
                       ),
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: Center(child: Image.asset(partnerLogoUrls[index])),
+                      child: Center(
+                        child: Image.asset(
+                          partnerLogoUrls[index],
+                          semanticLabel: "${partnerNames[index]} logo",
+                        ),
+                      ),
                     );
                   }),
                 ),
@@ -746,6 +764,7 @@ class SwiftTvHighlightsSection extends StatelessWidget {
               imageUrl: ImageUrls.kSwiftTvInAMovieHall,
               fit: BoxFit.scaleDown,
               height: 393,
+              semanticLabel: "SwiftTV streaming shown in a movie theater",
             ),
             Container(
               height: 79,
@@ -857,6 +876,7 @@ class KeyOfferingsSection extends StatelessWidget {
                                     height: 26.78,
                                     width: 26.78,
                                     fit: BoxFit.scaleDown,
+                                    semanticsLabel: "CTV Monetization icon",
                                   ),
                                 ),
                               ),
@@ -1174,6 +1194,7 @@ class HomeSection extends StatelessWidget {
                   imageUrl:
                       "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png",
                   fit: BoxFit.contain,
+                  semanticLabel: "The Germane Media platform screenshot $i",
                 ),
               );
             }).toList(),
@@ -1413,6 +1434,8 @@ class Testimonials extends StatelessWidget {
                             currentTestimonial.imageUrl,
                             // "assets/temp/tempPerson.png",
                             fit: BoxFit.scaleDown,
+                            semanticLabel:
+                                "Photo of ${currentTestimonial.writer}",
                           ),
                         ),
                         SizedBox(width: 8),

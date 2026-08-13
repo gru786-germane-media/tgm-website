@@ -83,6 +83,8 @@ class _GeoAnimationState extends State<GeoAnimation>
                     width: imageWidth,
                     height: 800.w,
                     fit: BoxFit.cover,
+                    semanticLabel:
+                        "World map illustrating global ad reach",
                   ),
                 ),
                 // Second image (for seamless looping)

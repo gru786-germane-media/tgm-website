@@ -75,6 +75,12 @@ class _ParticularCaseStudyDesktopState
                           height: 439.w,
                           width: double.maxFinite,
                           fit: BoxFit.cover,
+                          semanticLabel:
+                              caseStudyController
+                                  .selectedCaseStudy
+                                  .value
+                                  ?.title ??
+                              "Case study banner",
                         ),
                         Container(
                           width: double.maxFinite,

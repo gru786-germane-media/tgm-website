@@ -10,6 +10,7 @@ class AppCachedImage extends StatelessWidget {
     this.fit = BoxFit.scaleDown,
     this.borderRadius,
     this.placeholder,
+    this.semanticLabel,
   });
 
   final String imageUrl;
@@ -18,10 +19,11 @@ class AppCachedImage extends StatelessWidget {
   final BoxFit fit;
   final BorderRadius? borderRadius;
   final Widget? placeholder;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final image = CachedNetworkImage(
+    Widget image = CachedNetworkImage(
       imageUrl: imageUrl,
       width: width,
       height: height,
@@ -39,7 +41,11 @@ class AppCachedImage extends StatelessWidget {
     );
 
     if (borderRadius != null) {
-      return ClipRRect(borderRadius: borderRadius!, child: image);
+      image = ClipRRect(borderRadius: borderRadius!, child: image);
+    }
+
+    if (semanticLabel != null) {
+      image = Semantics(label: semanticLabel, image: true, child: image);
     }
 
     return image;

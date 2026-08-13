@@ -53,6 +53,7 @@ class CaseStudiesCardsMobile extends StatelessWidget {
                 height: 185,
 
                 fit: BoxFit.fitHeight,
+                semanticLabel: title,
               ),
             ),
           ),

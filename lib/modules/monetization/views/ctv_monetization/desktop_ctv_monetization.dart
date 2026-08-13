@@ -84,6 +84,7 @@ class DesktopCtvMonetization extends StatelessWidget {
                       height: 500,
                       width: 550,
                       fit: BoxFit.scaleDown,
+                      semanticLabel: "CTV monetization illustration",
                     ),
                     Expanded(
                       child: Column(

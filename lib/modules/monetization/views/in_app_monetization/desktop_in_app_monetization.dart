@@ -81,6 +81,7 @@ class DesktopInAppMonetization extends StatelessWidget {
                       height: 500,
                       width: 550,
                       fit: BoxFit.scaleDown,
+                      semanticLabel: "In-app monetization illustration",
                     ),
                     Expanded(
                       child: Column(

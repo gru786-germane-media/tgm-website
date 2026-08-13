@@ -119,6 +119,7 @@ class _CircularCarouselMobileState extends State<CircularCarouselMobile> {
             height: 109,
             width: 144,
             fit: BoxFit.scaleDown,
+            semanticLabel: solutionsController.solutionsList[index].title,
           ),
           const SizedBox(height: 16),
           SelectableText(

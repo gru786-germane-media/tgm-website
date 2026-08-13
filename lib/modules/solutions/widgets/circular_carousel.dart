@@ -120,6 +120,7 @@ class _CircularCarouselState extends State<CircularCarousel> {
             height: 220.w,
             width: 260.w,
             fit: BoxFit.scaleDown,
+            semanticLabel: solutionsController.solutionsList[index].title,
           ),
           SizedBox(height: 30.w),
           SelectableText(

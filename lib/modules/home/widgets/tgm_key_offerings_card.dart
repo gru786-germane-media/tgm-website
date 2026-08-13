@@ -62,6 +62,7 @@ class TgmKeyOfferingsCard extends StatelessWidget {
                     height: 92.w,
                     width: 92.w,
                     fit: BoxFit.scaleDown,
+                    semanticsLabel: "$title icon",
                   ),
                 ),
               ),

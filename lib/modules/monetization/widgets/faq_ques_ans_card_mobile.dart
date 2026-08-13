@@ -60,6 +60,9 @@ class _FaqQuesAnsCardMobileState extends State<FaqQuesAnsCardMobile> {
                   height: 17.45,
                   width: 17.45,
                   fit: BoxFit.scaleDown,
+                  semanticsLabel: isCardExpanded
+                      ? "Collapse answer"
+                      : "Expand answer",
                 ),
               ),
             ),

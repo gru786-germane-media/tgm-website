@@ -106,6 +106,7 @@ class _CardStackAnimationMobileState extends State<CardStackAnimationMobile> {
         height: 240,
         width: 180,
         fit: BoxFit.cover,
+        semanticLabel: "Ad format preview ${index + 1}",
       ),
     );
   }

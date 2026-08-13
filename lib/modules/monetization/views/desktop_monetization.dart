@@ -674,6 +674,7 @@ class MonetizationSection extends StatelessWidget {
                                   fit: BoxFit.scaleDown,
                                   height: 180.w,
                                   width: 298.w,
+                                  semanticLabel: cardTitles[index],
                                 ),
                               ),
                             ),
