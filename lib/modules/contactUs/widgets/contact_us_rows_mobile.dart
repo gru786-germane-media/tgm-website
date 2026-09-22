@@ -43,6 +43,7 @@ class ContactUsRowsMobile extends StatelessWidget {
                 height: 24,
                 width: 24,
                 fit: BoxFit.scaleDown,
+                excludeFromSemantics: true,
               ),
               SizedBox(width: 10),
               Expanded(
@@ -69,6 +70,7 @@ class ContactUsRowsMobile extends StatelessWidget {
                       height: 24,
                       width: 24,
                       fit: BoxFit.scaleDown,
+                      semanticsLabel: "Send email",
                     ),
                   ),
                 ),
@@ -93,6 +95,7 @@ class ContactUsRowsMobile extends StatelessWidget {
                 height: 24,
                 width: 24,
                 fit: BoxFit.scaleDown,
+                excludeFromSemantics: true,
               ),
               SizedBox(width: 10),
 
@@ -119,6 +122,7 @@ class ContactUsRowsMobile extends StatelessWidget {
                       height: 24,
                       width: 24,
                       fit: BoxFit.scaleDown,
+                      semanticsLabel: "Call phone number",
                     ),
                   ),
                 ),

@@ -56,7 +56,8 @@ class CaseStudiesCards extends StatelessWidget {
                 child: AppCachedImage(
                   imageUrl: imageUrl,
                   height: 337.w,
-                  fit: BoxFit.fitHeight,
+                  width: MediaQuery.sizeOf(context).width * 0.4,
+                  fit: BoxFit.cover,
                   semanticLabel: title,
                 ),
               ),
@@ -77,6 +78,7 @@ class CaseStudiesCards extends StatelessWidget {
                         height: 50.w,
                         width: 50.w,
                         fit: BoxFit.scaleDown,
+                        semanticLabel: "$companyName logo",
                       ),
                     ),
                   ),
@@ -110,6 +112,7 @@ class CaseStudiesCards extends StatelessWidget {
                           height: 20.w,
                           width: 20.w,
                           fit: BoxFit.scaleDown,
+                          excludeFromSemantics: true,
                         ),
                         SizedBox(width: 8.w),
                         SelectableText(
@@ -144,6 +147,7 @@ class CaseStudiesCards extends StatelessWidget {
                           height: 20.w,
                           width: 20.w,
                           fit: BoxFit.scaleDown,
+                          excludeFromSemantics: true,
                         ),
                         SizedBox(width: 8.w),
                         SelectableText(

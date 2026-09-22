@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -9,6 +10,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/mobile_app_bar.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/contactUs/controllers/contact_us_controller.dart';
 import 'package:tgm/modules/contactUs/widgets/contact_us_rows_mobile.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
@@ -177,6 +179,7 @@ class MobileContactUs extends StatelessWidget {
                     title: "Phone Number",
                     controller: contactUsController.phoneTextEditingController,
                     helpText: "Enter your Phone Number",
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   ),
 
                   const SizedBox(width: 20),
@@ -215,6 +218,7 @@ class MobileContactUs extends StatelessWidget {
 
                   ContactFormFieldsMobile(
                     title: "Subject",
+                    maxLength: 80,
                     controller:
                         contactUsController.subjectTextEditingController,
                     helpText: "Enter your Subject",
@@ -227,6 +231,7 @@ class MobileContactUs extends StatelessWidget {
                         contactUsController.messageTextEditingController,
                     maxLines: 4,
                     helpText: "Enter your Message",
+                    maxLength: 200,
                     height: 153,
                     borderRadius: 20,
                   ),
@@ -237,9 +242,7 @@ class MobileContactUs extends StatelessWidget {
                     children: [
                       Obx(
                         () => contactUsController.isSubmittingEnquiry.value
-                            ? Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              )
+                            ? Center(child: AppLoader())
                             : InkWell(
                                 onTap: () {
                                   contactUsController.handleSubmitEnquiry(
@@ -273,6 +276,7 @@ class MobileContactUs extends StatelessWidget {
                                         height: 15,
                                         width: 15,
                                         fit: BoxFit.scaleDown,
+                                        excludeFromSemantics: true,
                                       ),
                                     ],
                                   ),
@@ -302,14 +306,17 @@ class ContactFormFieldsMobile extends StatelessWidget {
     required this.helpText,
     this.height,
     this.maxLines,
+    this.maxLength,
     this.borderRadius,
+    this.inputFormatters,
     required this.controller,
   });
   final String title, helpText;
   final double? height;
-  final int? maxLines;
+  final int? maxLines, maxLength;
   final double? borderRadius;
   final TextEditingController controller;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -323,7 +330,9 @@ class ContactFormFieldsMobile extends StatelessWidget {
 
           child: TextField(
             maxLines: maxLines,
+            inputFormatters: inputFormatters,
             controller: controller,
+            maxLength: maxLength,
             style: AppTextStyles.body.copyWith(fontSize: 16),
             decoration: InputDecoration(
               hintText: helpText,
@@ -382,6 +391,13 @@ class ContactFormDropdownMobile extends StatelessWidget {
             items: items,
             onChanged: onChanged,
             style: AppTextStyles.body.copyWith(fontSize: 16),
+            hint: Text(
+              hintText,
+              style: AppTextStyles.body.copyWith(
+                fontSize: 12,
+                color: AppColors.kTextColor2,
+              ),
+            ),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: AppTextStyles.body.copyWith(

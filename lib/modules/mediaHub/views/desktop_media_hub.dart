@@ -6,6 +6,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
+import 'package:tgm/core/widgets/sticky_book_call_button.dart';
 import 'package:tgm/modules/footer/views/desktop_footer.dart';
 import 'package:tgm/modules/header/views/desktop_header.dart';
 import 'package:tgm/modules/mediaHub/widgets/media_hub_cards.dart';
@@ -41,6 +42,7 @@ class DesktopMediaHub extends StatelessWidget {
           Image.asset(
             "assets/images/backgroundDesignBig.png",
             fit: BoxFit.scaleDown,
+            excludeFromSemantics: true,
           ),
           SingleChildScrollView(
             padding: EdgeInsets.all(AppSpacing.xxxl),
@@ -110,10 +112,12 @@ class DesktopMediaHub extends StatelessWidget {
 
                 //highlights section
                 // 200.verticalSpace,
-                SizedBox(height: 100.w),
+                SizedBox(height: 220.w),
               ],
             ),
           ),
+
+          Positioned(right: 50, bottom: 50, child: StickyBookCallButton()),
         ],
       ),
     );

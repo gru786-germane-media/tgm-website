@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tgm/core/models/page_sections.dart';
 import 'package:tgm/core/widgets/deferred_widget.dart';
 import 'package:tgm/modules/header/controllers/header_controller.dart';
+import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
 import 'package:tgm/shared/widgets/responsive_builder.dart';
 import 'package:get/get.dart';
 
@@ -160,17 +161,30 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/solutions',
-      builder: (context, state) => DeferredWidget(
-        libraryLoader: () => Future.wait([
-          desktopSolutions.loadLibrary(),
-          mobileSolutions.loadLibrary(),
-        ]),
-        createWidget: () => ResponsiveBuilder(
-          desktop: desktopSolutions.DesktopSolutions(),
-          tablet: desktopSolutions.DesktopSolutions(),
-          mobile: mobileSolutions.MobileSolutions(),
-        ),
-      ),
+      builder: (context, state) {
+        final sectionName = state.uri.queryParameters['section'];
+
+        SolutionsPageSection? section;
+
+        if (sectionName != null) {
+          section = SolutionsPageSection.values.firstWhere(
+            (e) => e.name == sectionName,
+            orElse: () => SolutionsPageSection.headerBidding,
+          );
+        }
+
+        return DeferredWidget(
+          libraryLoader: () => Future.wait([
+            desktopSolutions.loadLibrary(),
+            mobileSolutions.loadLibrary(),
+          ]),
+          createWidget: () => ResponsiveBuilder(
+            desktop: desktopSolutions.DesktopSolutions(section: section),
+            tablet: desktopSolutions.DesktopSolutions(section: section),
+            mobile: mobileSolutions.MobileSolutions(section: section),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: '/media-hub',
@@ -306,20 +320,27 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/blogs/:blogId',
+      redirect: (context, state) async {
+        final blogId = int.tryParse(state.pathParameters['blogId'] ?? '');
+        if (blogId == null) return null;
+
+        final blogsController = Get.put(BlogsController());
+        await blogsController.fetchBlogById(blogId);
+        final blog = blogsController.selectedBlog.value;
+        if (blog == null) return null;
+
+        return '/blogs/$blogId/${blog.slug}';
+      },
       builder: (context, state) {
         final blogId = int.parse(state.pathParameters['blogId']!);
-
-        return DeferredWidget(
-          libraryLoader: () => Future.wait([
-            desktopParticularBlog.loadLibrary(),
-            mobileParticularBlog.loadLibrary(),
-          ]),
-          createWidget: () => ResponsiveBuilder(
-            desktop: desktopParticularBlog.DesktopParticularBlog(blogId: blogId),
-            tablet: desktopParticularBlog.DesktopParticularBlog(blogId: blogId),
-            mobile: mobileParticularBlog.MobileParticularBlog(blogId: blogId),
-          ),
-        );
+        return _buildParticularBlogPage(blogId);
+      },
+    ),
+    GoRoute(
+      path: '/blogs/:blogId/:slug',
+      builder: (context, state) {
+        final blogId = int.parse(state.pathParameters['blogId']!);
+        return _buildParticularBlogPage(blogId);
       },
     ),
     GoRoute(
@@ -378,6 +399,20 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+
+Widget _buildParticularBlogPage(int blogId) {
+  return DeferredWidget(
+    libraryLoader: () => Future.wait([
+      desktopParticularBlog.loadLibrary(),
+      mobileParticularBlog.loadLibrary(),
+    ]),
+    createWidget: () => ResponsiveBuilder(
+      desktop: desktopParticularBlog.DesktopParticularBlog(blogId: blogId),
+      tablet: desktopParticularBlog.DesktopParticularBlog(blogId: blogId),
+      mobile: mobileParticularBlog.MobileParticularBlog(blogId: blogId),
+    ),
+  );
+}
 
 class _RouterObserver extends NavigatorObserver {
   final headerController = Get.put(HeaderController());

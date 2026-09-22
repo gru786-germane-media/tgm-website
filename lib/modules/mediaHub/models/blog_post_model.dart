@@ -1,3 +1,4 @@
+import 'package:tgm/core/utils/slugify.dart';
 import 'package:tgm/modules/mediaHub/models/blog_section_model.dart';
 
 class BlogPostModel {
@@ -5,15 +6,20 @@ class BlogPostModel {
   final String title;
   final String shortDescription;
   final String imageUrl;
-   int likesCount;
-   int viewsCount;
-   int shareCount;
+  int likesCount;
+  int viewsCount;
+  int shareCount;
   final int readTimeMinutes;
   final DateTime publishedDate;
   final String authorName;
 
   final String contentUrl;
   final List<BlogSectionModel> sections;
+
+  final String metaTitle;
+  final String metaDescription;
+  final String imageAltText;
+  final String urlSlug;
 
   BlogPostModel({
     required this.blogId,
@@ -29,7 +35,18 @@ class BlogPostModel {
 
     required this.contentUrl,
     required this.sections,
+
+    required this.metaTitle,
+    required this.metaDescription,
+    required this.imageAltText,
+    required this.urlSlug,
   });
+
+  /// The URL slug to use for this blog's link. Prefers the backend's own
+  /// `url` field (its slug algorithm doesn't always match [slugify], e.g. it
+  /// drops apostrophes instead of hyphenating them) and only falls back to a
+  /// client-computed slug if the backend hasn't provided one.
+  String get slug => urlSlug.isNotEmpty ? urlSlug : slugify(title);
 
   factory BlogPostModel.fromJson(Map<String, dynamic> json) {
     final sectionList =
@@ -49,9 +66,14 @@ class BlogPostModel {
       readTimeMinutes: json['read_time_minutes'] ?? 0,
       publishedDate: DateTime.parse(json['published_date']),
       authorName: json['author_name'] ?? '',
-     
+
       contentUrl: json['content_url'] ?? '',
       sections: sectionList,
+
+      metaTitle: json['meta_title'] ?? '',
+      metaDescription: json['meta_description'] ?? '',
+      imageAltText: json['image_alt_text'] ?? '',
+      urlSlug: json['url'] ?? '',
     );
   }
 }

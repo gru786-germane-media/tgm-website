@@ -10,16 +10,18 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      toolbarHeight: 90,
+      toolbarHeight: _toolbarHeight,
       backgroundColor: AppColors.kBackgroundColor2,
 
+      leadingWidth: 68,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 24),
+        padding: const EdgeInsets.only(left: 20),
         child: AppCachedImage(
           imageUrl: ImageUrls.kTgmLogo,
-          height: 43,
-          width: 43,
+          height: 32,
+          width: 32,
           fit: BoxFit.scaleDown,
+          semanticLabel: "The Germane Media logo",
         ),
       ),
 
@@ -31,27 +33,30 @@ class MobileAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Scaffold.of(context).openDrawer();
               },
               child: Container(
-                height: 52,
-                width: 52,
+                height: 40,
+                width: 40,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: AppColors.kSelectedButtonColor,
                 ),
                 child: SvgPicture.asset(
                   "assets/icons/menuIconMobile.svg",
-                  height: 28,
-                  width: 28,
+                  height: 22,
+                  width: 22,
                   fit: BoxFit.scaleDown,
+                  semanticsLabel: "Open navigation menu",
                 ),
               ),
             );
           },
         ),
-        const SizedBox(width: 24),
+        const SizedBox(width: 20),
       ],
     );
   }
 
+  static const double _toolbarHeight = 60;
+
   @override
-  Size get preferredSize => Size(double.maxFinite, 90);
+  Size get preferredSize => const Size(double.maxFinite, _toolbarHeight);
 }

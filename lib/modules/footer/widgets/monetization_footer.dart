@@ -38,8 +38,8 @@ class MonetizationFooter extends StatelessWidget {
         // SizedBox(height: 14.w),
         InkWell(
           onTap: (){
-            context.go('/monetization/?section=adFormats');
-            trackPage('/monetization/?section=adFormats');
+            context.go('/monetization/?section=home');
+            trackPage('/monetization/?section=home');
 
             headerController.changeIndex(1);
           },
@@ -49,11 +49,19 @@ class MonetizationFooter extends StatelessWidget {
           ),
         ),
         SizedBox(height: 14.w),
-        // Text(
-        //   "Ad Format Demo",
-        //   style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2),
-        // ),
-        // SizedBox(height: 14.w),
+        InkWell(
+          onTap: () {
+            context.go('/monetization/?section=adFormats');
+            trackPage('/monetization/?section=adFormats');
+
+            headerController.changeIndex(1);
+          },
+          child: Text(
+            "Ad Formats",
+            style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2),
+          ),
+        ),
+        SizedBox(height: 14.w),
         InkWell(
           onTap: () {
             context.go('/monetization/?section=integrationMethods');

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:tgm/core/models/page_sections.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,11 +17,13 @@ import 'package:tgm/core/utils/mobile_app_bar.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/utils/utility_methods.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
+import 'package:tgm/core/widgets/sticky_book_call_button.dart';
 import 'package:tgm/modules/company/controllers/career_controller.dart';
 import 'package:tgm/modules/company/controllers/company_controller.dart';
 import 'package:tgm/modules/company/controllers/people_controller.dart';
 import 'package:tgm/modules/company/widgets/bottom_loop_text_mobile.dart';
-import 'package:tgm/modules/company/widgets/circular_carousel_company_mobile.dart';
+import 'package:tgm/modules/company/widgets/company_principles_fan_mobile.dart';
 import 'package:tgm/modules/contactUs/views/mobile_contact_us.dart';
 import 'package:tgm/modules/footer/views/mobile_footer.dart';
 import 'package:tgm/modules/header/views/mobile_header.dart';
@@ -140,6 +143,12 @@ class _MobileCompanyState extends State<MobileCompany> {
             ),
             child: BottomLoopTextMobile(),
           ),
+
+          Positioned(
+            right: 20,
+            bottom: 80,
+            child: StickyBookCallButtonMobile(),
+          ),
         ],
       ),
     );
@@ -154,18 +163,23 @@ class CompanySection extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Image.asset(ImageUrls.kBackgroundTextureBig, fit: BoxFit.cover),
+        Image.asset(
+          ImageUrls.kBackgroundTextureBig,
+          fit: BoxFit.cover,
+          excludeFromSemantics: true,
+        ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SelectableText(
-              "Empowering Publishers.\nRedefining Monetizations.",
+              "Empowering Publishers.\nRedefining Monetization.",
+              textAlign: TextAlign.center,
               style: AppTextStyles.h0.copyWith(fontSize: 28),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 24),
 
-            CircularCarouselCompanyMobile(),
+            CompanyPrinciplesFanMobile(),
           ],
         ),
       ],
@@ -201,97 +215,67 @@ Together, we’re more than a company — we’re a community of innovators shap
         ),
         const SizedBox(height: 30),
 
-        Obx(
-          () {
-            if (peopleController.isLoadingPeople.value) {
-              return Center(child: CircularProgressIndicator.adaptive());
-            }
+        Obx(() {
+          if (peopleController.isLoadingPeople.value) {
+            return Center(child: AppLoader());
+          }
 
-            final displayList = reorderForDeepLink(
-              items: peopleController.peopleList,
-              query: empQuery,
-              nameOf: (p) => p.name ?? "",
-            );
+          final displayList = reorderForDeepLink(
+            items: peopleController.peopleList,
+            query: empQuery,
+            nameOf: (p) => p.name ?? "",
+          );
 
-            return SizedBox(
-                  height: 225,
-                  child: ListView.builder(
-                    itemCount: displayList.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final people = displayList[index];
-                      // ClipPath
-                      //clipper: PeopleCardClipper(flip: index % 2 == 0),
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        width: 144,
-
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            AppCachedImage(
-                              height: 121,
-                              width: 144,
-                              imageUrl: people.imageUrl ?? "",
-                              fit: BoxFit.fitWidth,
-                            ),
-
-                            Container(
-                              width: 144,
-                              height: 84,
-                              padding: EdgeInsets.only(
-                                top: 10,
-                                right: 10,
-                                left: 10,
-                              ),
-                              color: Color(0xff2a2a2a),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SelectableText(
-                                          // people.name ?? "No name",
-                                          formatName(people.name),
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyles.h1.copyWith(
-                                            fontSize: 13.71,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  SizedBox(height: 8),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SelectableText(
-                                          people.position ?? "No data",
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyles.h3.copyWith(
-                                            fontSize: 8,
-                                            color: AppColors.kTextColor2,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+          return SizedBox(
+            height: 300,
+            child: ListView.separated(
+              itemCount: displayList.length,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              separatorBuilder: (context, index) => const SizedBox(width: 16),
+              itemBuilder: (context, index) {
+                final people = displayList[index];
+                return Container(
+                  width: 200,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.kCardColor3,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(width: 1, color: AppColors.kBorderColor),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppCachedImage(
+                        height: 176,
+                        width: 176,
+                        imageUrl: people.imageUrl ?? "",
+                        fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(14),
+                        semanticLabel: formatName(people.name),
+                      ),
+                      const SizedBox(height: 14),
+                      SelectableText(
+                        formatName(people.name),
+                        maxLines: 2,
+                        style: AppTextStyles.h1.copyWith(fontSize: 16),
+                      ),
+                      const SizedBox(height: 4),
+                      SelectableText(
+                        people.position ?? "No data",
+                        style: AppTextStyles.h3.copyWith(
+                          fontSize: 11,
+                          color: AppColors.kTextColor2,
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 );
-          },
-        ),
+              },
+            ),
+          );
+        }),
       ],
     );
   }
@@ -309,6 +293,7 @@ class CompanyFeedback extends StatelessWidget {
           ImageUrls.kBackgroundTextureBig,
           fit: BoxFit.cover,
           width: double.maxFinite,
+          excludeFromSemantics: true,
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -345,24 +330,30 @@ class CompanyFeedback extends StatelessWidget {
                     ContactFormFieldsMobile(
                       title: "Name",
                       helpText: "Enter Your Name",
+                      maxLength: 50,
                       controller: companyController.nameTextEditingController,
                     ),
                     SizedBox(height: 20),
                     ContactFormFieldsMobile(
                       title: "Email",
                       helpText: "Enter Your Email",
+                      maxLength: 50,
                       controller: companyController.emailTextEditingController,
                     ),
                     SizedBox(width: 20),
                     ContactFormFieldsMobile(
                       title: "Phone Number",
                       helpText: "Enter Your Phone Number",
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      maxLength: 15,
                       controller: companyController.nameTextEditingController,
                     ),
                     SizedBox(height: 20),
                     ContactFormFieldsMobile(
                       title: "Message",
                       helpText: "Enter Your Message",
+                      maxLength: 200,
+
                       maxLines: 4,
                       height: 153,
                       borderRadius: 20,
@@ -376,9 +367,7 @@ class CompanyFeedback extends StatelessWidget {
                       children: [
                         Obx(
                           () => companyController.isSubmittingFeedback.value
-                              ? Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                )
+                              ? Center(child: AppLoader())
                               : InkWell(
                                   onTap:
                                       companyController
@@ -418,6 +407,7 @@ class CompanyFeedback extends StatelessWidget {
                                           width: 28,
                                           height: 28,
                                           fit: BoxFit.scaleDown,
+                                          excludeFromSemantics: true,
                                         ),
                                       ],
                                     ),
@@ -507,6 +497,7 @@ class FeedbackCards extends StatelessWidget {
                     height: 34,
                     width: 34,
                     fit: BoxFit.scaleDown,
+                    semanticsLabel: "$title icon",
                   ),
                 ),
               ),
@@ -544,7 +535,11 @@ class ComanyCareer extends StatelessWidget {
       children: [
         Stack(
           children: [
-            Image.asset(ImageUrls.kBackgroundTextureBig, fit: BoxFit.cover),
+            Image.asset(
+              ImageUrls.kBackgroundTextureBig,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
             Column(
               children: [
                 ClipRRect(
@@ -554,6 +549,7 @@ class ComanyCareer extends StatelessWidget {
                     height: 200,
                     width: double.maxFinite,
                     fit: BoxFit.scaleDown,
+                    semanticLabel: "Get in touch with The Germane Media",
                   ),
                 ),
 
@@ -576,6 +572,9 @@ class ComanyCareer extends StatelessWidget {
                   ),
                   child: SelectableText(
                     "At The Germane Media, we believe every conversation is an opportunity to unlock value, build transparency, and drive growth. Reach out to us, and one of our experts will guide you through our solutions, insights, or partnership opportunities.",
+
+                    textAlign: TextAlign.center,
+
                     style: AppTextStyles.h3.copyWith(
                       color: AppColors.kTextColor2,
                       fontSize: 14,
@@ -618,7 +617,11 @@ class ComanyCareer extends StatelessWidget {
         const SizedBox(height: 20),
         Stack(
           children: [
-            Image.asset(ImageUrls.kBackgroundTextureBig, fit: BoxFit.cover),
+            Image.asset(
+              ImageUrls.kBackgroundTextureBig,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -629,6 +632,7 @@ class ComanyCareer extends StatelessWidget {
                     height: 177,
                     width: double.maxFinite,
                     fit: BoxFit.scaleDown,
+                    semanticLabel: "Careers at The Germane Media",
                   ),
                 ),
                 SizedBox(height: 20),
@@ -654,6 +658,8 @@ class ComanyCareer extends StatelessWidget {
                       ),
                       child: SelectableText(
                         "Explore our current job listings to discover exciting career opportunities that match your skill set and interests. We offer positions in various digital disciplines, including web design, mobile app development, digital marketing, project management, and more. Each job listing provides comprehensive details about the role, responsibilities, qualifications, and benefits. Whether you are an experienced professional or a fresh graduate, we welcome talent from all backgrounds to join our team.",
+                        textAlign: TextAlign.center,
+
                         style: AppTextStyles.h3.copyWith(
                           color: AppColors.kTextColor2,
                           fontSize: 14,
@@ -680,10 +686,7 @@ class ComanyCareer extends StatelessWidget {
                               SizedBox(height: 4),
                               Obx(
                                 () => careerController.isLoadingCareers.value
-                                    ? Center(
-                                        child:
-                                            CircularProgressIndicator.adaptive(),
-                                      )
+                                    ? Center(child: AppLoader())
                                     : SelectableText(
                                         careerController.careersList.length < 10
                                             ? "0${careerController.careersList.length}"
@@ -712,10 +715,7 @@ class ComanyCareer extends StatelessWidget {
                               SizedBox(height: 4),
                               Obx(
                                 () => careerController.isLoadingCareers.value
-                                    ? Center(
-                                        child:
-                                            CircularProgressIndicator.adaptive(),
-                                      )
+                                    ? Center(child: AppLoader())
                                     : SelectableText(
                                         careerController.careersList.length < 10
                                             ? "0${careerController.careersList.length}"
@@ -831,6 +831,8 @@ class _CompanyVisionState extends State<CompanyVision> {
                         width: MediaQuery.sizeOf(context).width * 0.23,
 
                         fit: BoxFit.scaleDown,
+                        semanticLabel:
+                            "Life at The Germane Media, photo ${index + 1}",
                       ),
                     );
                   }),

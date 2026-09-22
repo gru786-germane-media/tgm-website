@@ -8,6 +8,7 @@ import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/footer/controllers/footer_controller.dart';
 import 'package:tgm/modules/footer/widgets/company_footer_mobile.dart';
 import 'package:tgm/modules/footer/widgets/home_footer_mobile.dart';
@@ -34,6 +35,7 @@ class MobileFooter extends StatelessWidget {
                 height: 50,
                 width: 50,
                 fit: BoxFit.scaleDown,
+                semanticLabel: "The Germane Media logo",
               ),
               Spacer(),
               Column(
@@ -123,7 +125,7 @@ class MobileFooter extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SelectableText(
-                "Join a Newsletter",
+                "Join our Newsletter",
                 style: AppTextStyles.h3.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -175,13 +177,7 @@ class MobileFooter extends StatelessWidget {
 
               Obx(
                 () => footerController.isSubscribingNewsletter.value
-                    ? SizedBox(
-                        height: 25,
-                        width: 25,
-                        child: CircularProgressIndicator.adaptive(
-                          strokeWidth: 1,
-                        ),
-                      )
+                    ? const Center(child: AppLoader(size: 25, strokeWidth: 2))
                     : InkWell(
                         onTap: () {
                           footerController.handleSubscribe(context);
@@ -222,7 +218,6 @@ class MobileFooter extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-
           SelectableText(
             "Address: 1007 N Orange Street, 495 Wilmington New Castle, Delaware Delaware, 19801 USA",
             maxLines: 3,
@@ -239,14 +234,14 @@ class MobileFooter extends StatelessWidget {
             children: [
               Expanded(
                 child: InkWell(
-                  onTap: (){
-                     context.go("/privacy-policy");
-                     trackPage("/privacy-policy");
+                  onTap: () {
+                    context.go("/privacy-policy");
+                    trackPage("/privacy-policy");
                   },
                   child: Text(
                     "Privacy Policy",
                     textAlign: TextAlign.center,
-                  
+
                     style: AppTextStyles.h3.copyWith(
                       color: AppColors.kTextColor1,
                       fontWeight: FontWeight.w300,

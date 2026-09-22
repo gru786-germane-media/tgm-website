@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/models/page_sections.dart';
 
@@ -9,26 +9,23 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/custom_triangle_clipper.dart';
 import 'package:tgm/core/utils/launch_url.dart';
-import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/sticky_book_call_button.dart';
 import 'package:tgm/modules/footer/views/desktop_footer.dart';
-import 'package:tgm/modules/header/controllers/header_controller.dart';
 import 'package:tgm/modules/header/views/desktop_header.dart';
 import 'package:tgm/modules/home/controllers/home_controller.dart';
 import 'package:tgm/modules/home/data/testimonial_data.dart';
+import 'package:tgm/modules/home/models/testimonials_model.dart';
 import 'package:tgm/modules/home/widgets/tgm_key_offerings_card.dart';
 import 'package:tgm/modules/home/widgets/tgm_working_card.dart';
 import 'package:tgm/modules/monetization/widgets/ripple_effect_animation.dart';
 import 'dart:html' as html;
-
-import 'package:url_launcher/url_launcher.dart';
 
 class DesktopHome extends StatefulWidget {
   const DesktopHome({super.key, this.section});
@@ -142,48 +139,52 @@ class _DesktopHomeState extends State<DesktopHome> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: DesktopHeader(),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(
-          decelerationRate: ScrollDecelerationRate.normal,
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: 30.w),
-            HomeSection(homeController: homeController, key: _homeKey),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            physics: BouncingScrollPhysics(
+              decelerationRate: ScrollDecelerationRate.normal,
+            ),
+            child: Column(
+              children: [
+                SizedBox(height: 30.w),
+                HomeSection(homeController: homeController, key: _homeKey),
 
-            // 50.verticalSpace,
-            SizedBox(height: 50.w),
+                KeyOfferingsSection(key: _keyOfferingsKey),
 
-            WhatTgmDoesSection(key: _whatTgmDoesKey),
+                // 50.verticalSpace,
+                SizedBox(height: 50.w),
+                WhatTgmDoesSection(key: _whatTgmDoesKey),
 
-            // 50.verticalSpace,
-            SizedBox(height: 50.w),
-            KeyOfferingsSection(key: _keyOfferingsKey),
+                // 20.verticalSpace,
+                SizedBox(height: 20.w),
+                SwiftTvHighlightsSection(key: _swiftTvHighlights),
 
-            // 20.verticalSpace,
-            SizedBox(height: 20.w),
-            SwiftTvHighlightsSection(key: _swiftTvHighlights),
+                SizedBox(height: 20.w),
 
-            SizedBox(height: 20.w),
+                PartnersSection(key: _swiftPartners),
 
-            PartnersSection(key: _swiftPartners),
+                SizedBox(height: 40.w),
+                MetricsSection(key: _swiftMetric),
 
-            SizedBox(height: 40.w),
-            MetricsSection(key: _swiftMetric),
+                SizedBox(height: 40.w),
 
-            SizedBox(height: 40.w),
+                //testimonials
+                Testimonials(key: _testimonialKey),
+                // 100.verticalSpace,
+                SizedBox(height: 100.w),
+                DesktopFooter(),
 
-            //testimonials
-            Testimonials(key: _testimonialKey),
-            // 100.verticalSpace,
-            SizedBox(height: 180.w),
-            DesktopFooter(),
-
-            //highlights section
-            // 200.verticalSpace,
-            SizedBox(height: 100.w),
-          ],
-        ),
+                //highlights section
+                // 200.verticalSpace,
+                // Extra bottom space so the sticky CTA button never covers
+                // the footer at the end of the scroll.
+                SizedBox(height: 220.w),
+              ],
+            ),
+          ),
+          Positioned(right: 50, bottom: 50, child: StickyBookCallButton()),
+        ],
       ),
     );
   }
@@ -243,10 +244,11 @@ class MetricsSection extends StatelessWidget {
     return Stack(
       children: [
         Image.asset(
-          "assets/images/bgMetrics.png",
-          height: MediaQuery.sizeOf(context).height * 1.5,
+          "assets/images/bgMetrics.webp",
+          height: 1600.w,
           width: MediaQuery.sizeOf(context).width,
           fit: BoxFit.cover,
+          excludeFromSemantics: true,
         ),
         Column(
           children: [
@@ -269,332 +271,1280 @@ class MetricsSection extends StatelessWidget {
             ),
             SizedBox(height: 65.w),
 
-            SizedBox(
-              height: 438.w,
-              child: ListView.builder(
-                itemCount: scroll1Icons.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 440,
-                    margin: EdgeInsets.only(
-                      right: 40.w,
-                      left: index == 0 ? 40.w : 0,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 40.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24.r),
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.kBorderColor,
-                      ),
-                      color: AppColors.kBackgroundColor2,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Image.asset(
-                          ImageUrls.kBackgroundTextureBig,
-                          width: 440,
-                          height: 438.w,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 210.w,
-                              width: 210.w,
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 136.w),
+              child: SizedBox(
+                height: 1350.w,
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 7,
+                            child: Container(
+                              padding: EdgeInsets.all(28.w),
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
+                                border: const GradientBoxBorder(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xffffffff),
+                                      Color(0xff666666),
+                                    ],
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                  ),
                                   width: 1,
-                                  color: AppColors.kBorderColor,
+                                ),
+                                borderRadius: BorderRadius.circular(32.r),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xff000000),
+                                    Color.fromARGB(228, 0, 0, 0),
+                                    Color.fromARGB(156, 0, 0, 0),
+
+                                    Color.fromARGB(27, 153, 153, 153),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomRight,
                                 ),
                               ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AppCachedImage(
+                                    imageUrl:
+                                        "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/starIcon.png",
+                                    height: 138.w,
+                                    width: 138.w,
+                                    fit: BoxFit.scaleDown,
+                                    semanticLabel: "Ad quality compliance icon",
+                                  ),
 
-                              child: Center(
-                                child: Container(
-                                  height: 168.w,
-                                  width: 168.w,
-                                  // padding: EdgeInsets.all(5.w),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: 1,
-                                      color: AppColors.kBorderColor,
+                                  35.verticalSpace,
+
+                                  SelectableText(
+                                    "98%",
+                                    textAlign: TextAlign.center,
+                                    style: AppTextStyles.h0.copyWith(
+                                      color: AppColors.whiteColor,
+                                      fontSize: 66.spMin,
+                                    ),
+                                  ),
+                                  20.verticalSpace,
+
+                                  Container(
+                                    height: 58.w,
+                                    decoration: BoxDecoration(
+                                      border: const GradientBoxBorder(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xff333333),
+                                            Color.fromARGB(0, 51, 51, 51),
+                                          ],
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.topRight,
+                                        ),
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                        110.r,
+                                      ),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xff1f1f1f),
+                                          Color.fromARGB(0, 31, 31, 31),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: SelectableText(
+                                        "Ad Quality Compliance",
+                                        textAlign: TextAlign.center,
+                                        style: AppTextStyles.h3.copyWith(
+                                          color: AppColors.whiteColor,
+                                          fontSize: 24.spMin,
+                                        ),
+                                      ),
                                     ),
                                   ),
 
-                                  child: Center(
-                                    child: Container(
-                                      height: 120.w,
-                                      width: 120.w,
-                                      padding: EdgeInsets.all(3.w),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
+                                  50.verticalSpace,
+                                  SelectableText(
+                                    "+18%",
+                                    textAlign: TextAlign.center,
+                                    style: AppTextStyles.h0.copyWith(
+                                      color: AppColors.whiteColor,
+                                      fontSize: 66.spMin,
+                                    ),
+                                  ),
+                                  20.verticalSpace,
 
-                                        border: Border.all(
-                                          width: 1,
-                                          color: AppColors.kBorderColor,
+                                  Container(
+                                    height: 58.w,
+                                    decoration: BoxDecoration(
+                                      border: const GradientBoxBorder(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xff333333),
+                                            Color.fromARGB(0, 51, 51, 51),
+                                          ],
+                                          begin: Alignment.bottomLeft,
+                                          end: Alignment.topRight,
                                         ),
-                                        color: AppColors.kTextColor1,
+                                        width: 1,
                                       ),
-                                      child: Container(
-                                        height: 120.w,
-                                        width: 120.w,
+                                      borderRadius: BorderRadius.circular(
+                                        110.r,
+                                      ),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xff1f1f1f),
+                                          Color.fromARGB(0, 31, 31, 31),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+                                    child: Center(
+                                      child: SelectableText(
+                                        "ARPDAU Increase",
+                                        textAlign: TextAlign.center,
+                                        style: AppTextStyles.h3.copyWith(
+                                          color: AppColors.whiteColor,
+                                          fontSize: 24.spMin,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          33.horizontalSpace,
+                          Expanded(
+                            flex: 20,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 10,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: const GradientBoxBorder(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Color(0xffffffff),
+                                                  Color(0xff666666),
+                                                ],
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
+                                              ),
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              32.r,
+                                            ),
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xff000000),
+                                                Color.fromARGB(228, 0, 0, 0),
+                                                Color.fromARGB(156, 0, 0, 0),
 
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.bottomRight,
-                                            end: Alignment.topLeft,
-                                            colors: [
-                                              Color(0xff333333),
-                                              Color(0xff333333),
-                                              Color(0xff333333),
-                                              Color.fromARGB(0, 51, 51, 51),
+                                                Color.fromARGB(
+                                                  27,
+                                                  153,
+                                                  153,
+                                                  153,
+                                                ),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              AppCachedImage(
+                                                imageUrl:
+                                                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/heartIcon.png",
+                                                height: 138.w,
+                                                width: 138.w,
+                                                fit: BoxFit.scaleDown,
+                                                semanticLabel:
+                                                    "Monthly ad requests icon",
+                                              ),
+
+                                              35.horizontalSpace,
+
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  SelectableText(
+                                                    "150 B +",
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyles.h0
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                          fontSize: 66.spMin,
+                                                        ),
+                                                  ),
+                                                  20.verticalSpace,
+
+                                                  Container(
+                                                    height: 58.w,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 20.w,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      border: const GradientBoxBorder(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xff333333,
+                                                                ),
+                                                                Color.fromARGB(
+                                                                  0,
+                                                                  51,
+                                                                  51,
+                                                                  51,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .bottomLeft,
+                                                              end: Alignment
+                                                                  .topRight,
+                                                            ),
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            110.r,
+                                                          ),
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color(0xff1f1f1f),
+                                                          Color.fromARGB(
+                                                            0,
+                                                            31,
+                                                            31,
+                                                            31,
+                                                          ),
+                                                        ],
+                                                        begin:
+                                                            Alignment.topLeft,
+                                                        end: Alignment
+                                                            .bottomRight,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: SelectableText(
+                                                        "Monthly Ad Requests",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: AppTextStyles.h3
+                                                            .copyWith(
+                                                              color: AppColors
+                                                                  .whiteColor,
+                                                              fontSize:
+                                                                  24.spMin,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ],
                                           ),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.kBorderColor,
-                                          ),
-                                          // color: AppColors.kTextColor1,
                                         ),
-                                        child: Center(
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              Image.asset(
-                                                ImageUrls
-                                                    .kBackgroundTextureSmall,
-                                                width: 120.w,
-                                                height: 120.w,
-                                                fit: BoxFit.fitWidth,
+                                      ),
+                                      33.horizontalSpace,
+                                      Expanded(
+                                        flex: 10,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            border: const GradientBoxBorder(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Color(0xffffffff),
+                                                  Color(0xff666666),
+                                                ],
+                                                begin: Alignment.topRight,
+                                                end: Alignment.bottomLeft,
                                               ),
+                                              width: 1,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              32.r,
+                                            ),
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xff000000),
+                                                Color.fromARGB(228, 0, 0, 0),
+                                                Color.fromARGB(156, 0, 0, 0),
+
+                                                Color.fromARGB(
+                                                  27,
+                                                  153,
+                                                  153,
+                                                  153,
+                                                ),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              AppCachedImage(
+                                                imageUrl:
+                                                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/lightningIcon.png",
+                                                height: 138.w,
+                                                width: 138.w,
+                                                fit: BoxFit.scaleDown,
+                                                semanticLabel:
+                                                    "Average yield lift icon",
+                                              ),
+
+                                              35.horizontalSpace,
+
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  SelectableText(
+                                                    "+ 45%",
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyles.h0
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                          fontSize: 66.spMin,
+                                                        ),
+                                                  ),
+                                                  20.verticalSpace,
+
+                                                  Container(
+                                                    height: 58.w,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 20.w,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      border: const GradientBoxBorder(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xff333333,
+                                                                ),
+                                                                Color.fromARGB(
+                                                                  0,
+                                                                  51,
+                                                                  51,
+                                                                  51,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .bottomLeft,
+                                                              end: Alignment
+                                                                  .topRight,
+                                                            ),
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            110.r,
+                                                          ),
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color(0xff1f1f1f),
+                                                          Color.fromARGB(
+                                                            0,
+                                                            31,
+                                                            31,
+                                                            31,
+                                                          ),
+                                                        ],
+                                                        begin:
+                                                            Alignment.topLeft,
+                                                        end: Alignment
+                                                            .bottomRight,
+                                                      ),
+                                                    ),
+                                                    child: Center(
+                                                      child: SelectableText(
+                                                        "Average Yield Lift",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: AppTextStyles.h3
+                                                            .copyWith(
+                                                              color: AppColors
+                                                                  .whiteColor,
+                                                              fontSize:
+                                                                  24.spMin,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                33.verticalSpace,
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 20.w,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: const GradientBoxBorder(
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xffffffff),
+                                            Color(0xff666666),
+                                          ],
+                                          begin: Alignment.topRight,
+                                          end: Alignment.bottomLeft,
+                                        ),
+                                        width: 1,
+                                      ),
+                                      borderRadius: BorderRadius.circular(32.r),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(0xff000000),
+                                          Color.fromARGB(228, 0, 0, 0),
+                                          Color.fromARGB(156, 0, 0, 0),
+
+                                          Color.fromARGB(27, 153, 153, 153),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                    ),
+
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
                                               SvgPicture.asset(
-                                                scroll1Icons[index],
+                                                "assets/icons/ctvAdRequestLogo.svg",
                                                 height: 58.w,
                                                 width: 58.w,
                                                 fit: BoxFit.scaleDown,
                                                 semanticsLabel:
-                                                    "${scroll1SubTitle[index]} icon",
+                                                    "CTV ad requests icon",
+                                              ),
+                                              10.verticalSpace,
+                                              SelectableText(
+                                                "100 B +",
+                                                textAlign: TextAlign.center,
+                                                style: AppTextStyles.h0
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors.whiteColor,
+                                                      fontSize: 66.spMin,
+                                                    ),
+                                              ),
+                                              10.verticalSpace,
+                                              Container(
+                                                height: 58.w,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 20.w,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  border:
+                                                      const GradientBoxBorder(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xff333333,
+                                                                ),
+                                                                Color.fromARGB(
+                                                                  0,
+                                                                  51,
+                                                                  51,
+                                                                  51,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .bottomLeft,
+                                                              end: Alignment
+                                                                  .topRight,
+                                                            ),
+                                                        width: 1,
+                                                      ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        110.r,
+                                                      ),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff1f1f1f),
+                                                      Color.fromARGB(
+                                                        0,
+                                                        31,
+                                                        31,
+                                                        31,
+                                                      ),
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: SelectableText(
+                                                    "CTV Ad Requests",
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyles.h3
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                          fontSize: 24.spMin,
+                                                        ),
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
 
-                            SizedBox(height: 24.w),
-
-                            SelectableText(
-                              scroll1Title[index],
-                              style: AppTextStyles.h0.copyWith(
-                                fontSize: 42.spMin,
-                              ),
-                            ),
-
-                            SizedBox(height: 24.w),
-
-                            Container(
-                              height: 52.w,
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100.r),
-                                border: Border.all(
-                                  width: 1,
-                                  color: AppColors.kBorderColor,
-                                ),
-                              ),
-
-                              child: Center(
-                                child: SelectableText(
-                                  scroll1SubTitle[index],
-                                  style: AppTextStyles.h3.copyWith(
-                                    fontSize: 24.spMin,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            SizedBox(height: 65.w),
-
-            SizedBox(
-              height: 438.w,
-              child: ListView.builder(
-                itemCount: scroll2ImageUrls.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 440,
-                    margin: EdgeInsets.only(
-                      right: 40.w,
-                      left: index == 0 ? 40.w : 0,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 40.w),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24.r),
-                      border: Border.all(
-                        width: 1,
-                        color: AppColors.kBorderColor,
-                      ),
-                      color: AppColors.kBackgroundColor2,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.topCenter,
-                      children: [
-                        Image.asset(
-                          ImageUrls.kBackgroundTextureBig,
-                          width: 440,
-                          height: 438.w,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 210.w,
-                              width: 210.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  width: 1,
-                                  color: AppColors.kBorderColor,
-                                ),
-                              ),
-
-                              child: Center(
-                                child: Container(
-                                  height: 168.w,
-                                  width: 168.w,
-                                  // padding: EdgeInsets.all(5.w),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      width: 1,
-                                      color: AppColors.kBorderColor,
-                                    ),
-                                  ),
-
-                                  child: Center(
-                                    child: Container(
-                                      height: 120.w,
-                                      width: 120.w,
-                                      padding: EdgeInsets.all(3.w),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-
-                                        border: Border.all(
-                                          width: 1,
-                                          color: AppColors.kBorderColor,
-                                        ),
-                                        color: AppColors.kTextColor1,
-                                      ),
-                                      child: Container(
-                                        height: 120.w,
-                                        width: 120.w,
-
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          gradient: LinearGradient(
-                                            begin: Alignment.bottomRight,
-                                            end: Alignment.topLeft,
-                                            colors: [
-                                              Color(0xff333333),
-                                              Color(0xff333333),
-                                              Color(0xff333333),
-                                              Color.fromARGB(0, 51, 51, 51),
-                                            ],
+                                        20.horizontalSpace,
+                                        Container(
+                                          width: 2,
+                                          margin: EdgeInsets.symmetric(
+                                            vertical: 10,
                                           ),
-                                          border: Border.all(
-                                            width: 1,
-                                            color: AppColors.kBorderColor,
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xffffffff),
+                                                Color(0xff666666),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
                                           ),
-                                          // color: AppColors.kTextColor1,
                                         ),
-                                        child: Center(
-                                          child: Stack(
-                                            alignment: Alignment.center,
+
+                                        20.horizontalSpace,
+
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Image.asset(
-                                                ImageUrls
-                                                    .kBackgroundTextureSmall,
-                                                width: 120.w,
-                                                height: 120.w,
-                                                fit: BoxFit.fitWidth,
-                                              ),
-                                              Image.asset(
-                                                scroll2ImageUrls[index],
+                                              SvgPicture.asset(
+                                                "assets/icons/inAppAdRequestLogo.svg",
                                                 height: 58.w,
                                                 width: 58.w,
                                                 fit: BoxFit.scaleDown,
-                                                semanticLabel:
-                                                    "${scroll2SubTitle[index]} market icon",
+                                                semanticsLabel:
+                                                    "In-app ad requests icon",
+                                              ),
+                                              10.verticalSpace,
+                                              SelectableText(
+                                                "30 B +",
+                                                textAlign: TextAlign.center,
+                                                style: AppTextStyles.h0
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors.whiteColor,
+                                                      fontSize: 66.spMin,
+                                                    ),
+                                              ),
+                                              10.verticalSpace,
+                                              Container(
+                                                height: 58.w,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 20.w,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  border:
+                                                      const GradientBoxBorder(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xff333333,
+                                                                ),
+                                                                Color.fromARGB(
+                                                                  0,
+                                                                  51,
+                                                                  51,
+                                                                  51,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .bottomLeft,
+                                                              end: Alignment
+                                                                  .topRight,
+                                                            ),
+                                                        width: 1,
+                                                      ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        110.r,
+                                                      ),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff1f1f1f),
+                                                      Color.fromARGB(
+                                                        0,
+                                                        31,
+                                                        31,
+                                                        31,
+                                                      ),
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: SelectableText(
+                                                    "In App Ad Requests",
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyles.h3
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                          fontSize: 24.spMin,
+                                                        ),
+                                                  ),
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ),
+
+                                        20.horizontalSpace,
+                                        Container(
+                                          width: 2,
+                                          margin: EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xffffffff),
+                                                Color(0xff666666),
+                                              ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                            ),
+                                          ),
+                                        ),
+
+                                        20.horizontalSpace,
+                                        Expanded(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              SvgPicture.asset(
+                                                "assets/icons/webAdRequests.svg",
+                                                height: 58.w,
+                                                width: 58.w,
+                                                fit: BoxFit.scaleDown,
+                                                semanticsLabel:
+                                                    "Web ad requests icon",
+                                              ),
+                                              10.verticalSpace,
+                                              SelectableText(
+                                                "20 B +",
+                                                textAlign: TextAlign.center,
+                                                style: AppTextStyles.h0
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors.whiteColor,
+                                                      fontSize: 66.spMin,
+                                                    ),
+                                              ),
+                                              10.verticalSpace,
+                                              Container(
+                                                height: 58.w,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 20.w,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  border:
+                                                      const GradientBoxBorder(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xff333333,
+                                                                ),
+                                                                Color.fromARGB(
+                                                                  0,
+                                                                  51,
+                                                                  51,
+                                                                  51,
+                                                                ),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .bottomLeft,
+                                                              end: Alignment
+                                                                  .topRight,
+                                                            ),
+                                                        width: 1,
+                                                      ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        110.r,
+                                                      ),
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xff1f1f1f),
+                                                      Color.fromARGB(
+                                                        0,
+                                                        31,
+                                                        31,
+                                                        31,
+                                                      ),
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: SelectableText(
+                                                    "Web Ad Requests",
+                                                    textAlign: TextAlign.center,
+                                                    style: AppTextStyles.h3
+                                                        .copyWith(
+                                                          color: AppColors
+                                                              .whiteColor,
+                                                          fontSize: 24.spMin,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    33.verticalSpace,
 
-                            SizedBox(height: 24.w),
-
-                            SelectableText(
-                              scroll2Title[index],
-                              style: AppTextStyles.h0.copyWith(
-                                fontSize: 42.spMin,
-                              ),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(28.w),
+                        decoration: BoxDecoration(
+                          border: const GradientBoxBorder(
+                            gradient: LinearGradient(
+                              colors: [Color(0xffffffff), Color(0xff666666)],
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
                             ),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(32.r),
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xff000000),
+                              Color.fromARGB(228, 0, 0, 0),
+                              Color.fromARGB(156, 0, 0, 0),
 
-                            SizedBox(height: 24.w),
-
-                            Container(
-                              height: 52.w,
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100.r),
-                                border: Border.all(
-                                  width: 1,
-                                  color: AppColors.kBorderColor,
-                                ),
-                              ),
-
-                              child: Center(
-                                child: SelectableText(
-                                  scroll2SubTitle[index],
-                                  style: AppTextStyles.h3.copyWith(
-                                    fontSize: 24.spMin,
+                              Color.fromARGB(27, 153, 153, 153),
+                            ],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomRight,
+                          ),
+                          image: const DecorationImage(
+                            image: NetworkImage(
+                              "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/countriesLogoBg.png",
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CountryStatsWidget(
+                                    title: "70 %",
+                                    containerLightText: "Core Market - ",
+                                    containerBoldText: "United States",
                                   ),
+                                  CountryStatsWidget(
+                                    title: "10 %",
+                                    containerLightText: "Western Reach - ",
+                                    containerBoldText: "Canada & UK",
+                                  ),
+                                  CountryStatsWidget(
+                                    title: "10 %",
+                                    containerLightText: "Emerging Markets - ",
+                                    containerBoldText: "APAC",
+                                  ),
+                                  CountryStatsWidget(
+                                    title: "5 %",
+                                    containerLightText: "Innovation Hub - ",
+                                    containerBoldText: "India",
+                                  ),
+                                  CountryStatsWidget(
+                                    title: "5 %",
+                                    containerLightText: "Global Reach - ",
+                                    containerBoldText: "Rest of World",
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 5,
+                              child: SizedBox(
+                                width: 878.w,
+                                height: 406.w,
+                                child: AppCachedImage(
+                                  imageUrl:
+                                      "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/countriesLogo.png",
+
+                                  fit: BoxFit.scaleDown,
+                                  semanticLabel:
+                                      "World map highlighting audience reach across the US, Canada, UK, APAC, and India",
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ],
+                      ),
                     ),
-                  );
-                },
+
+                    100.verticalSpace,
+                  ],
+                ),
               ),
             ),
+
+            // SizedBox(
+            //   height: 438.w,
+            //   child: ListView.builder(
+            //     itemCount: scroll1Icons.length,
+            //     scrollDirection: Axis.horizontal,
+            //     itemBuilder: (context, index) {
+            //       return Container(
+            //         width: 440,
+            //         margin: EdgeInsets.only(
+            //           right: 40.w,
+            //           left: index == 0 ? 40.w : 0,
+            //         ),
+            //         padding: EdgeInsets.symmetric(horizontal: 40.w),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(24.r),
+            //           border: Border.all(
+            //             width: 1,
+            //             color: AppColors.kBorderColor,
+            //           ),
+            //           color: AppColors.kBackgroundColor2,
+            //         ),
+            //         child: Stack(
+            //           alignment: Alignment.topCenter,
+            //           children: [
+            //             Image.asset(
+            //               ImageUrls.kBackgroundTextureBig,
+            //               width: 440,
+            //               height: 438.w,
+            //               fit: BoxFit.fitWidth,
+            //             ),
+            //             Column(
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 Container(
+            //                   height: 210.w,
+            //                   width: 210.w,
+            //                   decoration: BoxDecoration(
+            //                     shape: BoxShape.circle,
+            //                     border: Border.all(
+            //                       width: 1,
+            //                       color: AppColors.kBorderColor,
+            //                     ),
+            //                   ),
+
+            //                   child: Center(
+            //                     child: Container(
+            //                       height: 168.w,
+            //                       width: 168.w,
+            //                       // padding: EdgeInsets.all(5.w),
+            //                       decoration: BoxDecoration(
+            //                         shape: BoxShape.circle,
+            //                         border: Border.all(
+            //                           width: 1,
+            //                           color: AppColors.kBorderColor,
+            //                         ),
+            //                       ),
+
+            //                       child: Center(
+            //                         child: Container(
+            //                           height: 120.w,
+            //                           width: 120.w,
+            //                           padding: EdgeInsets.all(3.w),
+            //                           decoration: BoxDecoration(
+            //                             shape: BoxShape.circle,
+
+            //                             border: Border.all(
+            //                               width: 1,
+            //                               color: AppColors.kBorderColor,
+            //                             ),
+            //                             color: AppColors.kTextColor1,
+            //                           ),
+            //                           child: Container(
+            //                             height: 120.w,
+            //                             width: 120.w,
+
+            //                             decoration: BoxDecoration(
+            //                               shape: BoxShape.circle,
+            //                               gradient: LinearGradient(
+            //                                 begin: Alignment.bottomRight,
+            //                                 end: Alignment.topLeft,
+            //                                 colors: [
+            //                                   Color(0xff333333),
+            //                                   Color(0xff333333),
+            //                                   Color(0xff333333),
+            //                                   Color.fromARGB(0, 51, 51, 51),
+            //                                 ],
+            //                               ),
+            //                               border: Border.all(
+            //                                 width: 1,
+            //                                 color: AppColors.kBorderColor,
+            //                               ),
+            //                               // color: AppColors.kTextColor1,
+            //                             ),
+            //                             child: Center(
+            //                               child: Stack(
+            //                                 alignment: Alignment.center,
+            //                                 children: [
+            //                                   Image.asset(
+            //                                     ImageUrls
+            //                                         .kBackgroundTextureSmall,
+            //                                     width: 120.w,
+            //                                     height: 120.w,
+            //                                     fit: BoxFit.fitWidth,
+            //                                   ),
+            //                                   SvgPicture.asset(
+            //                                     scroll1Icons[index],
+            //                                     height: 58.w,
+            //                                     width: 58.w,
+            //                                     fit: BoxFit.scaleDown,
+            //                                     semanticsLabel:
+            //                                         "${scroll1SubTitle[index]} icon",
+            //                                   ),
+            //                                 ],
+            //                               ),
+            //                             ),
+            //                           ),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ),
+
+            //                 SizedBox(height: 24.w),
+
+            //                 SelectableText(
+            //                   scroll1Title[index],
+            //                   style: AppTextStyles.h0.copyWith(
+            //                     fontSize: 42.spMin,
+            //                   ),
+            //                 ),
+
+            //                 SizedBox(height: 24.w),
+
+            //                 Container(
+            //                   height: 52.w,
+            //                   padding: EdgeInsets.symmetric(horizontal: 20.w),
+            //                   decoration: BoxDecoration(
+            //                     borderRadius: BorderRadius.circular(100.r),
+            //                     border: Border.all(
+            //                       width: 1,
+            //                       color: AppColors.kBorderColor,
+            //                     ),
+            //                   ),
+
+            //                   child: Center(
+            //                     child: SelectableText(
+            //                       scroll1SubTitle[index],
+            //                       style: AppTextStyles.h3.copyWith(
+            //                         fontSize: 24.spMin,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
+
+            // SizedBox(height: 65.w),
+
+            // SizedBox(
+            //   height: 438.w,
+            //   child: ListView.builder(
+            //     itemCount: scroll2ImageUrls.length,
+            //     scrollDirection: Axis.horizontal,
+            //     itemBuilder: (context, index) {
+            //       return Container(
+            //         width: 440,
+            //         margin: EdgeInsets.only(
+            //           right: 40.w,
+            //           left: index == 0 ? 40.w : 0,
+            //         ),
+            //         padding: EdgeInsets.symmetric(horizontal: 40.w),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(24.r),
+            //           border: Border.all(
+            //             width: 1,
+            //             color: AppColors.kBorderColor,
+            //           ),
+            //           color: AppColors.kBackgroundColor2,
+            //         ),
+            //         child: Stack(
+            //           alignment: Alignment.topCenter,
+            //           children: [
+            //             Image.asset(
+            //               ImageUrls.kBackgroundTextureBig,
+            //               width: 440,
+            //               height: 438.w,
+            //               fit: BoxFit.fitWidth,
+            //             ),
+            //             Column(
+            //               mainAxisAlignment: MainAxisAlignment.center,
+            //               children: [
+            //                 Container(
+            //                   height: 210.w,
+            //                   width: 210.w,
+            //                   decoration: BoxDecoration(
+            //                     shape: BoxShape.circle,
+            //                     border: Border.all(
+            //                       width: 1,
+            //                       color: AppColors.kBorderColor,
+            //                     ),
+            //                   ),
+
+            //                   child: Center(
+            //                     child: Container(
+            //                       height: 168.w,
+            //                       width: 168.w,
+            //                       // padding: EdgeInsets.all(5.w),
+            //                       decoration: BoxDecoration(
+            //                         shape: BoxShape.circle,
+            //                         border: Border.all(
+            //                           width: 1,
+            //                           color: AppColors.kBorderColor,
+            //                         ),
+            //                       ),
+
+            //                       child: Center(
+            //                         child: Container(
+            //                           height: 120.w,
+            //                           width: 120.w,
+            //                           padding: EdgeInsets.all(3.w),
+            //                           decoration: BoxDecoration(
+            //                             shape: BoxShape.circle,
+
+            //                             border: Border.all(
+            //                               width: 1,
+            //                               color: AppColors.kBorderColor,
+            //                             ),
+            //                             color: AppColors.kTextColor1,
+            //                           ),
+            //                           child: Container(
+            //                             height: 120.w,
+            //                             width: 120.w,
+
+            //                             decoration: BoxDecoration(
+            //                               shape: BoxShape.circle,
+            //                               gradient: LinearGradient(
+            //                                 begin: Alignment.bottomRight,
+            //                                 end: Alignment.topLeft,
+            //                                 colors: [
+            //                                   Color(0xff333333),
+            //                                   Color(0xff333333),
+            //                                   Color(0xff333333),
+            //                                   Color.fromARGB(0, 51, 51, 51),
+            //                                 ],
+            //                               ),
+            //                               border: Border.all(
+            //                                 width: 1,
+            //                                 color: AppColors.kBorderColor,
+            //                               ),
+            //                               // color: AppColors.kTextColor1,
+            //                             ),
+            //                             child: Center(
+            //                               child: Stack(
+            //                                 alignment: Alignment.center,
+            //                                 children: [
+            //                                   Image.asset(
+            //                                     ImageUrls
+            //                                         .kBackgroundTextureSmall,
+            //                                     width: 120.w,
+            //                                     height: 120.w,
+            //                                     fit: BoxFit.fitWidth,
+            //                                   ),
+            //                                   Image.asset(
+            //                                     scroll2ImageUrls[index],
+            //                                     height: 58.w,
+            //                                     width: 58.w,
+            //                                     fit: BoxFit.scaleDown,
+            //                                     semanticLabel:
+            //                                         "${scroll2SubTitle[index]} market icon",
+            //                                   ),
+            //                                 ],
+            //                               ),
+            //                             ),
+            //                           ),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ),
+
+            //                 SizedBox(height: 24.w),
+
+            //                 SelectableText(
+            //                   scroll2Title[index],
+            //                   style: AppTextStyles.h0.copyWith(
+            //                     fontSize: 42.spMin,
+            //                   ),
+            //                 ),
+
+            //                 SizedBox(height: 24.w),
+
+            //                 Container(
+            //                   height: 52.w,
+            //                   padding: EdgeInsets.symmetric(horizontal: 20.w),
+            //                   decoration: BoxDecoration(
+            //                     borderRadius: BorderRadius.circular(100.r),
+            //                     border: Border.all(
+            //                       width: 1,
+            //                       color: AppColors.kBorderColor,
+            //                     ),
+            //                   ),
+
+            //                   child: Center(
+            //                     child: SelectableText(
+            //                       scroll2SubTitle[index],
+            //                       style: AppTextStyles.h3.copyWith(
+            //                         fontSize: 24.spMin,
+            //                       ),
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ],
+            //             ),
+            //           ],
+            //         ),
+            //       );
+            //     },
+            //   ),
+            // ),
           ],
+        ),
+      ],
+    );
+  }
+}
+
+class CountryStatsWidget extends StatelessWidget {
+  const CountryStatsWidget({
+    super.key,
+    required this.title,
+    required this.containerLightText,
+    required this.containerBoldText,
+  });
+  final String title, containerLightText, containerBoldText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: SelectableText(
+            title,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.h0.copyWith(
+              color: AppColors.whiteColor,
+              fontSize: 66.spMin,
+            ),
+          ),
+        ),
+        10.horizontalSpace,
+
+        Container(
+          height: 52.w,
+          width: 372.w,
+          decoration: BoxDecoration(
+            border: const GradientBoxBorder(
+              gradient: LinearGradient(
+                colors: [Color(0xff333333), Color.fromARGB(0, 51, 51, 51)],
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+              ),
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(110.r),
+            gradient: LinearGradient(
+              colors: [Color(0xff1f1f1f), Color.fromARGB(0, 31, 31, 31)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Center(
+            child: SelectableText.rich(
+              textAlign: TextAlign.center,
+
+              TextSpan(
+                children: [
+                  TextSpan(text: containerLightText, style: AppTextStyles.h3),
+                  TextSpan(
+                    text: containerBoldText,
+
+                    style: AppTextStyles.h3.copyWith(fontSize: 24.spMin),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -605,39 +1555,80 @@ class PartnersSection extends StatelessWidget {
   const PartnersSection({super.key});
 
   final List<String> partnerLogoUrls = const [
-    "assets/images/partners/awsLogo.png",
-    "assets/images/partners/googleLogo.png",
-    "assets/images/partners/humanLogo.png",
-    "assets/images/partners/nvidiaLogo.png",
-    "assets/images/partners/prebidLogo.png",
-    "assets/images/partners/xandrLogo.png",
+    // "assets/images/partners/awsLogo.png",
+    // "assets/images/partners/googleLogo.png",
+    // "assets/images/partners/humanLogo.png",
+    // "assets/images/partners/nvidiaLogo.png",
+    // "assets/images/partners/prebidLogo.png",
+    // "assets/images/partners/xandrLogo.png",
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/googleLogo.png",
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/awsLogo.png",
+
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/nvidiaLogo.png",
+
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/humanLogo.png",
+
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/xandrLogo.png",
+
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/prebidLogo.png",
+    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/sarvamLogo.png",
   ];
 
   final List<String> partnerNames = const [
     "AWS",
     "Google",
-    "HUMAN",
     "NVIDIA",
-    "Prebid",
+    "HUMAN",
     "Xandr",
+
+    "Prebid",
+    "Sarvam",
   ];
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       children: [
-        Image.asset(
-          "assets/images/bgPartners.png",
-          height: 689.h,
-          width: double.maxFinite,
-          fit: BoxFit.fitWidth,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              "assets/images/bgPartners.webp",
+              height: 888.w,
+              width: double.maxFinite,
+              fit: BoxFit.fitWidth,
+              excludeFromSemantics: true,
+            ),
+
+            SelectableText.rich(
+              textAlign: TextAlign.center,
+
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Powered By\n",
+                    style: AppTextStyles.caption.copyWith(
+                      color: Color(0xffe0e0e0),
+                      fontSize: 42.spMin,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "Leading Tech",
+
+                    style: AppTextStyles.h0.copyWith(
+                      color: Color(0xffe0e0e0),
+                      fontSize: 72.spMin,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        Container(
-          height: 689.h,
-          width: double.maxFinite,
-          color: Colors.black45,
-        ),
+
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 120.w, vertical: 113.w),
 
@@ -645,92 +1636,109 @@ class PartnersSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SelectableText(
-                "Powered by Leading Tech",
-                style: AppTextStyles.h1.copyWith(fontSize: 36.spMin),
-              ),
-              SizedBox(height: 30.w),
-
               SizedBox(
-                height: 80.w,
+                height: 200.w,
                 child: Row(
-                  children: List.generate(3, (index) {
-                    return Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 24.w,
-                                vertical: 18.w,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100.r),
-                                border: Border.all(
-                                  width: 1,
-                                  color: AppColors.kBorderColor,
-                                ),
-                              ),
-                              child: Image.asset(
-                                partnerLogoUrls[index],
-                                semanticLabel: "${partnerNames[index]} logo",
-                              ),
-                            ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(4, (index) {
+                    return Container(
+                      height: 192.w,
+                      width: 240.w,
+                      margin: EdgeInsets.only(right: 44.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 18.w,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.r),
+                        color: const Color.fromARGB(26, 255, 255, 255),
+                        border: const GradientBoxBorder(
+                          gradient: LinearGradient(
+                            colors: [Color(0xffffffff), Color(0xff666666)],
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
                           ),
-                          SizedBox(width: 20.w),
-                          Container(width: 1.w, color: AppColors.kBorderColor),
-                          SizedBox(width: 20.w),
-                        ],
+                          width: 1,
+                        ),
+                      ),
+                      child: AppCachedImage(
+                        imageUrl: partnerLogoUrls[index],
+                        semanticLabel: "${partnerNames[index]} logo",
                       ),
                     );
                   }),
                 ),
               ),
 
-              SizedBox(height: 30.w),
-
-              Container(
-                height: 1,
-                width: double.maxFinite,
-                color: AppColors.kBorderColor,
-              ),
-
-              SizedBox(height: 30.w),
+              SizedBox(height: 44.w),
 
               SizedBox(
-                height: 80.w,
+                height: 200.w,
                 child: Row(
-                  children: List.generate(3, (index) {
-                    return Expanded(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 24.w,
-                                vertical: 18.w,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(100.r),
-                                border: Border.all(
-                                  width: 1,
-                                  color: AppColors.kBorderColor,
-                                ),
-                              ),
-                              child: Image.asset(
-                                partnerLogoUrls[index + 3],
-                                semanticLabel:
-                                    "${partnerNames[index + 3]} logo",
-                              ),
-                            ),
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(2, (index) {
+                    return Container(
+                      height: 192.w,
+                      width: 240.w,
+                      margin: EdgeInsets.only(right: 44.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 18.w,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.r),
+                        color: const Color.fromARGB(26, 255, 255, 255),
+                        border: const GradientBoxBorder(
+                          gradient: LinearGradient(
+                            colors: [Color(0xffffffff), Color(0xff666666)],
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
                           ),
-                          SizedBox(width: 20.w),
-                          Container(width: 1.w, color: AppColors.kBorderColor),
-                          SizedBox(width: 20.w),
-                        ],
+                          width: 1,
+                        ),
+                      ),
+                      child: AppCachedImage(
+                        imageUrl: partnerLogoUrls[index + 4],
+                        semanticLabel: "${partnerNames[index + 4]} logo",
                       ),
                     );
                   }),
+                ),
+              ),
+
+              SizedBox(height: 44.w),
+
+              SizedBox(
+                height: 200.w,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 192.w,
+                      width: 240.w,
+                      margin: EdgeInsets.only(right: 44.w),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 18.w,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.r),
+                        color: const Color.fromARGB(26, 255, 255, 255),
+                        border: const GradientBoxBorder(
+                          gradient: LinearGradient(
+                            colors: [Color(0xffffffff), Color(0xff666666)],
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                          ),
+                          width: 1,
+                        ),
+                      ),
+                      child: AppCachedImage(
+                        imageUrl: partnerLogoUrls[6],
+                        semanticLabel: "${partnerNames[6]} logo",
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -854,7 +1862,7 @@ class KeyOfferingsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        SizedBox(height: 1150.w, child: RippleBackgroundAnimation()),
+        SizedBox(height: 900.w, child: RippleBackgroundAnimation()),
         SizedBox(
           width: double.maxFinite,
           child: Column(
@@ -891,108 +1899,12 @@ class KeyOfferingsSection extends StatelessWidget {
                   children: [
                     Expanded(
                       flex: 6,
-                      child: Container(
-                        // height: 292.w,
-                        width: 550.w,
-                        padding: EdgeInsets.all(AppSpacing.sm),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(73, 77, 77, 77),
-                          borderRadius: BorderRadius.circular(23.r),
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 100.w,
-                              width: 100.w,
-                              padding: EdgeInsets.all(AppSpacing.sm),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.kCardColor2,
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xff4d4d4d),
-                                      Color(0xff1a1a1a),
-                                    ],
-                                  ),
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      ImageUrls.kBackgroundTextureSmall,
-                                    ),
-                                  ),
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.transparent,
-                                  ),
-                                  child: Center(
-                                    child: SvgPicture.asset(
-                                      "assets/icons/starsIcon.svg",
-                                      height: 92.w,
-                                      width: 92.w,
-                                      fit: BoxFit.scaleDown,
-                                      semanticsLabel: "CTV Monetization icon",
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            30.verticalSpace,
-                            SelectableText(
-                              "CTV Monetization",
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.h2.copyWith(
-                                fontSize: 24.spMin,
-                              ),
-                            ),
-                            20.verticalSpace,
-                            SizedBox(
-                              width: 460.w,
-                              child: SelectableText.rich(
-                                TextSpan(
-                                  style: AppTextStyles.body.copyWith(
-                                    fontSize: 20.spMin,
-                                    color: AppColors.kTextColor3,
-                                  ),
-                                  children: [
-                                    const TextSpan(
-                                      text:
-                                          "Unlock premium ad opportunities across Connected TV ecosystems with precision targeting using our ",
-                                    ),
-                                    TextSpan(
-                                      text: "CTV advertising platform",
-                                      style: AppTextStyles.body.copyWith(
-                                        fontSize: 20.spMin,
-                                        color: AppColors.kTextColor3,
-                                        decoration: TextDecoration
-                                            .underline, // optional (for UX)
-                                        decorationColor: AppColors.kTextColor3,
-                                      ),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () async {
-                                          final url = Uri.parse(
-                                            "https://thegermanemedia.com/monetization",
-                                          );
-                                          if (!await launchUrl(url)) {
-                                            throw Exception(
-                                              'Could not launch $url',
-                                            );
-                                          }
-                                        },
-                                    ),
-                                  ],
-                                ),
-                                maxLines: 4,
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: TgmKeyOfferingsCard(
+                        title: "CTV Monetization",
+                        iconUrl: "assets/icons/starsIcon.svg",
+                        subTitle:
+                            "Unlock premium ad opportunities across Connected TV ecosystems with precision targeting using our CTV advertising platform.",
+                        route: "/monetization/ctv",
                       ),
                     ),
                     Expanded(flex: 4, child: SizedBox()),
@@ -1003,6 +1915,7 @@ class KeyOfferingsSection extends StatelessWidget {
                         iconUrl: "assets/icons/starsIcon.svg",
                         subTitle:
                             "Integrate seamless, high-impact ad formats within gaming environments to enhance engagement and drive revenue.",
+                        route: "/monetization/game",
                       ),
                     ),
                   ],
@@ -1015,25 +1928,28 @@ class KeyOfferingsSection extends StatelessWidget {
                   children: [
                     Expanded(flex: 3, child: SizedBox()),
                     Expanded(
-                      flex: 4,
+                      flex: 5,
+                      child: TgmKeyOfferingsCard(
+                        title: "In-App Monetization",
+                        iconUrl: "assets/icons/starsIcon.svg",
+                        subTitle:
+                            "Maximize in-app revenue with data-driven strategies that unlock greater value from every impression across premium mobile environments.",
+                        // "Leverage data-led strategies to maximize returns from every video impression across web and OTT platforms.",
+                        route: "/monetization/in-app",
+                      ),
+                    ),
+                    60.horizontalSpace,
+
+                    Expanded(
+                      flex: 5,
                       child: TgmKeyOfferingsCard(
                         title: "Web Video Monetization",
                         iconUrl: "assets/icons/starsIcon.svg",
                         subTitle:
                             "Leverage data-led strategies to maximize returns from every video impression across web and OTT platforms.",
+                        route: "/monetization/web",
                       ),
                     ),
-                    // 60.horizontalSpace,
-
-                    // Expanded(
-                    //   flex: 4,
-                    //   child: TgmKeyOfferingsCard(
-                    //     title: "Web Video Monetization",
-                    //     iconUrl: "assets/icons/starsIcon.svg",
-                    //     subTitle:
-                    //         "Leverage data-led strategies to maximize returns from every video impression across web and OTT platforms.",
-                    //   ),
-                    // ),
                     Expanded(flex: 3, child: SizedBox()),
                   ],
                 ),
@@ -1056,7 +1972,7 @@ class WhatTgmDoesSection extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl.w),
           child: SelectableText(
-            "How We Drive Results",
+            "What TGM Does",
             style: AppTextStyles.h1.copyWith(fontSize: 48),
             textAlign: TextAlign.center,
           ),
@@ -1070,22 +1986,16 @@ class WhatTgmDoesSection extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: "As a leading ",
+                  text: "We empower publishers ",
                   style: AppTextStyles.h2.copyWith(
                     fontWeight: FontWeight.w400,
                     color: AppColors.kTextColor2,
                   ),
                 ),
-                TextSpan(
-                  text: "Programmatic Advertising Platform in USA",
-                  style: AppTextStyles.h2.copyWith(
-                    fontWeight: FontWeight.w700, // bold
-                    color: AppColors.kTextColor2,
-                  ),
-                ),
+
                 TextSpan(
                   text:
-                      ", we empower publishers and brands to unlock real revenue through programmatic intelligence.",
+                      "and brands to unlock real revenue through programmatic intelligence.",
                   style: AppTextStyles.h2.copyWith(
                     fontWeight: FontWeight.w400,
                     color: AppColors.kTextColor2,
@@ -1106,8 +2016,8 @@ class WhatTgmDoesSection extends StatelessWidget {
                 title: "Ad-Tech Innovation",
 
                 subTitle:
-                    "Over Here, We develop intelligent ad tech solutions that unlock new monetisation opportunities for brands.",
-
+                    // "Over Here, We develop intelligent ad tech solutions that unlock new monetisation opportunities for brands.",
+                    "We develop intelligent ad-tech solutions that unlock new monetisation opportunities for brands.",
                 btnText: "Learn More",
                 iconUrl: "assets/icons/lightIcon.svg",
               ),
@@ -1188,205 +2098,191 @@ class HomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
+      alignment: Alignment.center,
       children: [
-        SelectableText.rich(
-          textAlign: TextAlign.center,
+        Image.asset(
+          ImageUrls.kBackgroundTextureBig,
+          // height: MediaQuery.sizeOf(context).height,
+          width: MediaQuery.sizeOf(context).width,
+          fit: BoxFit.cover,
+        ),
+        Column(
+          children: [
+            SelectableText.rich(
+              textAlign: TextAlign.center,
 
-          TextSpan(
-            children: [
               TextSpan(
-                text: "Programmatic Advertising Platform",
-                style: AppTextStyles.h0,
-              ),
-              TextSpan(
-                text: " in USA",
-
-                style: AppTextStyles.h0.copyWith(color: AppColors.kTextColor1),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 240.w),
-          child: SelectableText(
-            // "Germane Media builds high-impact advertising pipelines — connecting brands to real audiences through data, CTV, and automated media buying.",
-            "Powering the future of ad growth, Germane Media builds high-impact advertising pipelines connecting brands to real audiences through data, CTV, and automated media buying.",
-            style: AppTextStyles.h2.copyWith(
-              color: AppColors.kTextColor2,
-              fontWeight: FontWeight.w400,
-              fontSize: 22.spMin,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        // 50.verticalSpace,
-        SizedBox(height: 100.w),
-
-        Obx(
-          () => CarouselSlider(
-            options: CarouselOptions(
-              height: 400,
-              autoPlay: true,
-              viewportFraction: 0.2,
-              enlargeCenterPage: false,
-              onPageChanged: (index, reason) {
-                homeController.changeIndex(index);
-              },
-            ),
-            items: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].asMap().entries.map((entry) {
-              int index = entry.key;
-              int i = entry.value;
-
-              // distance from center item
-              int distance = (index - homeController.index).abs();
-
-              // scale logic
-              double scale;
-              if (distance == 0) {
-                scale = 0.7; // center - smallest
-              } else if (distance == 1) {
-                scale = 0.85; // second left & right
-              } else {
-                scale = 1.1; // far left & far right - biggest
-              }
-
-              return AnimatedScale(
-                scale: scale,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-                child: AppCachedImage(
-                  imageUrl:
-                      "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png",
-                  fit: BoxFit.contain,
-                  semanticLabel: "The Germane Media platform screenshot $i",
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-
-        // 50.verticalSpace,
-        SizedBox(height: 100.w),
-
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 180.w),
-          child: SelectableText(
-            "Ready to Transform Your Digital Presence?",
-            style: AppTextStyles.h1.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 48,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        // 20.verticalSpace,
-        SizedBox(height: 30.w),
-
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 240.w),
-          child: SelectableText.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text:
-                      "Harness the power of data-led decisioning through advanced ",
-                  style: AppTextStyles.h2.copyWith(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 28,
-                    color: AppColors.kTextColor2,
+                children: [
+                  TextSpan(
+                    text: "Powering the Future",
+                    style: AppTextStyles.h0,
                   ),
-                ),
-                TextSpan(
-                  text: "ad tech solutions",
-                  style: AppTextStyles.h2.copyWith(
-                    fontWeight: FontWeight.w700, // bold
-                    fontSize: 28,
-                    color: AppColors.kTextColor2,
-                  ),
-                ),
-                TextSpan(
-                  text:
-                      " to drive smarter advertising strategies, where every impression is carefully analyzed, optimized, and backed by real-time intelligence to deliver meaningful results.",
-                  style: AppTextStyles.h2.copyWith(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 28,
-                    color: AppColors.kTextColor2,
-                  ),
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        // 30.verticalSpace,
-        SizedBox(height: 30.w),
+                  TextSpan(
+                    text: " of Ad Growth",
 
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.xxxl.w),
-          child: SelectableText(
-            "Unlock Your Digital Potential Today",
-            style: AppTextStyles.h2.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 25,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        // 30.verticalSpace,
-        SizedBox(height: 30.w),
-
-        InkWell(
-          onTap: () {
-            context.go('/contact-us');
-            trackPage('/contact-us');
-            final HeaderController headerController = Get.put(
-              HeaderController(),
-            );
-            headerController.changeIndex(6);
-          },
-          child: IntrinsicWidth(
-            child: Container(
-              height: 84.w,
-              padding: EdgeInsets.all(AppSpacing.md.w),
-              decoration: BoxDecoration(
-                color: AppColors.whiteColor,
-                borderRadius: BorderRadius.circular(56),
-              ),
-              child: Center(
-                child: Text(
-                  "Book a Strategy Call",
-                  style: AppTextStyles.h1.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.kBackgroundColor,
+                    style: AppTextStyles.h0.copyWith(
+                      color: AppColors.kTextColor1,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
+                ],
               ),
             ),
-          ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 240.w),
+              child: SelectableText(
+                // "Germane Media builds high-impact advertising pipelines — connecting brands to real audiences through data, CTV, and automated media buying.",
+                // "Powering the future of ad growth, Germane Media builds high-impact advertising pipelines connecting brands to real audiences through data, CTV, and automated media buying.",
+                "Germane Media builds high-impact advertising pipelines — connecting brands to real audiences through data, CTV, and automated media buying.",
+                style: AppTextStyles.h2.copyWith(
+                  color: AppColors.kTextColor2,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 22.spMin,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // 50.verticalSpace,
+            SizedBox(height: 20.w),
+
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 400,
+                autoPlay: true,
+                viewportFraction: 0.21,
+
+                enlargeCenterPage: false,
+                onPageChanged: (index, reason) {
+                  homeController.changeIndex(index);
+                },
+              ),
+              items: [6, 7, 8, 9, 10].asMap().entries.map((entry) {
+                int i = entry.value;
+
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  child: Center(
+                    child: AspectRatio(
+                      aspectRatio: 402 / 429,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25.r),
+                        child: AppCachedImage(
+                          imageUrl:
+                              "https://websiteimagestgm.s3.eu-north-1.amazonaws.com/home+images/$i.png",
+                          // "https://websitetgm.s3.eu-north-1.amazonaws.com/home2/$i.png",
+                          // "https://testbucketgermane.s3.eu-north-1.amazonaws.com/verticalurl/websitehome/$i.png",
+                          fit: BoxFit.cover,
+                          semanticLabel:
+                              "The Germane Media platform screenshot $i",
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+
+            // 50.verticalSpace,
+            SizedBox(height: 50.w),
+
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 180.w),
+            //   child: SelectableText(
+            //     "Ready to Transform Your Digital Presence?",
+            //     style: AppTextStyles.h1.copyWith(
+            //       fontWeight: FontWeight.w400,
+            //       fontSize: 48,
+            //     ),
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
+            // // 20.verticalSpace,
+            // SizedBox(height: 30.w),
+
+            // Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 240.w),
+            //   child: SelectableText.rich(
+            //     TextSpan(
+            //       children: [
+            //         TextSpan(
+            //           text:
+            //               "Harness the power of data-led decisioning through advanced ",
+            //           style: AppTextStyles.h2.copyWith(
+            //             fontWeight: FontWeight.w400,
+            //             fontSize: 28,
+            //             color: AppColors.kTextColor2,
+            //           ),
+            //         ),
+            //         TextSpan(
+            //           text: "ad tech solutions",
+            //           style: AppTextStyles.h2.copyWith(
+            //             fontWeight: FontWeight.w700, // bold
+            //             fontSize: 28,
+            //             color: AppColors.kTextColor2,
+            //           ),
+            //         ),
+            //         TextSpan(
+            //           text:
+            //               " to drive smarter advertising strategies, where every impression is carefully analyzed, optimized, and backed by real-time intelligence to deliver meaningful results.",
+            //           style: AppTextStyles.h2.copyWith(
+            //             fontWeight: FontWeight.w400,
+            //             fontSize: 28,
+            //             color: AppColors.kTextColor2,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
+            // // 30.verticalSpace,
+            // SizedBox(height: 30.w),
+          ],
         ),
       ],
     );
   }
 }
 
-class Testimonials extends StatelessWidget {
+class Testimonials extends StatefulWidget {
   const Testimonials({super.key});
 
   @override
+  State<Testimonials> createState() => _TestimonialsState();
+}
+
+class _TestimonialsState extends State<Testimonials> {
+  static const int _perPage = 4;
+  int _page = 0;
+
+  List<TestimonialsModel> get _all => TestimonialData.allTestimonials;
+
+  int get _pageCount => (_all.length / _perPage).ceil();
+
+  List<TestimonialsModel> get _currentItems {
+    final start = _page * _perPage;
+    return _all.sublist(start, (start + _perPage).clamp(0, _all.length));
+  }
+
+  void _go(int delta) {
+    final next = _page + delta;
+    if (next < 0 || next >= _pageCount) return;
+    setState(() => _page = next);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final items = _currentItems;
+
     return Column(
       children: [
         SizedBox(height: 20.w),
         SelectableText.rich(
           textAlign: TextAlign.center,
-
           TextSpan(
             children: [
               TextSpan(
                 text: "Our",
-
                 style: AppTextStyles.h0.copyWith(color: AppColors.kTextColor1),
               ),
               TextSpan(text: " Testimonials", style: AppTextStyles.h0),
@@ -1397,136 +2293,295 @@ class Testimonials extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 350.w),
           child: SelectableText(
-            "Don't just take our word for it; hear what our satisfied clients have to say about their experience with DigitX. We take pride in building lasting relationships and delivering exceptional results.",
+            "Don't just take our word for it; hear what our satisfied clients have to say about their experience with TGM. We take pride in building lasting relationships and delivering exceptional results.",
             style: AppTextStyles.h3.copyWith(color: AppColors.kTextColor2),
             textAlign: TextAlign.center,
           ),
         ),
-
-        SizedBox(height: 80.w),
-
+        SizedBox(height: 70.w),
         Padding(
-          padding: EdgeInsets.only(left: 25.w),
-          child: SizedBox(
-            height: 500.w,
-
-            child: ListView.builder(
-              itemCount: TestimonialData.allTestimonials.length,
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                final currentTestimonial =
-                    TestimonialData.allTestimonials[index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        width: 510.w,
-                        // height: 303.w,
-                        padding: EdgeInsets.all(40.w),
-                        margin: EdgeInsets.only(right: 30.w),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.r),
-                          border: Border.all(
-                            width: 1,
-                            color: AppColors.kBorderColor,
-                          ),
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0xff1a1a1a),
-                              Color.fromARGB(0, 26, 26, 26),
-                            ],
-                          ),
-                        ),
-
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 58.w,
-                              width: 58.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                color: AppColors.kSelectedButtonColor,
-                              ),
-                            ),
-                            SizedBox(height: 30.w),
-                            Expanded(
-                              child: SelectableText(
-                                currentTestimonial.data,
-                                // "After integrating Germane’s Prebid adapter, we saw a 38% lift in CTV eCPMs and gained full transparency into our auctions. Their team truly understands publisher-side yield dynamics.",
-                                style: AppTextStyles.h3,
-                                textAlign: TextAlign.start,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+          padding: EdgeInsets.symmetric(horizontal: 40.w),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _arrow(isNext: false, enabled: _page > 0, onTap: () => _go(-1)),
+              SizedBox(width: 24.w),
+              Expanded(
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 350),
+                  switchInCurve: Curves.easeOut,
+                  switchOutCurve: Curves.easeIn,
+                  transitionBuilder: (child, animation) => FadeTransition(
+                    opacity: animation,
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0.04, 0),
+                        end: Offset.zero,
+                      ).animate(animation),
+                      child: child,
                     ),
-
-                    Padding(
-                      padding: EdgeInsets.only(left: 14.w),
-                      child: ClipPath(
-                        clipper: CustomTriangleClipper(),
-                        child: Container(
-                          width: 38.w,
-                          height: 23.w,
-                          decoration: BoxDecoration(color: Color(0xff262626)),
+                  ),
+                  child: SizedBox(
+                    key: ValueKey<int>(_page),
+                    height: 700.w,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: items.isNotEmpty
+                              ? _tallCard(items[0])
+                              : const SizedBox.shrink(),
                         ),
-                      ),
-                    ),
-
-                    SizedBox(height: 21.w),
-
-                    SizedBox(
-                      height: 70.w,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            maxRadius: 35.w,
-                            backgroundColor: AppColors.kCardColor1,
-                            child: Image.asset(
-                              currentTestimonial.imageUrl,
-                              fit: BoxFit.scaleDown,
-                              semanticLabel:
-                                  "Photo of ${currentTestimonial.writer}",
-                            ),
-                          ),
-                          SizedBox(width: 14.w),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        SizedBox(width: 24.w),
+                        Expanded(
+                          flex: 3,
+                          child: Column(
                             children: [
-                              SelectableText(
-                                currentTestimonial.writer,
-                                // "Ritika Sharma",
-                                style: AppTextStyles.h3.copyWith(
-                                  fontSize: 20.spMin,
-                                ),
+                              Expanded(
+                                child: items.length > 1
+                                    ? _quoteCard(items[1])
+                                    : const SizedBox.shrink(),
                               ),
-                              SizedBox(height: 2.w),
-                              SelectableText(
-                                "Programmatic Head, StreamCast OTT",
-                                style: AppTextStyles.h3.copyWith(
-                                  fontWeight: FontWeight.w200,
-                                  color: AppColors.kTextColor2,
-                                ),
+                              SizedBox(height: 24.w),
+                              Expanded(
+                                child: items.length > 2
+                                    ? _quoteCard(items[2])
+                                    : const SizedBox.shrink(),
                               ),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(width: 24.w),
+                        Expanded(
+                          flex: 2,
+                          child: items.length > 3
+                              ? _tallCard(items[3])
+                              : const SizedBox.shrink(),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              },
+                  ),
+                ),
+              ),
+              SizedBox(width: 24.w),
+              _arrow(
+                isNext: true,
+                enabled: _page < _pageCount - 1,
+                onTap: () => _go(1),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 40.w),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: List.generate(_pageCount, (i) {
+            final active = i == _page;
+            return GestureDetector(
+              onTap: () => setState(() => _page = i),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                margin: EdgeInsets.symmetric(horizontal: 5.w),
+                width: active ? 30.w : 10.w,
+                height: 10.w,
+                decoration: BoxDecoration(
+                  color: active ? Colors.white : AppColors.kCardColor2,
+                  borderRadius: BorderRadius.circular(5.r),
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
+    );
+  }
+
+  BoxDecoration get _cardDecoration => BoxDecoration(
+    color: const Color.fromARGB(18, 255, 255, 255),
+    border: const GradientBoxBorder(
+      gradient: LinearGradient(
+        colors: [Color(0x33ffffff), Color(0x1a666666)],
+        begin: Alignment.topRight,
+        end: Alignment.bottomLeft,
+      ),
+      width: 1,
+    ),
+    borderRadius: BorderRadius.circular(28.r),
+  );
+
+  Widget _arrow({
+    required bool isNext,
+    required bool enabled,
+    required VoidCallback onTap,
+  }) {
+    return Opacity(
+      opacity: enabled ? 1 : 0.3,
+      child: GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: MouseRegion(
+          cursor: enabled ? SystemMouseCursors.click : SystemMouseCursors.basic,
+          child: Container(
+            width: 68.w,
+            height: 68.w,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.kCardColor2, width: 1.2),
+            ),
+            child: Icon(
+              isNext ? Icons.chevron_right : Icons.chevron_left,
+              color: Colors.white,
+              size: 34.w,
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _starRow(double rating, {required double size}) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (i) {
+        final diff = rating - i;
+        return Padding(
+          padding: EdgeInsets.only(right: 4.w),
+          child: Icon(
+            diff >= 1
+                ? Icons.star_rounded
+                : diff >= 0.5
+                ? Icons.star_half_rounded
+                : Icons.star_border_rounded,
+            color: diff >= 0.5 ? AppColors.kTextColor5 : AppColors.kCardColor2,
+            size: size.w,
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _nameBlock(TestimonialsModel t) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SelectableText(
+          t.writer,
+          style: AppTextStyles.h3.copyWith(
+            fontSize: 19.spMin,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        if (t.writeName.isNotEmpty) ...[
+          SizedBox(height: 3.w),
+          SelectableText(
+            t.writeName,
+            style: AppTextStyles.body.copyWith(
+              fontSize: 13.spMin,
+              color: AppColors.kTextColor2,
+            ),
+          ),
+        ],
       ],
+    );
+  }
+
+  Widget _tallCard(TestimonialsModel t) {
+    return Container(
+      padding: EdgeInsets.all(20.w),
+      decoration: _cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20.r),
+              child: Container(
+                width: double.infinity,
+                color: AppColors.kCardColor1,
+                padding: EdgeInsets.all(24.w),
+                child: Image.asset(
+                  t.imageUrl,
+                  fit: BoxFit.contain,
+                  semanticLabel: "Photo of ${t.writer}",
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 22.w),
+          Expanded(
+            flex: 3,
+            child: SingleChildScrollView(
+              child: SelectableText(
+                t.data,
+                style: AppTextStyles.h3.copyWith(
+                  fontSize: 15.spMin,
+                  color: AppColors.kTextColor5,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 22.w),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(child: _nameBlock(t)),
+              SizedBox(width: 12.w),
+              Icon(
+                Icons.star_rounded,
+                color: AppColors.kTextColor5,
+                size: 26.w,
+              ),
+              SizedBox(width: 6.w),
+              SelectableText(
+                t.stars % 1 == 0
+                    ? t.stars.toStringAsFixed(0)
+                    : t.stars.toStringAsFixed(1),
+                style: AppTextStyles.h3.copyWith(fontSize: 20.spMin),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _quoteCard(TestimonialsModel t) {
+    return Container(
+      padding: EdgeInsets.all(28.w),
+      decoration: _cardDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 26.w,
+                backgroundColor: AppColors.kCardColor1,
+                backgroundImage: AssetImage(t.imageUrl),
+              ),
+              SizedBox(width: 14.w),
+              Expanded(child: _nameBlock(t)),
+            ],
+          ),
+          SizedBox(height: 20.w),
+          Expanded(
+            child: SingleChildScrollView(
+              child: SelectableText(
+                t.data,
+                style: AppTextStyles.h3.copyWith(
+                  fontSize: 15.spMin,
+                  color: AppColors.kTextColor5,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.w),
+          _starRow(t.stars, size: 22),
+        ],
+      ),
     );
   }
 }

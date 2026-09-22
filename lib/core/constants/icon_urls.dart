@@ -37,6 +37,12 @@ class IconUrls {
   static const String kReadMore = "assets/icons/readMoreIcon.svg";
   static const String kExpandIcon = "assets/icons/expandIcon.svg";
 
+  static const String kArrowUpWhiteIcon = "assets/icons/arrowUpWhite.svg";
+  static const String kArrowDownWhiteIcon = "assets/icons/arrowDownWhite.svg";
+  static const String kArrowLeftWhiteIcon = "assets/icons/arrowLeftWhite.svg";
+  static const String kArrowRightWhiteIcon =
+      "assets/icons/arrowRightWhite.svg";
+
 
 
 

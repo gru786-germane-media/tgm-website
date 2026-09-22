@@ -11,6 +11,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/monetization/controllers/case_study_controller.dart';
 import 'package:tgm/modules/monetization/widgets/case_studies_cards.dart';
 
@@ -57,7 +58,7 @@ class _ParticularCaseStudyDesktopState
       backgroundColor: AppColors.kBackgroundColor2,
       body: Obx(
         () => caseStudyController.isLoadingDetail.value
-            ? Center(child: CircularProgressIndicator.adaptive())
+            ? Center(child: AppLoader())
             : SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -600,6 +601,8 @@ class _ParticularCaseStudyDesktopState
                                           height: 20.w,
                                           width: 20.w,
                                           fit: BoxFit.scaleDown,
+                                          semanticsLabel:
+                                              "Read full case study",
                                         ),
                                       ],
                                     ),
@@ -636,9 +639,7 @@ class _ParticularCaseStudyDesktopState
 
                           Obx(
                             () => caseStudyController.isLoading.value
-                                ? Center(
-                                    child: CircularProgressIndicator.adaptive(),
-                                  )
+                                ? Center(child: AppLoader())
                                 : SizedBox(
                                     height: 675.w,
                                     child: ListView.builder(
@@ -721,6 +722,7 @@ class ShareButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Share",
           ),
           SizedBox(width: 4.w),
           Text(
@@ -759,6 +761,7 @@ class ViewButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Views",
           ),
           SizedBox(width: 4.w),
           Text(
@@ -798,6 +801,7 @@ class LikeButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: isLiked ? "Liked" : "Like",
           ),
           SizedBox(width: 4.w),
           Text(

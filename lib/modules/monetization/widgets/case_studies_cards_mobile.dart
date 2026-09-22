@@ -47,14 +47,12 @@ class CaseStudiesCardsMobile extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadiusGeometry.circular(12),
 
-            child: Center(
-              child: AppCachedImage(
-                imageUrl: imageUrl,
-                height: 185,
-
-                fit: BoxFit.fitHeight,
-                semanticLabel: title,
-              ),
+            child: AppCachedImage(
+              imageUrl: imageUrl,
+              height: 185,
+              width: double.maxFinite,
+              fit: BoxFit.cover,
+              semanticLabel: title,
             ),
           ),
         ),
@@ -71,6 +69,7 @@ class CaseStudiesCardsMobile extends StatelessWidget {
                       height: 32,
                       width: 32,
                       fit: BoxFit.scaleDown,
+                      semanticLabel: "$companyName logo",
                     ),
                   ),
                   const SizedBox(width: 5),
@@ -103,6 +102,7 @@ class CaseStudiesCardsMobile extends StatelessWidget {
                         height: 12.8,
                         width: 12.8,
                         fit: BoxFit.scaleDown,
+                        excludeFromSemantics: true,
                       ),
                       SizedBox(width: 8),
                       SelectableText(
@@ -134,6 +134,7 @@ class CaseStudiesCardsMobile extends StatelessWidget {
                         height: 12.8,
                         width: 12.8,
                         fit: BoxFit.scaleDown,
+                        excludeFromSemantics: true,
                       ),
                       SizedBox(width: 8),
                       SelectableText(

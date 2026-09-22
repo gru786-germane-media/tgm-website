@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -11,10 +9,15 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/launch_url.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
+import 'package:tgm/modules/mediaHub/utils/blog_seo_tags.dart';
+import 'package:tgm/modules/mediaHub/utils/clickable_link_extension.dart';
 import 'package:tgm/modules/mediaHub/widgets/blog_cards.dart';
+import 'package:tgm/modules/header/views/desktop_header.dart';
 
 class DesktopParticularBlog extends StatefulWidget {
   final int blogId;
@@ -26,11 +29,34 @@ class DesktopParticularBlog extends StatefulWidget {
 }
 
 class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
+  final GlobalKey _fullSectionsMeasureKey = GlobalKey();
+
+  // Assume truncation is needed until measured, so long blogs never flash
+  // their full content before collapsing.
+  bool _sectionsNeedTruncation = true;
+  int? _measuredForBlogId;
+
   @override
   void initState() {
     super.initState();
     final BlogsController blogsController = Get.put(BlogsController());
     blogsController.fetchBlogById(widget.blogId);
+  }
+
+  void _measureSections() {
+    if (!mounted || _measuredForBlogId == widget.blogId) return;
+
+    final renderObject = _fullSectionsMeasureKey.currentContext
+        ?.findRenderObject();
+    if (renderObject is! RenderBox || !renderObject.hasSize) return;
+
+    final contentHeight = renderObject.size.height;
+    final availableHeight = MediaQuery.sizeOf(context).height;
+
+    setState(() {
+      _measuredForBlogId = widget.blogId;
+      _sectionsNeedTruncation = contentHeight > availableHeight;
+    });
   }
 
   @override
@@ -48,152 +74,296 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
     final BlogsController blogsController = Get.put(BlogsController());
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
-      body: Obx(
-        () => blogsController.isLoadingBlogDetail.value
-            ? Center(child: CircularProgressIndicator.adaptive())
-            : SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        AppCachedImage(
-                          imageUrl:
-                              blogsController.selectedBlog.value?.imageUrl ??
-                              "",
-                          height: 439.w,
-                          width: double.maxFinite,
-                          fit: BoxFit.cover,
-                        ),
-                        Container(
-                          width: double.maxFinite,
-                          padding: EdgeInsets.only(
-                            bottom: 35.w,
-                            left: 80.w,
-                            right: 80.w,
-                            top: 35.w,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.black45, Colors.black87],
-                            ),
-                          ),
-                          child: Center(
-                            child: SelectableText(
-                              blogsController.selectedBlog.value?.title ??
-                                  "N/A",
-                              style: AppTextStyles.h1.copyWith(
-                                fontSize: 44.spMin,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+      appBar: DesktopHeader(),
+      body: Obx(() {
+        if (blogsController.isLoadingBlogDetail.value) {
+          return Center(child: AppLoader());
+        }
 
-                    Container(
-                      height: 1,
-                      width: double.maxFinite,
-                      color: AppColors.kBorderColor,
-                    ),
+        final blog = blogsController.selectedBlog.value;
+        if (blog != null) {
+          applyBlogSeoTags(blog);
+        }
 
-                    Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Row(
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  AppCachedImage(
+                    imageUrl:
+                        blogsController.selectedBlog.value?.imageUrl ?? "",
+                    height: 439.w,
+                    width: double.maxFinite,
+                    fit: BoxFit.cover,
+                    semanticLabel: blog?.imageAltText.isNotEmpty == true
+                        ? blog?.imageAltText
+                        : blog?.title,
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    padding: EdgeInsets.only(
+                      bottom: 35.w,
+                      left: 80.w,
+                      right: 80.w,
+                      top: 35.w,
+                    ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.black45, Colors.black87],
+                      ),
+                    ),
+                    child: Center(
+                      child: SelectableText(
+                        blogsController.selectedBlog.value?.title ?? "N/A",
+                        style: AppTextStyles.h1.copyWith(fontSize: 44.spMin),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              Container(
+                height: 1,
+                width: double.maxFinite,
+                color: AppColors.kBorderColor,
+              ),
+
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 60.w),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 80.w,
-                                    ),
-                                    child: SelectableText(
-                                      "Introduction",
-                                      style: AppTextStyles.h1.copyWith(
-                                        fontSize: 20.spMin,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 6.w),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 80.w,
-                                    ),
-                                    child: SelectableText(
+                            SizedBox(height: 60.w),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 80.w),
+                              child: SelectableText(
+                                "Introduction",
+                                style: AppTextStyles.h1.copyWith(
+                                  fontSize: 20.spMin,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 6.w),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 80.w),
+                              child: SelectableText(
+                                blogsController
+                                        .selectedBlog
+                                        .value
+                                        ?.shortDescription ??
+                                    "NA",
+                                style: AppTextStyles.h3.copyWith(
+                                  fontSize: 16.spMin,
+                                  color: AppColors.kTextColor7,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 60.w),
+                            Container(
+                              height: 1,
+                              width: double.maxFinite,
+                              color: AppColors.kBorderColor,
+                            ),
+
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 80.w),
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final sections =
                                       blogsController
-                                              .selectedBlog
-                                              .value
-                                              ?.shortDescription ??
-                                          "NA",
-                                      style: AppTextStyles.h3.copyWith(
-                                        fontSize: 16.spMin,
-                                        color: AppColors.kTextColor7,
-                                      ),
-                                    ),
-                                  ),
+                                          .selectedBlog
+                                          .value
+                                          ?.sections ??
+                                      [];
+                                  final needsMeasurement =
+                                      _measuredForBlogId != widget.blogId;
 
-                                  SizedBox(height: 60.w),
-                                  Container(
-                                    height: 1,
-                                    width: double.maxFinite,
-                                    color: AppColors.kBorderColor,
-                                  ),
+                                  if (needsMeasurement) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback(
+                                          (_) => _measureSections(),
+                                        );
+                                  }
 
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 80.w,
-                                    ),
-                                    child: Obx(
-                                      () => ListView.builder(
-                                        shrinkWrap: true,
-                                        scrollDirection: Axis.vertical,
-                                        itemCount:
+                                  return Stack(
+                                    children: [
+                                      if (needsMeasurement)
+                                        Offstage(
+                                          offstage: true,
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: SizedBox(
+                                              key: _fullSectionsMeasureKey,
+                                              width: constraints.maxWidth,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: sections
+                                                    .map(
+                                                      (section) => BlogSections(
+                                                        sectionTitle: section
+                                                            .sectionTitle,
+                                                        sectionDetails: section
+                                                            .sectionContent,
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      Obx(() {
+                                        final showAll =
                                             blogsController
                                                 .selectedBlogExpanded
-                                                .value
-                                            ? blogsController
-                                                  .selectedBlog
-                                                  .value
-                                                  ?.sections
-                                                  .length
+                                                .value ||
+                                            !_sectionsNeedTruncation;
+                                        final itemCount = showAll
+                                            ? sections.length
+                                            : (sections.length > 2
+                                                  ? 2
+                                                  : sections.length);
+                                        return ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.vertical,
+                                          itemCount: itemCount,
+                                          itemBuilder: (context, index) {
+                                            final currentSection =
+                                                sections[index];
+                                            return BlogSections(
+                                              sectionTitle:
+                                                  currentSection.sectionTitle,
+                                              sectionDetails:
+                                                  currentSection.sectionContent,
+                                            );
+                                          },
+                                        );
+                                      }),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Container(
+                        width: 1,
+                        height: 1000,
+                        color: AppColors.kBorderColor,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 40.w,
+                                horizontal: 60.w,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  InkWell(
+                                    onTap: () {
+                                      if (blogsController.likedBlogsIds
+                                          .contains(widget.blogId)) {
+                                        blogsController.updateBlogCounter(
+                                          blogId: widget.blogId,
+                                          field: 'likes',
+                                          isDecrement: true,
+                                        );
+                                        blogsController.removeFromLikedBlogs(
+                                          widget.blogId,
+                                        );
+                                      } else {
+                                        blogsController.updateBlogCounter(
+                                          blogId: widget.blogId,
+                                          field: 'likes',
+                                          isDecrement: false,
+                                        );
+                                        blogsController.addToLikedBlogs(
+                                          widget.blogId,
+                                        );
+                                      }
+                                    },
+                                    child: Obx(
+                                      () => LikeButton(
+                                        isLiked: blogsController.likedBlogsIds
+                                            .contains(widget.blogId),
+                                        likeCount:
+                                            blogsController.likeCount.value >
+                                                1000
+                                            ? "${(blogsController.likeCount.value / 1000).floor()}k"
                                             : blogsController
-                                                      .selectedBlog
-                                                      .value!
-                                                      .sections
-                                                      .length >
-                                                  2
-                                            ? 2
-                                            : blogsController
                                                   .selectedBlog
-                                                  .value
-                                                  ?.sections
-                                                  .length,
-                                        itemBuilder: (context, index) {
-                                          final currentSection = blogsController
-                                              .selectedBlog
-                                              .value
-                                              ?.sections[index];
-                                          log(
-                                            "current section is $currentSection",
-                                          );
-                                          return BlogSections(
-                                            sectionTitle:
-                                                currentSection?.sectionTitle ??
-                                                "No section title",
-                                            sectionDetails:
-                                                currentSection
-                                                    ?.sectionContent ??
-                                                "No content",
-                                          );
-                                        },
+                                                  .value!
+                                                  .likesCount
+                                                  .toString(),
                                       ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 14.w),
+                                  ViewButton(
+                                    viewCount:
+                                        blogsController
+                                                .selectedBlog
+                                                .value
+                                                ?.viewsCount ==
+                                            null
+                                        ? '0'
+                                        : blogsController
+                                                  .selectedBlog
+                                                  .value!
+                                                  .viewsCount! >
+                                              1000
+                                        ? "${(blogsController.selectedBlog.value!.viewsCount / 1000).floor()}k"
+                                        : blogsController
+                                              .selectedBlog
+                                              .value!
+                                              .viewsCount
+                                              .toString(),
+                                  ),
+                                  SizedBox(width: 14.w),
+                                  InkWell(
+                                    onTap: () async {
+                                      blogsController.updateBlogCounter(
+                                        blogId: widget.blogId,
+                                        field: 'share',
+                                      );
+                                      blogsController.shareCount.value++;
+                                      showCustomPopup(
+                                        context,
+                                        "Url copied to clipboard!",
+                                        true,
+                                      );
+                                      await Clipboard.setData(
+                                        ClipboardData(
+                                          text:
+                                              "https://thegermanemedia.com/blogs/${widget.blogId}/${blogsController.selectedBlog.value!.slug}",
+                                        ),
+                                      );
+                                    },
+                                    child: ShareButton(
+                                      shareCount:
+                                          blogsController.shareCount.value >
+                                              1000
+                                          ? "${(blogsController.shareCount.value / 1000).floor()}k"
+                                          : blogsController.shareCount.value
+                                                .toString(),
                                     ),
                                   ),
                                 ],
@@ -201,321 +371,177 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
                             ),
 
                             Container(
-                              width: 1,
-                              height: 1000,
+                              height: 1,
+                              width: double.maxFinite,
                               color: AppColors.kBorderColor,
                             ),
-                            Expanded(
-                              flex: 1,
+                            SizedBox(height: 40.w),
+                            Padding(
+                              padding: EdgeInsets.all(60.w),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 40.w,
-                                      horizontal: 60.w,
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            if (blogsController.likedBlogsIds
-                                                .contains(widget.blogId)) {
-                                              blogsController.updateBlogCounter(
-                                                blogId: widget.blogId,
-                                                field: 'likes',
-                                                isDecrement: true,
-                                              );
-                                              blogsController
-                                                  .removeFromLikedBlogs(
-                                                    widget.blogId,
-                                                  );
-                                            } else {
-                                              blogsController.updateBlogCounter(
-                                                blogId: widget.blogId,
-                                                field: 'likes',
-                                                isDecrement: false,
-                                              );
-                                              blogsController.addToLikedBlogs(
-                                                widget.blogId,
-                                              );
-                                            }
-                                          },
-                                          child: Obx(
-                                            () => LikeButton(
-                                              isLiked: blogsController
-                                                  .likedBlogsIds
-                                                  .contains(widget.blogId),
-                                              likeCount:
-                                                  blogsController
-                                                          .likeCount
-                                                          .value >
-                                                      1000
-                                                  ? "${(blogsController.likeCount.value / 1000).floor()}k"
-                                                  : blogsController
-                                                        .selectedBlog
-                                                        .value!
-                                                        .likesCount
-                                                        .toString(),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 14.w),
-                                        ViewButton(
-                                          viewCount:
-                                              blogsController
-                                                      .selectedBlog
-                                                      .value
-                                                      ?.viewsCount ==
-                                                  null
-                                              ? '0'
-                                              : blogsController
-                                                        .selectedBlog
-                                                        .value!
-                                                        .viewsCount! >
-                                                    1000
-                                              ? "${(blogsController.selectedBlog.value!.viewsCount / 1000).floor()}k"
-                                              : blogsController
-                                                    .selectedBlog
-                                                    .value!
-                                                    .viewsCount
-                                                    .toString(),
-                                        ),
-                                        SizedBox(width: 14.w),
-                                        InkWell(
-                                          onTap: () async {
-                                            blogsController.updateBlogCounter(
-                                              blogId: widget.blogId,
-                                              field: 'share',
-                                            );
-                                            blogsController.shareCount.value++;
-                                            showCustomPopup(
-                                              context,
-                                              "Url copied to clipboard!",
-                                              true,
-                                            );
-                                            await Clipboard.setData(
-                                              ClipboardData(
-                                                text:
-                                                    "https://thegermanemedia.com/blogs/${widget.blogId}",
-                                              ),
-                                            );
-                                          },
-                                          child: ShareButton(
-                                            shareCount:
-                                                blogsController
-                                                        .shareCount
-                                                        .value >
-                                                    1000
-                                                ? "${(blogsController.shareCount.value / 1000).floor()}k"
-                                                : blogsController
-                                                      .shareCount
-                                                      .value
-                                                      .toString(),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  Container(
-                                    height: 1,
-                                    width: double.maxFinite,
-                                    color: AppColors.kBorderColor,
-                                  ),
-                                  SizedBox(height: 40.w),
-                                  Padding(
-                                    padding: EdgeInsets.all(60.w),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: SelectableText(
-                                                "Publication Date",
-                                                style: AppTextStyles.h3
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                      color:
-                                                          AppColors.kTextColor7,
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 20.w),
-                                            Expanded(
-                                              child: SelectableText(
-                                                "Category",
-                                                style: AppTextStyles.h3
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                      color:
-                                                          AppColors.kTextColor7,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: SelectableText(
-                                                blogsController
-                                                        .selectedBlog
-                                                        .value
-                                                        ?.publishedDate
-                                                        .toString()
-                                                        .split(" ")[0] ??
-                                                    "No date available",
-                                                style: AppTextStyles.h2
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 20.w),
-                                            Expanded(
-                                              child: SelectableText(
-                                                "Blog",
-                                                style: AppTextStyles.h2
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        SizedBox(height: 20.w),
-
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: SelectableText(
-                                                "Reading Time",
-                                                style: AppTextStyles.h3
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                      color:
-                                                          AppColors.kTextColor7,
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 20.w),
-                                            Expanded(
-                                              child: SelectableText(
-                                                "Author Name",
-                                                style: AppTextStyles.h3
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                      color:
-                                                          AppColors.kTextColor7,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5.w),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(
-                                              child: SelectableText(
-                                                "${blogsController.selectedBlog.value?.readTimeMinutes} Min",
-                                                style: AppTextStyles.h2
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                    ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 20.w),
-                                            Expanded(
-                                              child: SelectableText(
-                                                blogsController
-                                                        .selectedBlog
-                                                        .value
-                                                        ?.authorName ??
-                                                    "The Germane Media",
-                                                style: AppTextStyles.h2
-                                                    .copyWith(
-                                                      fontSize: 16.spMin,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  SizedBox(height: 40.w),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 60.w,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SelectableText(
-                                          "Table of Contents",
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: SelectableText(
+                                          "Publication Date",
                                           style: AppTextStyles.h3.copyWith(
                                             fontSize: 16.spMin,
-                                            color: AppColors.kTextColor2,
+                                            color: AppColors.kTextColor7,
                                           ),
                                         ),
-                                        SizedBox(height: 14.w),
+                                      ),
+                                      SizedBox(width: 20.w),
+                                      Expanded(
+                                        child: SelectableText(
+                                          "Category",
+                                          style: AppTextStyles.h3.copyWith(
+                                            fontSize: 16.spMin,
+                                            color: AppColors.kTextColor7,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5.w),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: SelectableText(
+                                          blogsController
+                                                  .selectedBlog
+                                                  .value
+                                                  ?.publishedDate
+                                                  .toString()
+                                                  .split(" ")[0] ??
+                                              "No date available",
+                                          style: AppTextStyles.h2.copyWith(
+                                            fontSize: 16.spMin,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20.w),
+                                      Expanded(
+                                        child: SelectableText(
+                                          "Blog",
+                                          style: AppTextStyles.h2.copyWith(
+                                            fontSize: 16.spMin,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
 
-                                        Container(
-                                          width: double.maxFinite,
-                                          padding: EdgeInsets.all(18.w),
-                                          decoration: BoxDecoration(
-                                            color:
-                                                AppColors.kSelectedButtonColor,
-                                            borderRadius: BorderRadius.circular(
-                                              10.r,
+                                  SizedBox(height: 20.w),
+
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: SelectableText(
+                                          "Reading Time",
+                                          style: AppTextStyles.h3.copyWith(
+                                            fontSize: 16.spMin,
+                                            color: AppColors.kTextColor7,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20.w),
+                                      Expanded(
+                                        child: SelectableText(
+                                          "Author Name",
+                                          style: AppTextStyles.h3.copyWith(
+                                            fontSize: 16.spMin,
+                                            color: AppColors.kTextColor7,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5.w),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: SelectableText(
+                                          "${blogsController.selectedBlog.value?.readTimeMinutes} Min",
+                                          style: AppTextStyles.h2.copyWith(
+                                            fontSize: 16.spMin,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20.w),
+                                      Expanded(
+                                        child: SelectableText(
+                                          blogsController
+                                                  .selectedBlog
+                                                  .value
+                                                  ?.authorName ??
+                                              "The Germane Media",
+                                          style: AppTextStyles.h2.copyWith(
+                                            fontSize: 16.spMin,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 40.w),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 60.w),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SelectableText(
+                                    "Table of Contents",
+                                    style: AppTextStyles.h3.copyWith(
+                                      fontSize: 16.spMin,
+                                      color: AppColors.kTextColor2,
+                                    ),
+                                  ),
+                                  SizedBox(height: 14.w),
+
+                                  Container(
+                                    width: double.maxFinite,
+                                    padding: EdgeInsets.all(18.w),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.kSelectedButtonColor,
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      itemCount: blogsController
+                                          .selectedBlog
+                                          .value
+                                          ?.sections
+                                          .length,
+                                      itemBuilder: (context, index) {
+                                        final currentSection = blogsController
+                                            .selectedBlog
+                                            .value
+                                            ?.sections[index];
+                                        return Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 8.w,
+                                          ),
+                                          child: SelectableText(
+                                            "• ${currentSection!.sectionTitle}",
+                                            style: AppTextStyles.h3.copyWith(
+                                              fontSize: 16.spMin,
                                             ),
                                           ),
-                                          child: ListView.builder(
-                                            scrollDirection: Axis.vertical,
-                                            shrinkWrap: true,
-                                            itemCount: blogsController
-                                                .selectedBlog
-                                                .value
-                                                ?.sections
-                                                .length,
-                                            itemBuilder: (context, index) {
-                                              final currentSection =
-                                                  blogsController
-                                                      .selectedBlog
-                                                      .value
-                                                      ?.sections[index];
-                                              return Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 8.w,
-                                                ),
-                                                child: SelectableText(
-                                                  "• ${currentSection!.sectionTitle}",
-                                                  style: AppTextStyles.h3
-                                                      .copyWith(
-                                                        fontSize: 16.spMin,
-                                                      ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
+                                        );
+                                      },
                                     ),
                                   ),
                                 ],
@@ -523,129 +549,128 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
                             ),
                           ],
                         ),
-                        Obx(
-                          () => Visibility(
-                            visible:
-                                !blogsController.selectedBlogExpanded.value,
+                      ),
+                    ],
+                  ),
+                  Obx(
+                    () => Visibility(
+                      visible:
+                          !blogsController.selectedBlogExpanded.value &&
+                          _sectionsNeedTruncation,
+                      child: Container(
+                        height: 215.w,
+                        width: 758.w,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(101, 20, 20, 20),
+                              Color.fromARGB(156, 20, 20, 20),
+                              Color.fromARGB(200, 20, 20, 20),
+                            ],
+                          ),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            blogsController.expandBlog();
+                          },
+                          child: Center(
                             child: Container(
-                              height: 215.w,
-                              width: 758.w,
+                              height: 49.w,
+                              width: 152.w,
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                  colors: [
-                                    Color.fromARGB(101, 20, 20, 20),
-                                    Color.fromARGB(156, 20, 20, 20),
-                                    Color.fromARGB(200, 20, 20, 20),
-                                  ],
+                                color: Color(0xff141414),
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(
+                                  color: AppColors.kBorderColor,
+                                  width: 0.75,
                                 ),
                               ),
-                              child: InkWell(
-                                onTap: () {
-                                  blogsController.expandBlog();
-                                },
-                                child: Center(
-                                  child: Container(
-                                    height: 49.w,
-                                    width: 152.w,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xff141414),
-                                      borderRadius: BorderRadius.circular(8.r),
-                                      border: Border.all(
-                                        color: AppColors.kBorderColor,
-                                        width: 0.75,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          "Read Full Blog",
-                                          style: AppTextStyles.h3.copyWith(
-                                            fontSize: 14.spMin,
-                                            color: AppColors.kTextColor7,
-                                          ),
-                                        ),
-                                        SizedBox(width: 4.w),
-                                        SvgPicture.asset(
-                                          IconUrls.kExpandIcon,
-                                          height: 20.w,
-                                          width: 20.w,
-                                          fit: BoxFit.scaleDown,
-                                        ),
-                                      ],
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Read Full Blog",
+                                    style: AppTextStyles.h3.copyWith(
+                                      fontSize: 14.spMin,
+                                      color: AppColors.kTextColor7,
                                     ),
                                   ),
-                                ),
+                                  SizedBox(width: 4.w),
+                                  SvgPicture.asset(
+                                    IconUrls.kExpandIcon,
+                                    height: 20.w,
+                                    width: 20.w,
+                                    fit: BoxFit.scaleDown,
+                                    semanticsLabel: "Read full blog",
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    ),
-
-                    Container(
-                      height: 1,
-                      width: double.maxFinite,
-                      color: AppColors.kBorderColor,
-                    ),
-
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 80.w,
-                        vertical: 60.w,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SelectableText(
-                            "Similar Blogs",
-                            style: AppTextStyles.h2.copyWith(
-                              fontSize: 22.spMin,
+                    ),
+                  ),
+                ],
+              ),
+
+              Container(
+                height: 1,
+                width: double.maxFinite,
+                color: AppColors.kBorderColor,
+              ),
+
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 80.w, vertical: 60.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SelectableText(
+                      "Similar Blogs",
+                      style: AppTextStyles.h2.copyWith(fontSize: 22.spMin),
+                    ),
+                    SizedBox(height: 100.w),
+
+                    Obx(
+                      () => blogsController.isLoadingBlogs.value
+                          ? Center(child: AppLoader())
+                          : SizedBox(
+                              height: 400.w,
+                              child: ListView.builder(
+                                itemCount: blogsController.blogsList.length,
+                                scrollDirection: Axis.horizontal,
+
+                                itemBuilder: (context, index) {
+                                  if (blogsController.blogsList[index].blogId ==
+                                      widget.blogId) {
+                                    return SizedBox.shrink();
+                                  } else {
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 30.w),
+                                      child: SizedBox(
+                                        width: 460.w,
+                                        child: BlogCards(
+                                          currentBlog:
+                                              blogsController.blogsList[index],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 100.w),
-
-                          Obx(
-                            () => blogsController.isLoadingBlogs.value
-                                ? Center(
-                                    child: CircularProgressIndicator.adaptive(),
-                                  )
-                                : SizedBox(
-                                    height: 500.w,
-                                    child: ListView.builder(
-                                      itemCount:
-                                          blogsController.blogsList.length,
-                                      scrollDirection: Axis.horizontal,
-
-                                      itemBuilder: (context, index) {
-                                        if (blogsController
-                                                .blogsList[index]
-                                                .blogId ==
-                                            widget.blogId) {
-                                          return SizedBox.shrink();
-                                        } else {
-                                          return BlogCards(
-                                            currentBlog: blogsController
-                                                .blogsList[index],
-                                          );
-                                        }
-                                      },
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
               ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
@@ -673,6 +698,7 @@ class ShareButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Share",
           ),
           SizedBox(width: 4.w),
           Text(
@@ -711,6 +737,7 @@ class ViewButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Views",
           ),
           SizedBox(width: 4.w),
           Text(
@@ -750,6 +777,7 @@ class LikeButton extends StatelessWidget {
             height: 26.w,
             width: 26.w,
             fit: BoxFit.scaleDown,
+            semanticsLabel: isLiked ? "Liked" : "Like",
           ),
           SizedBox(width: 4.w),
           Text(
@@ -787,6 +815,10 @@ class BlogSections extends StatelessWidget {
         SizedBox(height: 6.w),
         Html(
           data: sectionDetails,
+          onLinkTap: (url, attributes, element) {
+            if (url != null) launchURL(url);
+          },
+          extensions: const [ClickableLinkExtension()],
           style: {
             "body": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
             "p": Style(

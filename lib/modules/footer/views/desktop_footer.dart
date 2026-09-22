@@ -9,6 +9,7 @@ import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/footer/controllers/footer_controller.dart';
 import 'package:tgm/modules/footer/widgets/company_footer.dart';
 import 'package:tgm/modules/footer/widgets/home_footer.dart';
@@ -35,6 +36,7 @@ class DesktopFooter extends StatelessWidget {
                 height: 69.w,
                 width: 69.w,
                 fit: BoxFit.scaleDown,
+                semanticLabel: "The Germane Media logo",
               ),
               Spacer(),
               SelectableText(
@@ -153,7 +155,7 @@ class DesktopFooter extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SelectableText(
-                      "Join a Newsletter",
+                      "Join our Newsletter",
                       style: AppTextStyles.h3.copyWith(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -171,30 +173,32 @@ class DesktopFooter extends StatelessWidget {
 
                     Row(
                       children: [
-                        SizedBox(
-                          width: 274.w,
-                          height: 56.w,
-                          child: TextField(
-                            controller:
-                                footerController.emailTextEditingController,
-                            style: AppTextStyles.body.copyWith(fontSize: 16),
-                            decoration: InputDecoration(
-                              hintText: 'Enter Your Email',
-                              hintStyle: AppTextStyles.body.copyWith(
-                                fontSize: 16,
-                                color: AppColors.kTextColor6,
-                              ),
-
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: Color(0xff666666),
+                        Flexible(
+                          child: SizedBox(
+                            width: 274.w,
+                            height: 56.w,
+                            child: TextField(
+                              controller:
+                                  footerController.emailTextEditingController,
+                              style: AppTextStyles.body.copyWith(fontSize: 16),
+                              decoration: InputDecoration(
+                                hintText: 'Enter Your Email',
+                                hintStyle: AppTextStyles.body.copyWith(
+                                  fontSize: 16,
+                                  color: AppColors.kTextColor6,
                                 ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(
-                                  color: AppColors.whiteColor,
+
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: Color(0xff666666),
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                    color: AppColors.whiteColor,
+                                  ),
                                 ),
                               ),
                             ),
@@ -204,12 +208,8 @@ class DesktopFooter extends StatelessWidget {
 
                         Obx(
                           () => footerController.isSubscribingNewsletter.value
-                              ? SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: CircularProgressIndicator.adaptive(
-                                    strokeWidth: 1,
-                                  ),
+                              ? const Center(
+                                  child: AppLoader(size: 25, strokeWidth: 2),
                                 )
                               : InkWell(
                                   onTap: () {

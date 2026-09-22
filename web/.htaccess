@@ -1,0 +1,27 @@
+RewriteEngine On
+RewriteBase /
+
+# --- Legacy WordPress URLs retired in the migration to the current site ---
+# Old blog post permalinks (WordPress date-based format) - no current equivalent
+RewriteRule ^[0-9]{4}/[0-9]{2}/[0-9]{2}/.+/?$ - [G,L]
+
+# Old tag archive pages - tags don't exist on the current site
+RewriteRule ^tag/.+/?$ - [G,L]
+
+# Old category archive pages
+RewriteRule ^category/.+/?$ - [G,L]
+
+# Old static pages moved to their current routes
+RewriteRule ^contact/?$ /contact-us [R=301,L]
+RewriteRule ^news-press/?$ /newsroom [R=301,L]
+RewriteRule ^customized-monetization-solutions/?$ /monetization [R=301,L]
+RewriteRule ^services/?$ /solutions [R=301,L]
+RewriteRule ^product/?$ /monetization/ctv [R=301,L]
+RewriteRule ^swift-playout/?$ /monetization/ctv [R=301,L]
+# --- end legacy redirects ---
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^ index.html [L]

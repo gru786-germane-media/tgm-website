@@ -11,12 +11,16 @@ class GeoAnimation extends StatefulWidget {
 
 class _GeoAnimationState extends State<GeoAnimation>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+  late final AnimationController _controller;
 
   // Image dimensions
   final double imageWidth = 1636.w;
   final double viewportWidth = 800.w;
+
+  // Number of identical map copies laid out in a row. The row scrolls left by
+  // exactly one image width per loop and snaps back — because every copy is the
+  // same image, the wrap is invisible and the viewport is never empty.
+  static const int _copies = 10;
 
   @override
   void initState() {
@@ -24,19 +28,8 @@ class _GeoAnimationState extends State<GeoAnimation>
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 20), // Adjust speed as needed
-    )..repeat(); // This makes it loop continuously
-
-    _animation =
-        Tween<double>(
-          begin: 0,
-          end: imageWidth, // We'll offset by the image width to create the loop
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.linear, // Linear for constant speed
-          ),
-        );
+      duration: const Duration(seconds: 10), // Adjust speed as needed
+    )..repeat();
   }
 
   @override
@@ -45,61 +38,70 @@ class _GeoAnimationState extends State<GeoAnimation>
     super.dispose();
   }
 
+  Widget _map(int index) {
+    return Image.asset(
+      'assets/images/geoMapImage.png',
+      width: imageWidth,
+      height: 800.w,
+      fit: BoxFit.cover,
+      semanticLabel:
+          index == 0 ? "World map illustrating global ad reach" : null,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: viewportWidth,
-      height: 800.w, // Adjust height as needed
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Color(0xffCCEEFF), Color(0xff121533)],
-          begin: Alignment.bottomLeft,
-          end: Alignment.topRight,
-        ),
-        border: Border.all(color: AppColors.kBorderColor, width: 1),
-      ),
-      clipBehavior: Clip.antiAlias, // This ensures the circular shape
+    return Center(
       child: Container(
         width: viewportWidth,
         height: 800.w, // Adjust height as needed
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          gradient: RadialGradient(
-            colors: [Colors.transparent, Colors.black54],
+          gradient: LinearGradient(
+            colors: [Color(0xffCCEEFF), Color(0xff121533)],
+            begin: Alignment.bottomLeft,
+            end: Alignment.topRight,
           ),
           border: Border.all(color: AppColors.kBorderColor, width: 1),
         ),
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, child) {
-            return Stack(
-              children: [
-                // First image
-                Positioned(
-                  left: -_animation.value,
-                  child: Image.asset(
-                    'assets/images/geoMapImage.png', // Replace with your image
-                    width: imageWidth,
-                    height: 800.w,
-                    fit: BoxFit.cover,
-                    semanticLabel:
-                        "World map illustrating global ad reach",
-                  ),
+        clipBehavior: Clip.antiAlias, // This ensures the circular shape
+        child: Container(
+          width: viewportWidth,
+          height: 800.w, // Adjust height as needed
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [Colors.transparent, Colors.black54],
+            ),
+            border: Border.all(color: AppColors.kBorderColor, width: 1),
+          ),
+          child: ShaderMask(
+            blendMode: BlendMode.multiply,
+            shaderCallback: (bounds) => const LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [Color(0x33CCEEFF), Color(0x33121533)],
+              stops: [0.0, 0.77],
+            ).createShader(bounds),
+            child: OverflowBox(
+              alignment: Alignment.centerLeft,
+              minWidth: 0,
+              maxWidth: double.infinity,
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, child) {
+                  return Transform.translate(
+                    offset: Offset(-_controller.value * imageWidth, 0),
+                    child: child,
+                  );
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(_copies, _map),
                 ),
-                // Second image (for seamless looping)
-                Positioned(
-                  left: imageWidth - _animation.value,
-                  child: Image.asset(
-                    'assets/images/geoMapImage.png', // Replace with your image
-                    width: imageWidth,
-                    height: 800.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            );
-          },
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -20,6 +20,7 @@ class _FaqQuesAnsCardState extends State<FaqQuesAnsCard> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        SizedBox(height: 5.w),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -62,15 +63,15 @@ class _FaqQuesAnsCardState extends State<FaqQuesAnsCard> {
             ),
           ],
         ),
-        SizedBox(height: 5.w),
+        SizedBox(height: 15.w),
         Container(
-          height: 1,
+          height: 3,
           width: double.maxFinite,
           color: AppColors.kBorderColor,
         ),
         SizedBox(height: 5.w),
 
-        SizedBox(height: 10.w),
+        // SizedBox(height: 10.w),
         Visibility(
           visible: isCardExpanded,
           maintainAnimation: true,

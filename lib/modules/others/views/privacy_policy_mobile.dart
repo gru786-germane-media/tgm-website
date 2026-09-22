@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:meta_seo/meta_seo.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
-import 'package:tgm/core/constants/icon_urls.dart';
-import 'package:tgm/core/utils/track_page_microsoft.dart';
+import 'package:tgm/core/utils/mobile_app_bar.dart';
+import 'package:tgm/modules/header/views/mobile_header.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html;
 
@@ -114,24 +112,8 @@ These partners may collect information such as device identifiers, IP address, a
     );
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: AppColors.kBackgroundColor2,
-        leading: InkWell(
-          onTap: () {
-            context.go('/');
-            trackPage('home');
-          },
-          child: Transform.flip(
-            flipX: true,
-            child: SvgPicture.asset(
-              IconUrls.kRightArrowIcon,
-              height: 20,
-              width: 20,
-              fit: BoxFit.scaleDown,
-            ),
-          ),
-        ),
-      ),
+      drawer: MobileHeader(),
+      appBar: MobileAppBar(),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(24),
         child: Column(
@@ -141,6 +123,7 @@ These partners may collect information such as device identifiers, IP address, a
               "Privacy Policy",
               style: AppTextStyles.h0.copyWith(fontSize: 28),
             ),
+            SizedBox(height: 14),
             SelectableLinkify(
               onOpen: (link) async {
                 if (!await launchUrl(Uri.parse(link.url))) {
@@ -148,7 +131,7 @@ These partners may collect information such as device identifiers, IP address, a
                 }
               },
               text:
-                  '''This privacy policy applies to https://www.thegermanemedia.com, owned and operated by Grmane Media LLC knows that you care how information about you is used and shared. This Privacy Policy explains what information of yours will be collected by Grmane Media when you access our services (including through the websites of our partners), how the information will be used, and how you can control the collection, correction and/or deletion of information. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy does not apply to information we collect by other means (including offline) or from other sources. Capitalized terms that are not defined in this Privacy Policy have the meaning given them in our Terms of Service. The use of information collected through our website shall be limited to the purposes under this Privacy Policy and our Terms of Service to customers.''',
+                  '''This privacy policy applies to https://www.thegermanemedia.com owned and operated by Grmane Media LLC knows that you care how information about you is used and shared. This Privacy Policy explains what information of yours will be collected by Grmane Media when you access our services (including through the websites of our partners), how the information will be used, and how you can control the collection, correction and/or deletion of information. We will not use or share your information with anyone except as described in this Privacy Policy. This Privacy Policy does not apply to information we collect by other means (including offline) or from other sources. Capitalized terms that are not defined in this Privacy Policy have the meaning given them in our Terms of Service. The use of information collected through our website shall be limited to the purposes under this Privacy Policy and our Terms of Service to customers.''',
               style: AppTextStyles.h3.copyWith(fontSize: 18),
             ),
             SizedBox(height: 20),

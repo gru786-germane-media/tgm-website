@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -8,14 +6,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/launch_url.dart';
+import 'package:tgm/core/utils/mobile_app_bar.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
-import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
+import 'package:tgm/modules/header/views/mobile_header.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
+import 'package:tgm/modules/mediaHub/utils/blog_seo_tags.dart';
+import 'package:tgm/modules/mediaHub/utils/clickable_link_extension.dart';
 import 'package:tgm/modules/mediaHub/widgets/blog_cards_mobile.dart';
 
 class MobileParticularBlog extends StatefulWidget {
@@ -28,11 +30,34 @@ class MobileParticularBlog extends StatefulWidget {
 }
 
 class _MobileParticularBlogState extends State<MobileParticularBlog> {
+  final GlobalKey _fullSectionsMeasureKey = GlobalKey();
+
+  // Assume truncation is needed until measured, so long blogs never flash
+  // their full content before collapsing.
+  bool _sectionsNeedTruncation = true;
+  int? _measuredForBlogId;
+
   @override
   void initState() {
     super.initState();
     final BlogsController blogsController = Get.put(BlogsController());
     blogsController.fetchBlogById(widget.blogId);
+  }
+
+  void _measureSections() {
+    if (!mounted || _measuredForBlogId == widget.blogId) return;
+
+    final renderObject = _fullSectionsMeasureKey.currentContext
+        ?.findRenderObject();
+    if (renderObject is! RenderBox || !renderObject.hasSize) return;
+
+    final contentHeight = renderObject.size.height;
+    final availableHeight = MediaQuery.sizeOf(context).height;
+
+    setState(() {
+      _measuredForBlogId = widget.blogId;
+      _sectionsNeedTruncation = contentHeight > availableHeight;
+    });
   }
 
   @override
@@ -50,28 +75,19 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
     final BlogsController blogsController = Get.put(BlogsController());
     return Scaffold(
       backgroundColor: AppColors.kBackgroundColor2,
-      appBar: AppBar(
-        backgroundColor: AppColors.kBackgroundColor2,
-        leading: InkWell(
-          onTap: () {
-            context.go('/blogs');
-            trackPage('/blogs');
-          },
-          child: Transform.flip(
-            flipX: true,
-            child: SvgPicture.asset(
-              IconUrls.kRightArrowIcon,
-              height: 20,
-              width: 20,
-              fit: BoxFit.scaleDown,
-            ),
-          ),
-        ),
-      ),
-      body: Obx(
-        () => blogsController.isLoadingBlogDetail.value
-            ? Center(child: CircularProgressIndicator.adaptive())
-            : SingleChildScrollView(
+      drawer: MobileHeader(),
+      appBar: MobileAppBar(),
+      body: Obx(() {
+        if (blogsController.isLoadingBlogDetail.value) {
+          return Center(child: AppLoader());
+        }
+
+        final blog = blogsController.selectedBlog.value;
+        if (blog != null) {
+          applyBlogSeoTags(blog);
+        }
+
+        return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,6 +100,9 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                               "",
                           height: 221,
                           width: double.maxFinite,
+                          semanticLabel: blog?.imageAltText.isNotEmpty == true
+                              ? blog?.imageAltText
+                              : blog?.title,
                         ),
                         Container(
                           width: double.maxFinite,
@@ -91,7 +110,7 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                             bottom: 12,
                             left: 12,
                             right: 12,
-                            top: 12
+                            top: 12,
                           ),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
@@ -106,7 +125,8 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                           ),
                           child: Center(
                             child: SelectableText(
-                              blogsController.selectedBlog.value?.title ?? "N/A",
+                              blogsController.selectedBlog.value?.title ??
+                                  "N/A",
                               style: AppTextStyles.h1.copyWith(fontSize: 28),
                             ),
                           ),
@@ -205,7 +225,7 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                                 await Clipboard.setData(
                                   ClipboardData(
                                     text:
-                                        "https://thegermanemedia.com/blogs/${widget.blogId}",
+                                        "https://thegermanemedia.com/blogs/${widget.blogId}/${blogsController.selectedBlog.value!.slug}",
                                   ),
                                 );
                               },
@@ -427,47 +447,84 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
 
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Obx(
-                                () => ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
+                              child: LayoutBuilder(
+                                builder: (context, constraints) {
+                                  final sections =
+                                      blogsController
+                                          .selectedBlog
+                                          .value
+                                          ?.sections ??
+                                      [];
+                                  final needsMeasurement =
+                                      _measuredForBlogId != widget.blogId;
 
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      blogsController.selectedBlogExpanded.value
-                                      ? blogsController
-                                            .selectedBlog
-                                            .value
-                                            ?.sections
-                                            .length
-                                      : blogsController
-                                                .selectedBlog
-                                                .value!
-                                                .sections
-                                                .length >
-                                            2
-                                      ? 2
-                                      : blogsController
-                                            .selectedBlog
-                                            .value
-                                            ?.sections
-                                            .length,
-                                  itemBuilder: (context, index) {
-                                    final currentSection = blogsController
-                                        .selectedBlog
-                                        .value
-                                        ?.sections[index];
-                                    log("current section is $currentSection");
-                                    return BlogSectionsMobile(
-                                      sectionTitle:
-                                          currentSection?.sectionTitle ??
-                                          "No section title",
-                                      sectionDetails:
-                                          currentSection?.sectionContent ??
-                                          "No content",
-                                    );
-                                  },
-                                ),
+                                  if (needsMeasurement) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback(
+                                          (_) => _measureSections(),
+                                        );
+                                  }
+
+                                  return Stack(
+                                    children: [
+                                      if (needsMeasurement)
+                                        Offstage(
+                                          offstage: true,
+                                          child: Align(
+                                            alignment: Alignment.topLeft,
+                                            child: SizedBox(
+                                              key: _fullSectionsMeasureKey,
+                                              width: constraints.maxWidth,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: sections
+                                                    .map(
+                                                      (section) =>
+                                                          BlogSectionsMobile(
+                                                            sectionTitle: section
+                                                                .sectionTitle,
+                                                            sectionDetails: section
+                                                                .sectionContent,
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      Obx(() {
+                                        final showAll =
+                                            blogsController
+                                                .selectedBlogExpanded
+                                                .value ||
+                                            !_sectionsNeedTruncation;
+                                        final itemCount = showAll
+                                            ? sections.length
+                                            : (sections.length > 2
+                                                  ? 2
+                                                  : sections.length);
+                                        return ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.vertical,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemCount: itemCount,
+                                          itemBuilder: (context, index) {
+                                            final currentSection =
+                                                sections[index];
+                                            return BlogSectionsMobile(
+                                              sectionTitle:
+                                                  currentSection.sectionTitle,
+                                              sectionDetails: currentSection
+                                                  .sectionContent,
+                                            );
+                                          },
+                                        );
+                                      }),
+                                    ],
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -475,7 +532,8 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                         Obx(
                           () => Visibility(
                             visible:
-                                !blogsController.selectedBlogExpanded.value,
+                                !blogsController.selectedBlogExpanded.value &&
+                                _sectionsNeedTruncation,
                             child: Container(
                               height: 49,
                               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -529,6 +587,7 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                                           height: 20,
                                           width: 20,
                                           fit: BoxFit.scaleDown,
+                                          semanticsLabel: "Read full blog",
                                         ),
                                       ],
                                     ),
@@ -563,9 +622,7 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
 
                           Obx(
                             () => blogsController.isLoadingBlogs.value
-                                ? Center(
-                                    child: CircularProgressIndicator.adaptive(),
-                                  )
+                                ? Center(child: AppLoader())
                                 : ListView.builder(
                                     itemCount: blogsController.blogsList.length,
                                     scrollDirection: Axis.vertical,
@@ -592,8 +649,8 @@ class _MobileParticularBlogState extends State<MobileParticularBlog> {
                     ),
                   ],
                 ),
-              ),
-      ),
+              );
+      }),
     );
   }
 }
@@ -621,6 +678,7 @@ class ShareButton extends StatelessWidget {
             height: 20,
             width: 20,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Share",
           ),
           SizedBox(width: 4),
           Text(
@@ -659,6 +717,7 @@ class ViewButton extends StatelessWidget {
             height: 20,
             width: 20,
             fit: BoxFit.scaleDown,
+            semanticsLabel: "Views",
           ),
           SizedBox(width: 4),
           Text(
@@ -698,6 +757,7 @@ class LikeButton extends StatelessWidget {
             height: 20,
             width: 20,
             fit: BoxFit.scaleDown,
+            semanticsLabel: isLiked ? "Liked" : "Like",
           ),
           SizedBox(width: 4),
           Text(
@@ -735,6 +795,10 @@ class BlogSectionsMobile extends StatelessWidget {
         SizedBox(height: 6),
         Html(
           data: sectionDetails,
+          onLinkTap: (url, attributes, element) {
+            if (url != null) launchURL(url);
+          },
+          extensions: const [ClickableLinkExtension()],
           style: {
             "body": Style(margin: Margins.zero, padding: HtmlPaddings.zero),
             "p": Style(

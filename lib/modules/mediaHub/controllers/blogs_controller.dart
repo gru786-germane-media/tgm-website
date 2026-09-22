@@ -21,11 +21,10 @@ class BlogsController extends GetxController {
     selectedBlogExpanded.value = true;
   }
 
-  void toggleLike(int id){
-    if(likedBlogsIds.contains(id)){
+  void toggleLike(int id) {
+    if (likedBlogsIds.contains(id)) {
       removeFromLikedBlogs(id);
-    }
-    else{
+    } else {
       addToLikedBlogs(id);
     }
   }
@@ -44,7 +43,8 @@ class BlogsController extends GetxController {
 
   Future<void> fetchBlogs() async {
     const String url =
-        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts";
+        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2";
+    // "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts";
 
     try {
       isLoadingBlogs(true);
@@ -129,10 +129,12 @@ class BlogsController extends GetxController {
 
   Future<void> fetchBlogById(int blogId) async {
     final String url =
-        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts?blog_id=$blogId";
+        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2?blog_id=$blogId";
+        // "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts?blog_id=$blogId";
 
     try {
       isLoadingBlogDetail(true);
+      selectedBlogExpanded.value = false;
 
       final response = await ApiClient.instance.get(url);
 

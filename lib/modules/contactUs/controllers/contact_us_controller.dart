@@ -72,8 +72,9 @@ class ContactUsController extends GetxController {
   void _showSnack(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: AppTextStyles.h2),
+        content: Text(message, style: AppTextStyles.h3),
         backgroundColor: AppColors.kBackgroundColor,
+        duration: Duration(seconds: 2),
       ),
     );
   }
@@ -153,7 +154,6 @@ class ContactUsController extends GetxController {
   }
 
   Future<ApiResponseModel> submitEnquiryApiCall() async {
-    
     const String url =
         "https://5ppdlkcnu0.execute-api.eu-north-1.amazonaws.com/dev/enquiry-post";
 

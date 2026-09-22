@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/state_manager.dart';
@@ -11,9 +10,10 @@ import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
 import 'package:tgm/core/utils/show_custom_popup.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
-import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/mediaHub/controllers/newsroom_controller.dart';
 import 'package:tgm/modules/mediaHub/models/news_post_model.dart';
+import 'package:tgm/modules/mediaHub/widgets/media_card_parts_mobile.dart';
 
 class MobileNewsroom extends StatelessWidget {
   const MobileNewsroom({super.key});
@@ -37,12 +37,13 @@ class MobileNewsroom extends StatelessWidget {
               height: 20,
               width: 20,
               fit: BoxFit.scaleDown,
+              semanticsLabel: "Back to media hub",
             ),
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -54,29 +55,25 @@ class MobileNewsroom extends StatelessWidget {
                 fontSize: 28,
               ),
             ),
-            SizedBox(height: 20),
-
+            const SizedBox(height: 20),
             SelectableText(
               "Our newsroom brings together official announcements, media features, and press releases highlighting our growth, partnerships, and technological breakthroughs.",
-
               textAlign: TextAlign.center,
-
               style: AppTextStyles.h2.copyWith(
                 color: AppColors.kTextColor2,
                 fontSize: 14,
               ),
             ),
-
-            SizedBox(height: 30),
-
+            const SizedBox(height: 30),
             Obx(
               () => newsroomController.isLoadingNews.value
-                  ? Center(child: CircularProgressIndicator.adaptive())
-                  : ListView.builder(
+                  ? const Center(child: AppLoader())
+                  : ListView.separated(
                       itemCount: newsroomController.newsList.length,
-                      scrollDirection: Axis.vertical,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 20),
                       itemBuilder: (context, index) {
                         return NewsCardsMobile(
                           currentNews: newsroomController.newsList[index],
@@ -84,8 +81,7 @@ class MobileNewsroom extends StatelessWidget {
                       },
                     ),
             ),
-
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
           ],
         ),
       ),
@@ -100,207 +96,66 @@ class NewsCardsMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NewsroomController newsroomController = Get.put(NewsroomController());
-    return Padding(
-      padding: const EdgeInsets.only(top: 20),
-      child: SizedBox(
-        width: double.maxFinite,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: AppCachedImage(
-                imageUrl: currentNews.coverImageUrl,
-                height: 178,
-                width: double.maxFinite,
-                fit: BoxFit.scaleDown,
-              ),
+    return MediaGridCardMobile(
+      imageUrl: currentNews.coverImageUrl,
+      title: currentNews.title,
+      subtitle: currentNews.publisherName.isNotEmpty
+          ? "Published By ${currentNews.publisherName}"
+          : "News",
+      footer: Row(
+        children: [
+          Obx(
+            () => MediaStatPillMobile(
+              iconAsset:
+                  newsroomController.likedNewsIds.contains(currentNews.newsId)
+                  ? IconUrls.kLikedIcon
+                  : IconUrls.kLikeIcon,
+              label: mediaCompactCountMobile(currentNews.likesCount),
+              onTap: () {
+                newsroomController.updateNewsCounter(
+                  newsId: currentNews.newsId,
+                  field: 'likes',
+                );
+                newsroomController.toggleLike(currentNews);
+              },
             ),
-            SizedBox(height: 16),
-            SelectableText(
-              currentNews.title,
-              maxLines: 2,
-              style: AppTextStyles.h2.copyWith(fontSize: 20),
+          ),
+          const SizedBox(width: 8),
+          MediaStatPillMobile(
+            iconAsset: IconUrls.kShareIcon,
+            label: mediaCompactCountMobile(currentNews.shareCount),
+            onTap: () async {
+              newsroomController.updateNewsCounter(
+                newsId: currentNews.newsId,
+                field: 'share',
+              );
+              await Clipboard.setData(
+                const ClipboardData(
+                  text: "https://thegermanemedia.com/newsroom/",
+                ),
+              );
+              if (context.mounted) {
+                showCustomPopupMobile(
+                  context,
+                  "Url copied to clipboard!",
+                  true,
+                );
+              }
+            },
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: MediaReadMoreButtonMobile(
+              onTap: () {
+                newsroomController.updateNewsCounter(
+                  newsId: currentNews.newsId,
+                  field: 'views',
+                );
+                launchURL(currentNews.newsLink);
+              },
             ),
-            SizedBox(height: 4),
-            SelectableText(
-              "News",
-
-              style: AppTextStyles.h3.copyWith(
-                fontSize: 20,
-                color: AppColors.kTextColor2,
-              ),
-            ),
-            SizedBox(height: 12),
-            Padding(
-              padding: EdgeInsetsGeometry.symmetric(vertical: 10.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      newsroomController.updateNewsCounter(
-                        newsId: currentNews.newsId,
-                        field: 'likes',
-                      );
-                      newsroomController.toggleLike(currentNews);
-                    },
-                    child: Container(
-                      height: 44,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: AppColors.kCardColor3,
-
-                        border: Border.all(
-                          color: AppColors.kBorderColor,
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(120),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Obx(
-                            () => SvgPicture.asset(
-                              newsroomController.likedNewsIds.contains(
-                                    currentNews.newsId,
-                                  )
-                                  ? IconUrls.kLikedIcon
-                                  : IconUrls.kLikeIcon,
-                              height: 20,
-                              width: 20,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            currentNews.likesCount > 1000
-                                ? "${(currentNews.likesCount / 1000).floor()}k"
-                                : currentNews.likesCount.toString(),
-
-                            style: AppTextStyles.h3.copyWith(
-                              fontSize: 16,
-                              color: AppColors.kTextColor2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(width: 8),
-
-                  InkWell(
-                    onTap: () async {
-                      newsroomController.updateNewsCounter(
-                        newsId: currentNews.newsId,
-                        field: 'share',
-                      );
-
-                      await Clipboard.setData(
-                        ClipboardData(
-                          text: "https://thegermanemedia.com/newsroom/",
-                        ),
-                      );
-                      showCustomPopupMobile(
-                        context,
-                        "Url copied to clipboard!",
-                        true,
-                      );
-                    },
-                    child: Container(
-                      height: 44,
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: AppColors.kCardColor3,
-
-                        border: Border.all(
-                          color: AppColors.kBorderColor,
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(120),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SvgPicture.asset(
-                            IconUrls.kShareIcon,
-                            height: 20,
-                            width: 20,
-                            fit: BoxFit.scaleDown,
-                          ),
-                          SizedBox(width: 5),
-                          Text(
-                            currentNews.shareCount > 1000
-                                ? "${(currentNews.shareCount / 1000).floor()}k"
-                                : currentNews.shareCount.toString(),
-
-                            style: AppTextStyles.h3.copyWith(
-                              fontSize: 16,
-                              color: AppColors.kTextColor2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        newsroomController.updateNewsCounter(
-                          newsId: currentNews.newsId,
-                          field: 'views',
-                        );
-                        launchURL(currentNews.newsLink);
-                      },
-                      child: Container(
-                        height: 44,
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-
-                        decoration: BoxDecoration(
-                          color: AppColors.kCardColor3,
-                          border: Border.all(
-                            color: AppColors.kBorderColor,
-                            width: 0.75,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Read More",
-
-                              style: AppTextStyles.h3.copyWith(
-                                fontSize: 16,
-                                color: AppColors.kTextColor2,
-                              ),
-                            ),
-                            SizedBox(width: 10.w),
-
-                            SvgPicture.asset(
-                              IconUrls.kReadMore,
-                              height: 20,
-                              width: 20,
-                              fit: BoxFit.scaleDown,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

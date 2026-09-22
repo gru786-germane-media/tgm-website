@@ -7,6 +7,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/solutions/controllers/solutions_controller.dart';
 
 class CircularCarousel extends StatefulWidget {
@@ -49,7 +50,7 @@ class _CircularCarouselState extends State<CircularCarousel> {
   Widget build(BuildContext context) {
     return Obx(
       () => solutionsController.isSolutionsLoading.value
-          ? const Center(child: CircularProgressIndicator.adaptive())
+          ? const Center(child: AppLoader())
           : SizedBox(
               height: 900.w,
               width: double.infinity,

@@ -64,6 +64,7 @@ class _LadderAnimationState extends State<LadderAnimation>
         key: ValueKey<int>(_currentImageIndex),
 
         fit: BoxFit.cover,
+        excludeFromSemantics: true,
       ),
     );
   }

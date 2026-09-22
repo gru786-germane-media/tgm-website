@@ -7,6 +7,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/mediaHub/controllers/gallery_controller.dart';
 import 'package:tgm/modules/mediaHub/widgets/gallery_cards_mobile.dart';
 
@@ -33,6 +34,7 @@ class MobileGallery extends StatelessWidget {
               height: 20,
               width: 20,
               fit: BoxFit.scaleDown,
+              semanticsLabel: "Back to media hub",
             ),
           ),
         ),
@@ -66,18 +68,16 @@ class MobileGallery extends StatelessWidget {
 
             Obx(
               () => galleryController.isLoadingGallery.value
-                  ? const Center(child: CircularProgressIndicator.adaptive())
-                  : ListView.builder(
+                  ? const Center(child: AppLoader())
+                  : ListView.separated(
                       itemCount: galleryController.galleryList.length,
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 20),
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: GalleryCardsMobile(
-                            currentGallery:
-                                galleryController.galleryList[index],
-                          ),
+                        return GalleryCardsMobile(
+                          currentGallery: galleryController.galleryList[index],
                         );
                       },
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 
 class DeferredWidget extends StatefulWidget {
   final Future<void> Function() libraryLoader;
@@ -9,7 +10,7 @@ class DeferredWidget extends StatefulWidget {
     Key? key,
     required this.libraryLoader,
     required this.createWidget,
-    this.placeholder = const Center(child: CircularProgressIndicator()),
+    this.placeholder = const Center(child: AppLoader()),
   }) : super(key: key);
 
   @override

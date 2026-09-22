@@ -9,6 +9,8 @@ class TestimonialData {
 The Germanemedia team’s proactive support in optimizing fill rates and sharing actionable insights has been instrumental in scaling our revenue potential. Their transparency, expertise, and partnership-driven approach make them a trusted ally in our monetization strategy.
 ''',
       writer: "PocketFM",
+      writeName: "",
+      stars: 4.5,
       imageUrl: "assets/images/testimonials/pocketfm.png",
     ),
     TestimonialsModel(
@@ -18,6 +20,8 @@ The Germanemedia team’s proactive support in optimizing fill rates and sharing
 What stands out most is the team’s hands-on approach. They continuously monitor performance, provide thoughtful recommendations, and work closely with us to ensure our inventory is monetized efficiently. Germanemedia has proven to be a dependable partner in supporting our monetization strategy.
 ''',
       writer: "Wurl",
+       writeName: "",
+      stars: 4,
       imageUrl: "assets/images/testimonials/wurl.png",
     ),
     TestimonialsModel(
@@ -25,6 +29,8 @@ What stands out most is the team’s hands-on approach. They continuously monito
           '''We’re excited to partner with Germane Media to bring TCL CTV inventory to global advertisers through a platform that shares our values of transparency, innovation, and quality. This integration allows us to scale monetization while ensuring a seamless, engaging experience for our viewers.''',
       writer: "TCL",
       imageUrl: "assets/images/testimonials/tcl.png",
+       writeName: "",
+      stars: 4.5,
     ),
     TestimonialsModel(
       data:
@@ -34,6 +40,8 @@ The team is proactive, collaborative, and always willing to explore new optimiza
 ''',
       writer: "TAIV",
       imageUrl: "assets/images/testimonials/taiv.png",
+       writeName: "",
+      stars: 5.0,
     ),
     TestimonialsModel(
       data:
@@ -42,6 +50,8 @@ The team is proactive, collaborative, and always willing to explore new optimiza
 Their team has been highly collaborative, providing insights and optimization strategies that align with our evolving platform. We appreciate their flexible and partnership-driven approach in supporting the growth of our advertising ecosystem.
 ''',
       writer: "Telly",
+       writeName: "",
+      stars: 4.5,
       imageUrl: "assets/images/testimonials/telly.png",
     ),
     TestimonialsModel(
@@ -51,12 +61,16 @@ Their team has been highly collaborative, providing insights and optimization st
 The team is attentive, knowledgeable, and quick to provide guidance whenever optimization opportunities arise. Their consistent communication and focus on performance make them a trusted monetization partner for our platform.
 ''',
       writer: "GaiaOS",
+       writeName: "",
+      stars: 4.5,
       imageUrl: "assets/images/testimonials/gaiaos.png",
     ),
     TestimonialsModel(
       data:
           '''Communication is smooth and fast. They adjust well to the publisher’s situation.''',
       writer: "Arum Games",
+       writeName: "",
+      stars: 4.5,
       imageUrl: "assets/images/testimonials/arumgames.png",
     ),
     TestimonialsModel(
@@ -66,6 +80,8 @@ The team is attentive, knowledgeable, and quick to provide guidance whenever opt
 What we appreciate most is their commitment to partnership - the team is always available to troubleshoot, share insights, and explore new opportunities for growth. Their proactive approach makes them a reliable partner in our monetization ecosystem.
 ''',
       writer: "Bidcliq",
+       writeName: "",
+      stars: 4.5,
       imageUrl: "assets/images/testimonials/bidcliq.png",
     ),
   ];

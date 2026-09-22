@@ -29,6 +29,7 @@ class MediaHubCards extends StatelessWidget {
               height: 260.w,
               width: 340.w,
               fit: BoxFit.cover,
+              semanticLabel: title,
             ),
           ),
           SizedBox(height: 30.w),

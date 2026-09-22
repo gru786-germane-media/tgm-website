@@ -23,3 +23,10 @@ enum CompanyPageSection {
   people,
   feedback,
 }
+
+enum SolutionsPageSection {
+  headerBidding,
+  swiftPlayout,
+  agenticAi,
+  innovationPipeline,
+}

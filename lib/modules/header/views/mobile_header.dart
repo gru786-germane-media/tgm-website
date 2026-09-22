@@ -45,6 +45,7 @@ class MobileHeader extends StatelessWidget implements PreferredSizeWidget {
                 height: 45,
                 width: 45,
                 fit: BoxFit.scaleDown,
+                semanticLabel: "The Germane Media logo, go to homepage",
               ),
             ),
             SizedBox(height: 50.h),

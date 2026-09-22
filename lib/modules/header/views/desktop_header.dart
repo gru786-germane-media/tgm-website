@@ -16,7 +16,7 @@ class DesktopHeader extends StatelessWidget implements PreferredSizeWidget {
   const DesktopHeader({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(128);
+  Size get preferredSize => Size.fromHeight(128.w);
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +40,10 @@ class DesktopHeader extends StatelessWidget implements PreferredSizeWidget {
             },
             child: AppCachedImage(
               imageUrl: ImageUrls.kTgmLogo,
-              height: 80,
-              width: 80,
+              height: 44,
+              width: 44,
               fit: BoxFit.scaleDown,
+              semanticLabel: "The Germane Media logo, go to homepage",
             ),
           ),
           Spacer(),
@@ -79,11 +80,11 @@ class DesktopHeader extends StatelessWidget implements PreferredSizeWidget {
                     },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
-                      height: 55,
-                      margin: EdgeInsets.symmetric(vertical: AppSpacing.xl),
+                      height: 44,
+                      margin: EdgeInsets.symmetric(vertical: AppSpacing.sm),
                       padding: EdgeInsets.symmetric(
                         horizontal: AppSpacing.lg,
-                        vertical: AppSpacing.md,
+                        vertical: AppSpacing.sm,
                       ),
                       decoration: BoxDecoration(
                         color: index == headerController.selectedIndex.value
@@ -91,9 +92,11 @@ class DesktopHeader extends StatelessWidget implements PreferredSizeWidget {
                             : AppColors.kBackgroundColor2,
                         borderRadius: BorderRadius.circular(84),
                       ),
-                      child: Text(
-                        headerController.headerTitles[index],
-                        style: AppTextStyles.h3,
+                      child: Center(
+                        child: Text(
+                          headerController.headerTitles[index],
+                          style: AppTextStyles.h3,
+                        ),
                       ),
                     ),
                   ),

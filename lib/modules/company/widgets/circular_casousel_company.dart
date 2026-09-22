@@ -6,6 +6,7 @@ import 'package:tgm/core/constants/app_colors.dart';
 import 'package:tgm/core/constants/app_spacing.dart';
 import 'package:tgm/core/constants/app_text_styles.dart';
 import 'package:tgm/core/widgets/app_cached_image.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/company/controllers/company_controller.dart';
 
 class CircularCarouselCompany extends StatefulWidget {
@@ -47,7 +48,7 @@ class _CircularCarouselCompanyState extends State<CircularCarouselCompany> {
   Widget build(BuildContext context) {
     return Obx(
       () => companyController.isLoadingCompany.value
-          ? const Center(child: CircularProgressIndicator.adaptive())
+          ? const Center(child: AppLoader())
           : SizedBox(
               height: 900.w,
               width: double.infinity,
@@ -120,6 +121,7 @@ class _CircularCarouselCompanyState extends State<CircularCarouselCompany> {
               height: 260.w,
               width: 340.w,
               fit: BoxFit.scaleDown,
+              semanticLabel: companyController.companyData[index].title,
             ),
           ),
           SizedBox(height: 30.w),

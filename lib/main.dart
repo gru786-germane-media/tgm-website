@@ -26,7 +26,7 @@ void main() {
   SemanticsBinding.instance
       .ensureSemantics(); // Helps expose text to the browser
 
-       if (kIsWeb) {
+  if (kIsWeb) {
     MetaSEO().config();
   }
   runApp(const MyApp());
@@ -70,6 +70,16 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           title: 'TGM',
           scrollBehavior: AppScrollBehavior(),
+          // Globally shrink every Text on the site by 30%.
+          builder: (context, child) {
+            final mq = MediaQuery.of(context);
+            return MediaQuery(
+              data: mq.copyWith(
+                textScaler: TextScaler.linear(mq.textScaler.scale(1) * 0.9),
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Color(0xff0f0f0f)),
             highlightColor: Colors.transparent,

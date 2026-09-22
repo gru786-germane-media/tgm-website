@@ -11,6 +11,7 @@ import 'package:tgm/core/constants/icon_urls.dart';
 import 'package:tgm/core/constants/image_urls.dart';
 import 'package:tgm/core/utils/launch_url.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
+import 'package:tgm/core/widgets/app_loader.dart';
 import 'package:tgm/modules/company/controllers/career_controller.dart';
 import 'package:tgm/modules/company/model/career_info_model.dart';
 
@@ -36,13 +37,18 @@ class MobileCareer extends StatelessWidget {
               height: 20,
               width: 20,
               fit: BoxFit.scaleDown,
+              semanticsLabel: "Back to company",
             ),
           ),
         ),
       ),
       body: Stack(
         children: [
-          Image.asset(ImageUrls.kBackgroundTextureBig, fit: BoxFit.cover),
+          Image.asset(
+            ImageUrls.kBackgroundTextureBig,
+            fit: BoxFit.cover,
+            excludeFromSemantics: true,
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 18),
             child: SingleChildScrollView(
@@ -84,7 +90,7 @@ class MobileCareer extends StatelessWidget {
 
                   Obx(
                     () => careerController.isLoadingCareers.value
-                        ? Center(child: CircularProgressIndicator.adaptive())
+                        ? Center(child: AppLoader())
                         : ListView.builder(
                             itemCount: careerController.careersList.length,
                             scrollDirection: Axis.vertical,
@@ -164,6 +170,7 @@ class _JobCardState extends State<JobCard> {
                         height: 12.5,
                         width: 12.5,
                         fit: BoxFit.scaleDown,
+                        semanticsLabel: "Job opening icon",
                       ),
                     ),
                   ),
@@ -226,6 +233,7 @@ class _JobCardState extends State<JobCard> {
                             height: 28,
                             width: 28,
                             fit: BoxFit.scaleDown,
+                            excludeFromSemantics: true,
                           ),
                         ),
                       ),
@@ -245,6 +253,7 @@ class _JobCardState extends State<JobCard> {
                 height: 28,
                 width: 28,
                 fit: BoxFit.scaleDown,
+                excludeFromSemantics: true,
               ),
               SizedBox(width: 10),
               SelectableText(
@@ -262,6 +271,7 @@ class _JobCardState extends State<JobCard> {
                 height: 28,
                 width: 28,
                 fit: BoxFit.scaleDown,
+                excludeFromSemantics: true,
               ),
               SizedBox(width: 10),
               SelectableText(
@@ -278,6 +288,7 @@ class _JobCardState extends State<JobCard> {
                 height: 28,
                 width: 28,
                 fit: BoxFit.scaleDown,
+                excludeFromSemantics: true,
               ),
               SizedBox(width: 10),
               SelectableText(
@@ -335,6 +346,7 @@ class _JobCardState extends State<JobCard> {
                           height: 24,
                           width: 24,
                           fit: BoxFit.scaleDown,
+                          excludeFromSemantics: true,
                         ),
                         SizedBox(width: 10),
                         Expanded(
@@ -441,6 +453,7 @@ class _JobCardState extends State<JobCard> {
                         width: 28,
 
                         fit: BoxFit.scaleDown,
+                        semanticsLabel: isCollapsed ? "Show more" : "Show less",
                       ),
                     ),
                   ),

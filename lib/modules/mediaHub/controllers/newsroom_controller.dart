@@ -61,7 +61,8 @@ class NewsroomController extends GetxController {
         url =
             "$baseUrl/counter?table=newsroom&id=$newsId&field=$field&action=decrement";
       } else {
-        url = "$baseUrl/counter?table=newsroom&id=$newsId&field=$field&action=increment";
+        url =
+            "$baseUrl/counter?table=newsroom&id=$newsId&field=$field&action=increment";
       }
 
       await ApiClient.instance.patch(url);
