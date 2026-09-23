@@ -41,6 +41,7 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
     super.initState();
     final BlogsController blogsController = Get.put(BlogsController());
     blogsController.fetchBlogById(widget.blogId);
+    blogsController.updateBlogCounter(blogId: widget.blogId, field: 'views');
   }
 
   void _measureSections() {
@@ -66,6 +67,7 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
     if (oldWidget.blogId != widget.blogId) {
       final BlogsController blogsController = Get.put(BlogsController());
       blogsController.fetchBlogById(widget.blogId);
+      blogsController.updateBlogCounter(blogId: widget.blogId, field: 'views');
     }
   }
 
@@ -278,28 +280,8 @@ class _DesktopParticularBlogState extends State<DesktopParticularBlog> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   InkWell(
-                                    onTap: () {
-                                      if (blogsController.likedBlogsIds
-                                          .contains(widget.blogId)) {
-                                        blogsController.updateBlogCounter(
-                                          blogId: widget.blogId,
-                                          field: 'likes',
-                                          isDecrement: true,
-                                        );
-                                        blogsController.removeFromLikedBlogs(
-                                          widget.blogId,
-                                        );
-                                      } else {
-                                        blogsController.updateBlogCounter(
-                                          blogId: widget.blogId,
-                                          field: 'likes',
-                                          isDecrement: false,
-                                        );
-                                        blogsController.addToLikedBlogs(
-                                          widget.blogId,
-                                        );
-                                      }
-                                    },
+                                    onTap: () =>
+                                        blogsController.toggleLike(widget.blogId),
                                     child: Obx(
                                       () => LikeButton(
                                         isLiked: blogsController.likedBlogsIds

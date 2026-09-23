@@ -23,27 +23,21 @@ class BlogsController extends GetxController {
 
   void toggleLike(int id) {
     if (likedBlogsIds.contains(id)) {
-      removeFromLikedBlogs(id);
+      likedBlogsIds.remove(id);
+      likeCount.value--;
+      update();
+      updateBlogCounter(blogId: id, field: 'likes', isDecrement: true);
     } else {
-      addToLikedBlogs(id);
+      likedBlogsIds.add(id);
+      likeCount.value++;
+      update();
+      updateBlogCounter(blogId: id, field: 'likes');
     }
-  }
-
-  void addToLikedBlogs(int id) {
-    likedBlogsIds.add(id);
-    likeCount.value++;
-    update();
-  }
-
-  void removeFromLikedBlogs(int id) {
-    likedBlogsIds.remove(id);
-    likeCount.value--;
-    update();
   }
 
   Future<void> fetchBlogs() async {
     const String url =
-        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2";
+        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2?type=1";
     // "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts";
 
     try {
@@ -97,7 +91,7 @@ class BlogsController extends GetxController {
         await ApiClient.instance.patch(url);
       }
 
-      // 🔥 Optimistic UI Update (Instant UI response)
+      // 🔥 Optimistic UI Update (Instant UI response) — detail page model
       if (selectedBlog.value != null && selectedBlog.value!.blogId == blogId) {
         switch (field) {
           case "likes":
@@ -122,6 +116,23 @@ class BlogsController extends GetxController {
             break;
         }
       }
+
+      // 🔥 Optimistic UI Update — matching card in the grid list
+      final index = blogsList.indexWhere((b) => b.blogId == blogId);
+      if (index != -1) {
+        switch (field) {
+          case "likes":
+            blogsList[index].likesCount += isDecrement ? -1 : 1;
+            break;
+          case "views":
+            blogsList[index].viewsCount += 1;
+            break;
+          case "share":
+            blogsList[index].shareCount += 1;
+            break;
+        }
+        blogsList.refresh();
+      }
     } catch (e) {
       log("Counter Update Error: $e");
     }
@@ -129,7 +140,7 @@ class BlogsController extends GetxController {
 
   Future<void> fetchBlogById(int blogId) async {
     final String url =
-        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2?blog_id=$blogId";
+        "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogsv2?type=1&blog_id=$blogId";
         // "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/blogPosts?blog_id=$blogId";
 
     try {

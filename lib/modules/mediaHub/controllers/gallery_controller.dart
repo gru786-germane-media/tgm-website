@@ -28,22 +28,16 @@ class GalleryController extends GetxController {
 
   void toggleLike(String id) {
     if (likedGalleryIds.contains(id)) {
-      removeFromLikedGallery(id);
+      likedGalleryIds.remove(id);
+      likeCount.value--;
+      update();
+      updateGalleryCounter(galleryId: id, field: 'likes', isDecrement: true);
     } else {
-      addToLikedGallery(id);
+      likedGalleryIds.add(id);
+      likeCount.value++;
+      update();
+      updateGalleryCounter(galleryId: id, field: 'likes');
     }
-  }
-
-  void addToLikedGallery(String id) {
-    likedGalleryIds.add(id);
-    likeCount.value++;
-    update();
-  }
-
-  void removeFromLikedGallery(String id) {
-    likedGalleryIds.remove(id);
-    likeCount.value--;
-    update();
   }
 
   /// 🔥 Fetch All Galleries
@@ -131,7 +125,7 @@ class GalleryController extends GetxController {
         await ApiClient.instance.patch(url);
       }
 
-      /// 🔥 Optimistic UI update
+      /// 🔥 Optimistic UI update — detail page model
       if (selectedGallery.value != null &&
           selectedGallery.value!.galleryId == galleryId) {
         switch (field) {
@@ -156,6 +150,23 @@ class GalleryController extends GetxController {
             });
             break;
         }
+      }
+
+      /// 🔥 Optimistic UI update — matching card in the grid list
+      final index = galleryList.indexWhere((g) => g.galleryId == galleryId);
+      if (index != -1) {
+        switch (field) {
+          case "likes":
+            galleryList[index].likesCount += isDecrement ? -1 : 1;
+            break;
+          case "views":
+            galleryList[index].viewsCount += 1;
+            break;
+          case "share":
+            galleryList[index].shareCount += 1;
+            break;
+        }
+        galleryList.refresh();
       }
     } catch (e) {
       log("Gallery Counter Update Error: $e");

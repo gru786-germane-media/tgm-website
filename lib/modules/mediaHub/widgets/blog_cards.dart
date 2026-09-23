@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tgm/core/constants/icon_urls.dart';
+import 'package:tgm/core/utils/show_custom_popup.dart';
 import 'package:tgm/core/utils/track_page_microsoft.dart';
 import 'package:tgm/modules/mediaHub/controllers/blogs_controller.dart';
 import 'package:tgm/modules/mediaHub/models/blog_post_model.dart';
@@ -33,20 +35,30 @@ class BlogCards extends StatelessWidget {
                   ? IconUrls.kLikedIcon
                   : IconUrls.kLikeIcon,
               label: mediaCompactCount(currentBlog.likesCount),
+              onTap: () => blogsController.toggleLike(currentBlog.blogId),
             ),
           ),
           SizedBox(width: 8.w),
           MediaStatPill(
             iconAsset: IconUrls.kShareIcon,
             label: mediaCompactCount(currentBlog.shareCount),
+            onTap: () {
+              blogsController.updateBlogCounter(
+                blogId: currentBlog.blogId,
+                field: 'share',
+              );
+              Clipboard.setData(
+                ClipboardData(
+                  text:
+                      "https://thegermanemedia.com/blogs/${currentBlog.blogId}/${currentBlog.slug}",
+                ),
+              );
+              showCustomPopup(context, "Url copied to clipboard!", true);
+            },
           ),
           const Spacer(),
           MediaReadMoreButton(
             onTap: () {
-              blogsController.updateBlogCounter(
-                blogId: currentBlog.blogId,
-                field: 'views',
-              );
               final path = '/blogs/${currentBlog.blogId}/${currentBlog.slug}';
               context.go(path);
               trackPage(path);

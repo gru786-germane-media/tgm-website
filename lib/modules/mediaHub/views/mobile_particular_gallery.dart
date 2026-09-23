@@ -33,6 +33,10 @@ class _MobileParticularGalleryState extends State<MobileParticularGallery> {
     super.initState();
     final GalleryController galleryController = Get.put(GalleryController());
     galleryController.fetchGalleryById(widget.galleryId.toString());
+    galleryController.updateGalleryCounter(
+      galleryId: widget.galleryId.toString(),
+      field: 'views',
+    );
   }
 
   @override
@@ -42,6 +46,10 @@ class _MobileParticularGalleryState extends State<MobileParticularGallery> {
     if (oldWidget.galleryId != widget.galleryId) {
       final GalleryController galleryController = Get.put(GalleryController());
       galleryController.fetchGalleryById(widget.galleryId.toString());
+      galleryController.updateGalleryCounter(
+        galleryId: widget.galleryId.toString(),
+        field: 'views',
+      );
     }
   }
 

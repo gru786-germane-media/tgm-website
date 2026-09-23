@@ -32,6 +32,10 @@ class _DesktopParticularGalleryState extends State<DesktopParticularGallery> {
     super.initState();
     final GalleryController galleryController = Get.put(GalleryController());
     galleryController.fetchGalleryById(widget.galleryId.toString());
+    galleryController.updateGalleryCounter(
+      galleryId: widget.galleryId.toString(),
+      field: 'views',
+    );
   }
 
   @override
@@ -41,6 +45,10 @@ class _DesktopParticularGalleryState extends State<DesktopParticularGallery> {
     if (oldWidget.galleryId != widget.galleryId) {
       final GalleryController galleryController = Get.put(GalleryController());
       galleryController.fetchGalleryById(widget.galleryId.toString());
+      galleryController.updateGalleryCounter(
+        galleryId: widget.galleryId.toString(),
+        field: 'views',
+      );
     }
   }
 

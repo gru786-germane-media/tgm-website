@@ -36,13 +36,7 @@ class BlogCardsMobile extends StatelessWidget {
                   ? IconUrls.kLikedIcon
                   : IconUrls.kLikeIcon,
               label: mediaCompactCountMobile(currentBlog.likesCount),
-              onTap: () {
-                blogsController.updateBlogCounter(
-                  blogId: currentBlog.blogId,
-                  field: 'likes',
-                );
-                blogsController.toggleLike(currentBlog.blogId);
-              },
+              onTap: () => blogsController.toggleLike(currentBlog.blogId),
             ),
           ),
           const SizedBox(width: 8),
@@ -69,10 +63,6 @@ class BlogCardsMobile extends StatelessWidget {
           Expanded(
             child: MediaReadMoreButtonMobile(
               onTap: () {
-                blogsController.updateBlogCounter(
-                  blogId: currentBlog.blogId,
-                  field: 'views',
-                );
                 final path =
                     '/blogs/${currentBlog.blogId}/${currentBlog.slug}';
                 context.go(path);

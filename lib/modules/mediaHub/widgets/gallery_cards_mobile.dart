@@ -37,13 +37,8 @@ class GalleryCardsMobile extends StatelessWidget {
                   ? IconUrls.kLikedIcon
                   : IconUrls.kLikeIcon,
               label: mediaCompactCountMobile(currentGallery.likesCount),
-              onTap: () {
-                galleryController.updateGalleryCounter(
-                  galleryId: currentGallery.galleryId,
-                  field: 'likes',
-                );
-                galleryController.toggleLike(currentGallery.galleryId);
-              },
+              onTap: () =>
+                  galleryController.toggleLike(currentGallery.galleryId),
             ),
           ),
           const SizedBox(width: 8),
@@ -70,10 +65,6 @@ class GalleryCardsMobile extends StatelessWidget {
           Expanded(
             child: MediaReadMoreButtonMobile(
               onTap: () {
-                galleryController.updateGalleryCounter(
-                  galleryId: currentGallery.galleryId,
-                  field: 'views',
-                );
                 context.go('/gallery/${currentGallery.galleryId}');
                 trackPage('/gallery/${currentGallery.galleryId}');
               },
