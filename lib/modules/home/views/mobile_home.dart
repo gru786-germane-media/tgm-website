@@ -178,7 +178,11 @@ class _MobileHomeState extends State<MobileHome> {
               ],
             ),
           ),
-          Positioned(right: 20, bottom: 20, child: StickyBookCallButtonMobile()),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: StickyBookCallButtonMobile(),
+          ),
         ],
       ),
     );
@@ -239,7 +243,7 @@ class HomeSection extends StatelessWidget {
               homeController.changeIndex(index);
             },
           ),
-          items: [6,7,8,9,10].map((i) {
+          items: [6, 7, 8, 9, 10].map((i) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Center(
@@ -251,7 +255,7 @@ class HomeSection extends StatelessWidget {
                       imageUrl:
                           // "https://testbucketgermane.s3.eu-north-1.amazonaws.com/verticalurl/websitehome/$i.png",
                           "https://websiteimagestgm.s3.eu-north-1.amazonaws.com/home+images/$i.png",
-                          
+
                       fit: BoxFit.cover,
                       semanticLabel: "The Germane Media platform screenshot $i",
                     ),
@@ -788,40 +792,37 @@ class MetricsSection extends StatelessWidget {
               const SizedBox(height: 28),
 
               const _MetricStatCard(
-                imageUrl:
-                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/heartIcon.png",
+                svgIcon: "assets/icons/whiteHeart.svg",
                 value: "150 B +",
                 label: "Monthly Ad Requests",
               ),
               const SizedBox(height: 16),
               const _MetricStatCard(
-                imageUrl:
-                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/lightningIcon.png",
+                svgIcon: "assets/icons/whiteLightning.svg",
                 value: "+ 45%",
                 label: "Average Yield Lift",
               ),
               const SizedBox(height: 16),
               const _MetricStatCard(
-                svgIcon: "assets/icons/ctvAdRequestLogo.svg",
+                svgIcon: "assets/icons/ctvMonetizationWhite.svg",
                 value: "100 B +",
                 label: "CTV Ad Requests",
               ),
               const SizedBox(height: 16),
               const _MetricStatCard(
-                svgIcon: "assets/icons/inAppAdRequestLogo.svg",
+                svgIcon: "assets/icons/inAppMonetizationWhite.svg",
                 value: "30 B +",
                 label: "In App Ad Requests",
               ),
               const SizedBox(height: 16),
               const _MetricStatCard(
-                svgIcon: "assets/icons/webAdRequests.svg",
+                svgIcon: "assets/icons/webMonetizationWhite.svg",
                 value: "20 B +",
                 label: "Web Ad Requests",
               ),
               const SizedBox(height: 16),
               const _MetricStatCard(
-                imageUrl:
-                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/starIcon.png",
+                svgIcon: "assets/icons/whiteStar.svg",
                 value: "98%",
                 label: "Ad Quality Compliance",
               ),

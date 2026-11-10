@@ -47,6 +47,42 @@ import 'package:tgm/modules/solutions/views/mobile_solutions.dart' deferred as m
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
+  errorBuilder: (context, state) => Scaffold(
+    backgroundColor: const Color(0xff0f0f0f),
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            '404',
+            style: TextStyle(
+              fontSize: 64,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            "Page not found",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () => context.go('/'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+            child: const Text('Go to Homepage'),
+          ),
+        ],
+      ),
+    ),
+  ),
   observers: [_RouterObserver()],
   routes: [
     GoRoute(

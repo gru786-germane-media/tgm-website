@@ -7,7 +7,7 @@ const String _siteUrl = 'https://thegermanemedia.com';
 const String _defaultOgImage = '$_siteUrl/logo/image.png';
 
 /// Sets document title, description, canonical, OG and Twitter tags for a
-/// particular-blog page. Mirrors what tool/generate_blog_seo_pages.mjs bakes
+/// particular-blog page. Mirrors what tool/generate_seo_pages.mjs bakes
 /// into the static per-blog HTML, so a client-side SPA navigation between
 /// blogs (e.g. via "Similar Blogs") keeps those tags in sync too, not just
 /// the first page load.

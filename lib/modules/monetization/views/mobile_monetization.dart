@@ -181,7 +181,11 @@ class _MobileMonetizationState extends State<MobileMonetization> {
               ),
             ),
           ),
-          Positioned(right: 20, bottom: 20, child: StickyBookCallButtonMobile()),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: StickyBookCallButtonMobile(),
+          ),
         ],
       ),
     );

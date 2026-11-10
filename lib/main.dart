@@ -1,3 +1,5 @@
+import 'dart:html' as html;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -68,7 +70,10 @@ class _MyAppState extends State<MyApp> {
       builder: (context, child) {
         return GetMaterialApp.router(
           debugShowCheckedModeBanner: false,
-          title: 'TGM',
+          // Flutter web overwrites document.title with the app title. Keep the
+          // page-specific title that the served HTML (see
+          // tool/generate_seo_pages.mjs) or the current view already set.
+          onGenerateTitle: (_) => html.document.title,
           scrollBehavior: AppScrollBehavior(),
           // Globally shrink every Text on the site by 30%.
           builder: (context, child) {

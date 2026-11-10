@@ -312,13 +312,49 @@ class MetricsSection extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  AppCachedImage(
-                                    imageUrl:
-                                        "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/starIcon.png",
-                                    height: 138.w,
-                                    width: 138.w,
-                                    fit: BoxFit.scaleDown,
-                                    semanticLabel: "Ad quality compliance icon",
+                                  Container(
+                                    height: 72.w,
+                                    width: 72.w,
+                                    padding: EdgeInsets.all(6.w),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xff4d4d4d),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Container(
+                                      height: 72.w,
+                                      width: 72.w,
+                                      padding: EdgeInsets.all(16.w),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xff1a1a1a),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            offset: Offset(12.8, 9.6),
+                                            color: Color.fromARGB(
+                                              26,
+                                              255,
+                                              255,
+                                              255,
+                                            ),
+                                            spreadRadius: 1.6,
+                                            blurRadius: 7.2,
+                                          ),
+                                        ],
+                                        image: DecorationImage(
+                                          image: AssetImage(
+                                            ImageUrls.kBackgroundTextureSmall,
+                                          ),
+                                        ),
+                                      ),
+                                      child: SvgPicture.asset(
+                                        "assets/icons/whiteStar.svg",
+                                        height: 35.w,
+                                        width: 35.w,
+                                        fit: BoxFit.scaleDown,
+                                        semanticsLabel:
+                                            "Ad quality compliance icon",
+                                      ),
+                                    ),
                                   ),
 
                                   35.verticalSpace,
@@ -328,7 +364,7 @@ class MetricsSection extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                     style: AppTextStyles.h0.copyWith(
                                       color: AppColors.whiteColor,
-                                      fontSize: 66.spMin,
+                                      fontSize: 52.spMin,
                                     ),
                                   ),
                                   20.verticalSpace,
@@ -365,7 +401,7 @@ class MetricsSection extends StatelessWidget {
                                         textAlign: TextAlign.center,
                                         style: AppTextStyles.h3.copyWith(
                                           color: AppColors.whiteColor,
-                                          fontSize: 24.spMin,
+                                          fontSize: 22.spMin,
                                         ),
                                       ),
                                     ),
@@ -377,7 +413,7 @@ class MetricsSection extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                     style: AppTextStyles.h0.copyWith(
                                       color: AppColors.whiteColor,
-                                      fontSize: 66.spMin,
+                                      fontSize: 52.spMin,
                                     ),
                                   ),
                                   20.verticalSpace,
@@ -414,7 +450,7 @@ class MetricsSection extends StatelessWidget {
                                         textAlign: TextAlign.center,
                                         style: AppTextStyles.h3.copyWith(
                                           color: AppColors.whiteColor,
-                                          fontSize: 24.spMin,
+                                          fontSize: 22.spMin,
                                         ),
                                       ),
                                     ),
@@ -471,14 +507,53 @@ class MetricsSection extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              AppCachedImage(
-                                                imageUrl:
-                                                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/heartIcon.png",
-                                                height: 138.w,
-                                                width: 138.w,
-                                                fit: BoxFit.scaleDown,
-                                                semanticLabel:
-                                                    "Monthly ad requests icon",
+                                              Container(
+                                                height: 72.w,
+                                                width: 72.w,
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff4d4d4d),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Container(
+                                                  height: 72.w,
+                                                  width: 72.w,
+                                                  padding: EdgeInsets.all(16.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff1a1a1a),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(
+                                                          12.8,
+                                                          9.6,
+                                                        ),
+                                                        color: Color.fromARGB(
+                                                          26,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                        spreadRadius: 1.6,
+                                                        blurRadius: 7.2,
+                                                      ),
+                                                    ],
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        ImageUrls
+                                                            .kBackgroundTextureSmall,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/whiteHeart.svg",
+                                                    height: 35.w,
+                                                    width: 35.w,
+                                                    fit: BoxFit.scaleDown,
+                                                    semanticsLabel:
+                                                        "Monthly ad requests icon",
+                                                  ),
+                                                ),
                                               ),
 
                                               35.horizontalSpace,
@@ -608,14 +683,53 @@ class MetricsSection extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              AppCachedImage(
-                                                imageUrl:
-                                                    "https://testbucketgermane.s3.eu-north-1.amazonaws.com/preferenceScreenIconsTV/website/lightningIcon.png",
-                                                height: 138.w,
-                                                width: 138.w,
-                                                fit: BoxFit.scaleDown,
-                                                semanticLabel:
-                                                    "Average yield lift icon",
+                                              Container(
+                                                height: 72.w,
+                                                width: 72.w,
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff4d4d4d),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Container(
+                                                  height: 72.w,
+                                                  width: 72.w,
+                                                  padding: EdgeInsets.all(16.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff1a1a1a),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(
+                                                          12.8,
+                                                          9.6,
+                                                        ),
+                                                        color: Color.fromARGB(
+                                                          26,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                        spreadRadius: 1.6,
+                                                        blurRadius: 7.2,
+                                                      ),
+                                                    ],
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        ImageUrls
+                                                            .kBackgroundTextureSmall,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/whiteLightning.svg",
+                                                    height: 35.w,
+                                                    width: 35.w,
+                                                    fit: BoxFit.scaleDown,
+                                                    semanticsLabel:
+                                                        "Average yield lift icon",
+                                                  ),
+                                                ),
                                               ),
 
                                               35.horizontalSpace,
@@ -751,14 +865,55 @@ class MetricsSection extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/ctvAdRequestLogo.svg",
-                                                height: 58.w,
-                                                width: 58.w,
-                                                fit: BoxFit.scaleDown,
-                                                semanticsLabel:
-                                                    "CTV ad requests icon",
+                                              Container(
+                                                height: 72.w,
+                                                width: 72.w,
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff4d4d4d),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Container(
+                                                  height: 72.w,
+                                                  width: 72.w,
+                                                  padding: EdgeInsets.all(16.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff1a1a1a),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(
+                                                          12.8,
+                                                          9.6,
+                                                        ),
+                                                        color: Color.fromARGB(
+                                                          26,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                        spreadRadius: 1.6,
+                                                        blurRadius: 7.2,
+                                                      ),
+                                                    ],
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        ImageUrls
+                                                            .kBackgroundTextureSmall,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/ctvMonetizationWhite.svg",
+                                                    height: 35.w,
+                                                    width: 35.w,
+                                                    fit: BoxFit.scaleDown,
+                                                    semanticsLabel:
+                                                        "Ctv ad request icon",
+                                                  ),
+                                                ),
                                               ),
+
                                               10.verticalSpace,
                                               SelectableText(
                                                 "100 B +",
@@ -859,14 +1014,55 @@ class MetricsSection extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/inAppAdRequestLogo.svg",
-                                                height: 58.w,
-                                                width: 58.w,
-                                                fit: BoxFit.scaleDown,
-                                                semanticsLabel:
-                                                    "In-app ad requests icon",
+                                              Container(
+                                                height: 72.w,
+                                                width: 72.w,
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff4d4d4d),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Container(
+                                                  height: 72.w,
+                                                  width: 72.w,
+                                                  padding: EdgeInsets.all(16.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff1a1a1a),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(
+                                                          12.8,
+                                                          9.6,
+                                                        ),
+                                                        color: Color.fromARGB(
+                                                          26,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                        spreadRadius: 1.6,
+                                                        blurRadius: 7.2,
+                                                      ),
+                                                    ],
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        ImageUrls
+                                                            .kBackgroundTextureSmall,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/inAppMonetizationWhite.svg",
+                                                    height: 35.w,
+                                                    width: 35.w,
+                                                    fit: BoxFit.scaleDown,
+                                                    semanticsLabel:
+                                                        "In app ad request icon",
+                                                  ),
+                                                ),
                                               ),
+
                                               10.verticalSpace,
                                               SelectableText(
                                                 "30 B +",
@@ -966,14 +1162,55 @@ class MetricsSection extends StatelessWidget {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
-                                              SvgPicture.asset(
-                                                "assets/icons/webAdRequests.svg",
-                                                height: 58.w,
-                                                width: 58.w,
-                                                fit: BoxFit.scaleDown,
-                                                semanticsLabel:
-                                                    "Web ad requests icon",
+                                              Container(
+                                                height: 72.w,
+                                                width: 72.w,
+                                                padding: EdgeInsets.all(6.w),
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xff4d4d4d),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Container(
+                                                  height: 72.w,
+                                                  width: 72.w,
+                                                  padding: EdgeInsets.all(16.w),
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xff1a1a1a),
+                                                    shape: BoxShape.circle,
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        offset: Offset(
+                                                          12.8,
+                                                          9.6,
+                                                        ),
+                                                        color: Color.fromARGB(
+                                                          26,
+                                                          255,
+                                                          255,
+                                                          255,
+                                                        ),
+                                                        spreadRadius: 1.6,
+                                                        blurRadius: 7.2,
+                                                      ),
+                                                    ],
+                                                    image: DecorationImage(
+                                                      image: AssetImage(
+                                                        ImageUrls
+                                                            .kBackgroundTextureSmall,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: SvgPicture.asset(
+                                                    "assets/icons/webMonetizationWhite.svg",
+                                                    height: 35.w,
+                                                    width: 35.w,
+                                                    fit: BoxFit.scaleDown,
+                                                    semanticsLabel:
+                                                        "web ad request icon",
+                                                  ),
+                                                ),
                                               ),
+
                                               10.verticalSpace,
                                               SelectableText(
                                                 "20 B +",

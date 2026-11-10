@@ -971,7 +971,7 @@ class _CompanyVisionState extends State<CompanyVision> {
                     DesktopCompanySections(
                       title: "Our Vision",
                       subTitle:
-                          '''To redefine digital monetization by empowering publishers with intelligence, transparency, and control — creating a future where every impression is valued, every stream is optimized, and every publisher thrives independently. At The Germane Media, we believe the future of advertising belongs to those who own their value.  Our vision is to create an ecosystem where publishers are no longer at the mercy of opaque intermediaries, but instead lead with insight, autonomy, and technology built in their favor.''',
+                          '''To redefine digital monetization by empowering publishers with intelligence, transparency, and control — creating a future where every impression is valued, every stream is optimized, and every publisher thrives independently. At The Germane Media, we believe the future of advertising belongs to those who own their value. Our vision is to create an ecosystem where publishers are no longer at the mercy of opaque intermediaries, but instead lead with insight, autonomy, and technology built in their favor.''',
                     ),
                     SizedBox(height: 50.w),
                     DesktopCompanySections(
@@ -985,7 +985,7 @@ class _CompanyVisionState extends State<CompanyVision> {
                     DesktopCompanySections(
                       title: "Our Story – The Germane\nJourney",
                       subTitle:
-                          '''Germane Media was born from a simple observation: Publishers were rich in audience, but poor in control. While platforms and middlemen dictated value, publishers were left with opaque data, unstable yields, and limited visibility. We set out to change that.Founded by ad-tech specialists and programmatic engineers, The Germane Media was built on a singular belief — Monetization should be intelligent, independent, and fair. From our early days helping partners implement header bidding, to powering full-scale CTV, gaming, and OTT networks today, we’ve evolved into a strategic ally trusted by publishers worldwide. By blending data science, yield engineering, and programmatic strategy, we don’t just fill ad inventory —  we build monetization ecosystems designed for longevity and independence.Because this is more than advertising. This is Publisher Empowerment.''',
+                          '''Germane Media was born from a simple observation: Publishers were rich in audience, but poor in control. While platforms and middlemen dictated value, publishers were left with opaque data, unstable yields, and limited visibility. We set out to change that.Founded by ad-tech specialists and programmatic engineers, The Germane Media was built on a singular belief —Monetization should be intelligent, independent, and fair. From our early days helping partners implement header bidding, to powering full-scale CTV, gaming, and OTT networks today, we’ve evolved into a strategic ally trusted by publishers worldwide. By blending data science, yield engineering, and programmatic strategy, we don’t just fill ad inventory — we build monetization ecosystems designed for longevity and independence.Because this is more than advertising.This is Publisher Empowerment.''',
                     ),
 
                     SizedBox(height: 50.w),

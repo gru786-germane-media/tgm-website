@@ -220,6 +220,8 @@ class MobileFooter extends StatelessWidget {
 
           SelectableText(
             "Address: 1007 N Orange Street, 495 Wilmington New Castle, Delaware Delaware, 19801 USA",
+            // "Address: H/O Smt. Ratna Sinha, Rukanpura, BV College, Phulwari, Patna - 800014, Bihar, India",
+
             maxLines: 3,
             style: AppTextStyles.h3.copyWith(
               color: AppColors.kTextColor1,

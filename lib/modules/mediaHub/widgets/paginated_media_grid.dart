@@ -36,31 +36,45 @@ class PaginatedMediaGrid extends StatefulWidget {
 }
 
 class _PaginatedMediaGridState extends State<PaginatedMediaGrid> {
-  int _page = 0;
+  /// Number of items currently visible (grows by [widget.pageStep] on each "next").
+  int _visibleCount = 0;
 
-  int get _pageCount =>
-      widget.totalCount == 0 ? 1 : (widget.totalCount / widget.pageStep).ceil();
+  @override
+  void initState() {
+    super.initState();
+    _visibleCount = widget.pageStep.clamp(0, widget.totalCount);
+  }
 
   @override
   void didUpdateWidget(covariant PaginatedMediaGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_page > _pageCount - 1) _page = _pageCount - 1;
+    // Clamp in case totalCount shrank.
+    _visibleCount = _visibleCount.clamp(0, widget.totalCount);
+    // Ensure at least one page is shown when data arrives.
+    if (_visibleCount == 0 && widget.totalCount > 0) {
+      _visibleCount = widget.pageStep.clamp(0, widget.totalCount);
+    }
   }
 
-  void _nextPage() => setState(() {
-    if (_page < _pageCount - 1) _page++;
-  });
+  bool get _canLoadMore => _visibleCount < widget.totalCount;
+  bool get _canShowLess => _visibleCount > widget.pageStep;
 
-  void _prevPage() => setState(() {
-    if (_page > 0) _page--;
-  });
+  void _loadMore() => setState(() {
+        _visibleCount =
+            (_visibleCount + widget.pageStep).clamp(0, widget.totalCount);
+      });
+
+  void _showLess() => setState(() {
+        _visibleCount =
+            (_visibleCount - widget.pageStep).clamp(widget.pageStep, widget.totalCount);
+      });
 
   @override
   Widget build(BuildContext context) {
     final total = widget.totalCount;
-    final start = _page * widget.pageStep;
-    final end = (start + widget.pageStep).clamp(0, total);
-    final pageItemCount = end - start;
+    // Items are shown newest-first: index 0 in the grid = item (_visibleCount-1),
+    // index (_visibleCount-1) in the grid = item 0.
+    final visibleCount = _visibleCount;
 
     final numberStyle = AppTextStyles.h3.copyWith(
       fontSize: 20.spMin,
@@ -73,16 +87,18 @@ class _PaginatedMediaGridState extends State<PaginatedMediaGrid> {
       children: [
         Row(
           children: [
+            // "Down" arrow = load more (show next batch at the top).
             CircleArrowButton(
               direction: ArrowDirection.down,
-              enabled: _page < _pageCount - 1,
-              onTap: _nextPage,
+              enabled: _canLoadMore,
+              onTap: _loadMore,
             ),
             SizedBox(width: 14.w),
+            // "Up" arrow = collapse back (remove the most recent batch).
             CircleArrowButton(
               direction: ArrowDirection.up,
-              enabled: _page > 0,
-              onTap: _prevPage,
+              enabled: _canShowLess,
+              onTap: _showLess,
             ),
             const Spacer(),
             RichText(
@@ -94,11 +110,11 @@ class _PaginatedMediaGridState extends State<PaginatedMediaGrid> {
                 children: [
                   const TextSpan(text: "Showing "),
                   TextSpan(
-                    text: "${total == 0 ? 0 : start + 1}",
+                    text: "${total == 0 ? 0 : 1}",
                     style: numberStyle,
                   ),
                   const TextSpan(text: "–"),
-                  TextSpan(text: "$end", style: numberStyle),
+                  TextSpan(text: "$visibleCount", style: numberStyle),
                   const TextSpan(text: " out of "),
                   TextSpan(text: "$total", style: numberStyle),
                 ],
@@ -111,15 +127,19 @@ class _PaginatedMediaGridState extends State<PaginatedMediaGrid> {
           shrinkWrap: true,
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: pageItemCount,
+          // Newest items first: reverse the index mapping.
+          itemCount: visibleCount,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: widget.crossAxisCount,
             crossAxisSpacing: widget.crossAxisSpacing.w,
             mainAxisSpacing: widget.mainAxisSpacing.w,
             mainAxisExtent: widget.cardHeight.w,
           ),
-          itemBuilder: (context, index) =>
-              widget.itemBuilder(context, start + index),
+          itemBuilder: (context, gridIndex) {
+            // gridIndex 0 → newest item (index visibleCount-1 in the data)
+            final dataIndex = visibleCount - 1 - gridIndex;
+            return widget.itemBuilder(context, dataIndex);
+          },
         ),
       ],
     );

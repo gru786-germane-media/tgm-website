@@ -46,7 +46,7 @@ class BlogPostModel {
   /// `url` field (its slug algorithm doesn't always match [slugify], e.g. it
   /// drops apostrophes instead of hyphenating them) and only falls back to a
   /// client-computed slug if the backend hasn't provided one.
-  String get slug => urlSlug.isNotEmpty ? urlSlug : slugify(title);
+  String get slug => urlSlug.isNotEmpty ? slugify(urlSlug) : slugify(title);
 
   factory BlogPostModel.fromJson(Map<String, dynamic> json) {
     final sectionList =

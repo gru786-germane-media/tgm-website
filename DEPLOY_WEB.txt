@@ -1,0 +1,67 @@
+DEPLOYING THE WEBSITE (GoDaddy cPanel)
+=====================================
+
+1. BUILD (run from the project root)
+
+   flutter build web --release && node tool/generate_seo_pages.mjs
+
+   The second command must finish with:
+     "Generated 14 static route pages" and "Generated 24 static blog pages" (blog count may differ)
+   If it shows an error, do NOT upload.
+
+   WHY THE EXTRA COMMAND:
+   Flutter web serves the same index.html for every URL, and that file says
+   "the real page is the homepage" (canonical tag). Google therefore treated
+   /company, /monetization/ctv, blogs etc. as duplicates of the homepage and
+   did not index them. The script creates a copy of index.html for every page
+   and every blog (in build/web/prerendered/) with that page's own title,
+   description and canonical. web/.htaccess serves those copies.
+   Without this step, the SEO fixes do nothing.
+
+   Note: the files in build/web/prerendered/ look blank if opened by
+   double-click. That is normal - they only work when served by the website.
+
+2. UPLOAD
+
+   - Back up the current public_html first (download/zip it).
+   - Upload the contents of build/web  (NOT the repo's web/ folder).
+
+   a) Make the zip in Terminal (from the project root):
+
+      cd build/web && zip -r ../web.zip . -x "*.DS_Store" && cd ../..
+
+      This creates build/web.zip with the files at the top level, including
+      the hidden .htaccess and the prerendered/ folder.
+      DO NOT use Finder's right-click "Compress": it wraps everything in a
+      "web/" folder and adds a "__MACOSX/" junk folder. After extracting,
+      the hidden .htaccess gets left behind in public_html/web/ and the
+      SEO rules silently stop working (this happened on 28 Sep).
+
+   b) cPanel File Manager > public_html > Upload > choose build/web.zip
+   c) Right-click web.zip > Extract > extract into /public_html
+      (overwrite existing files)
+   d) Delete web.zip from public_html.
+   e) Settings > tick "Show Hidden Files (dotfiles)" and confirm
+      public_html/.htaccess has today's date, and that there is no
+      public_html/web/ or public_html/__MACOSX/ folder.
+
+3. CHECK AFTER UPLOAD
+
+   for u in / /company /monetization/ctv /careers/ /about /xyz-test; do printf "%-20s " $u; curl -s -o /dev/null -w "%{http_code} %{redirect_url}\n" "https://thegermanemedia.com$u"; done
+
+   Expected:
+     /  /company  /monetization/ctv   -> 200
+     /careers/                         -> 301 to /careers
+     /about                            -> 301 to /company
+     /xyz-test                         -> 404
+
+   curl -s https://thegermanemedia.com/company | grep canonical
+   Expected: https://thegermanemedia.com/company  (NOT the homepage URL)
+
+   If every page shows 500 -> restore the backup.
+   If canonical still shows the homepage or /careers/ does not redirect ->
+   the new .htaccess is not in public_html (see step 2e).
+
+4. REBUILD WHEN A NEW BLOG IS PUBLISHED
+   New blogs work without a rebuild, but only get their own title/canonical
+   and a sitemap entry after running step 1 and uploading again.

@@ -12,10 +12,11 @@ class NewsroomController extends GetxController {
   RxList<String> likedNewsIds = <String>[].obs;
 
   final String baseUrl =
-      "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev";
+      // "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev";
+      "https://wb1wymo9ij.execute-api.eu-north-1.amazonaws.com/dev/";
 
   Future<void> fetchNews() async {
-    final String url = "$baseUrl/newsroom";
+    final String url = "$baseUrl/newsroom?type=1";
 
     try {
       isLoadingNews(true);

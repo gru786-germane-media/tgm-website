@@ -1,0 +1,23 @@
+SEO TODO (Updated 19 Oct 2026 - Action Plan from 15 Oct Performance Report)
+=============================================================================
+
+DONE IN CODE (Built & packaged in build/web.zip):
+[x] Protect static HTML pages & physical directories (e.g. /custom-adapter-sdk/, doc suites) in web/.htaccess
+[x] Strip trailing slashes only on virtual routes (RewriteCond %{REQUEST_FILENAME} !-d) so real directories never loop
+[x] Tag & Category pages: Send HTTP header X-Robots-Tag: noindex, follow alongside 410 Gone in web/.htaccess
+[x] Query param traps (/?p=123, /?page_id=45) return 410 Gone instead of Soft 404 homepage
+[x] Sanitize blog slugs in tool/generate_seo_pages.mjs and lib/modules/mediaHub/models/blog_post_model.dart (spaces to hyphens, lowercase)
+[x] Exclude test / inactive blogs (blog 52 / test123) from prerender and sitemap
+[x] Add GoRouter errorBuilder 404 fallback in lib/core/utils/app_router.dart for client-side routing
+[x] Pre-rendered all 34 active blogs and updated sitemap.xml (total 49 clean URLs)
+
+DEPLOYMENT (GoDaddy cPanel):
+[ ] Upload build/web.zip to public_html and extract (follow DEPLOY_WEB.txt)
+[ ] Confirm .htaccess is extracted into public_html root
+[ ] Run post-deployment curl verification checks (including /custom-adapter-sdk/)
+
+GOOGLE SEARCH CONSOLE ACTIONS:
+[ ] Removals: Submit Prefix Removal for "https://thegermanemedia.com/tag/" to immediately deindex tag pages
+[ ] Soft 404s: Export the 27 Soft 404 URLs, verify 404/410 response, then click "Validate Fix"
+[ ] Sitemaps: Resubmit "https://thegermanemedia.com/sitemap.xml" (now lists 49 clean URLs, test123 removed)
+[ ] URL Inspection: Request Indexing for the top 10 ranking posts so snippets refresh with meta titles/descriptions
